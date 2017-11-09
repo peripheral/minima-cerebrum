@@ -1,5 +1,7 @@
 package mlp;
 
+import java.util.ArrayList;
+
 public class Neuron {
 	
 	private int netInput = 0;
@@ -7,6 +9,7 @@ public class Neuron {
 	private float weight = 0;
 	private int id;
 	private float output;
+	private ArrayList<Float> weights = new ArrayList<Float>();
 
 	public void setNetInput(int i) {
 		netInput = i;
@@ -25,13 +28,14 @@ public class Neuron {
 		return activationThreshold;
 	}
 
-	public void setWeight(double weight) {
-		this.weight = (float)weight;
+	public void setWeight(double weight, int i) {
+		//this.weights.set(i,(float)weight);
 		
 	}
 
-	public float getWeight() {
-		return weight;
+	public float getWeight(int n) {
+	//	return weight;
+		return 0.9f;
 	}
 
 	public void setId(int id) {

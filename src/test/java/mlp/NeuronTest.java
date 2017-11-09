@@ -38,8 +38,8 @@ public class NeuronTest {
 
 	@Test
 	void testingWeightSetGet() {
-		sut.setWeight(0.9);
-		float actualActThreshold = sut.getWeight();    	
+		sut.setWeight(0.9f,0);
+		float actualActThreshold = sut.getWeight(0);    	
 		assertTrue(Float.compare(0.9f,actualActThreshold) == 0);
 	}
 
