@@ -1,20 +1,20 @@
 package mlp;
 
+import java.util.ArrayList;
+
 public class NeuronLayer {
+	private ArrayList<Neuron> neurons = new ArrayList<>();
 
 	public void addNeuron(Neuron n) {
-		// TODO Auto-generated method stub
-		
+		neurons.add(n);		
 	}
 
 	public Neuron getNeuron(int i) {
-		// TODO Auto-generated method stub
-		return null;
+		return 	neurons.get(i);
 	}
 
 	public int size() {
-		// TODO Auto-generated method stub
-		return 0;
+		return neurons.size();
 	}
 
 }

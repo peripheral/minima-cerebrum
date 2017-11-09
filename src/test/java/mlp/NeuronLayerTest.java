@@ -14,8 +14,11 @@ public class NeuronLayerTest {
 	
 	@Test
 	void testingLayerSize() {
-		Neuron n = new Neuron();
-		sut.addNeuron(n);
+		sut.addNeuron(new Neuron());
+		sut.addNeuron(new Neuron());
+		sut.addNeuron(new Neuron());
+		sut.addNeuron(new Neuron());
+		sut.addNeuron(new Neuron());
 		int actualNet = sut.size();
 		int expectedNet = 5;
 		assertEquals(expectedNet,actualNet);
@@ -25,6 +28,10 @@ public class NeuronLayerTest {
 	void testingLayerSizeT2() {
 		Neuron n = new Neuron();
 		sut.addNeuron(n);
+		sut.addNeuron(n);
+		sut.addNeuron(n);
+		sut.addNeuron(n);
+		sut.addNeuron(n);
 		int actualNet = sut.size();
 		int expectedNet = 5;
 		assertEquals(expectedNet,actualNet);
@@ -33,6 +40,10 @@ public class NeuronLayerTest {
 	@Test
 	void testingPrapagationFunction() {
 		Neuron n = new Neuron();
+		sut.addNeuron(n);
+		sut.addNeuron(n);
+		sut.addNeuron(n);
+		sut.addNeuron(n);
 		sut.addNeuron(n);
 		int actualNet = sut.size();
 		int expectedNet = 5;

@@ -1,54 +1,53 @@
 package mlp;
 
 public class Neuron {
+	
+	private int netInput = 0;
+	private float activationThreshold = 0;
+	private float weight = 0;
+	private int id;
+	private float output;
 
 	public void setNetInput(int i) {
-		// TODO Auto-generated method stub
+		netInput = i;
 		
 	}
 
 	public int setGetNetInput() {
-		// TODO Auto-generated method stub
-		return 0;
+		return netInput;
 	}
 
-	public void setActivationThreshold(double d) {
-		// TODO Auto-generated method stub
+	public void setActivationThreshold(double threshold) {
+		activationThreshold = (float)threshold;
 	}
 
-	public float getActivationThreshold() {
-		// TODO Auto-generated method stub
-		return 0;
+	public float getActivationThreshold() {		
+		return activationThreshold;
 	}
 
-	public void setWeight(double d) {
-		// TODO Auto-generated method stub
+	public void setWeight(double weight) {
+		this.weight = (float)weight;
 		
 	}
 
 	public float getWeight() {
-		// TODO Auto-generated method stub
-		return 0;
+		return weight;
 	}
 
-	public void setId(int i) {
-		// TODO Auto-generated method stub
-		
+	public void setId(int id) {
+		this.id = id;		
 	}
 
 	public int getId() {
-		// TODO Auto-generated method stub
-		return 0;
+		return id;
 	}
 
-	public void setOutput(float f) {
-		// TODO Auto-generated method stub
-		
+	public void setOutput(float output) {
+		this.output = output;		
 	}
 
-	public float getOutput() {
-		// TODO Auto-generated method stub
-		return 0;
+	public float getOutput() {		
+		return output;
 	}
 	
 }
