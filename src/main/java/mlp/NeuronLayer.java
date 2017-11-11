@@ -18,7 +18,7 @@ public class NeuronLayer {
 		return neurons.size();
 	}
 
-	public float propagate(int n) {
+	public float propagate(int neuronIdx) {
 		float sum = 0;
 		for(Neuron ne:neurons) {
 			//sum = ne.getOutput()*ne.getWeight(n);

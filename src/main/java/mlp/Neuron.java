@@ -2,21 +2,23 @@ package mlp;
 
 import java.util.ArrayList;
 
+import mlp.ANN_MLP.ACTIVATION_FUNCTION;
+
 public class Neuron {
 	
-	private int netInput = 0;
+	private float netInput = 0;
 	private float activationThreshold = 0;
 	private float weight = 0;
 	private int id;
 	private float output;
 	private ArrayList<Float> weights = new ArrayList<Float>();
 
-	public void setNetInput(int i) {
-		netInput = i;
+	public void setNetInput(float netinput) {
+		netInput = netinput;
 		
 	}
 
-	public int setGetNetInput() {
+	public float setGetNetInput() {
 		return netInput;
 	}
 
@@ -52,6 +54,16 @@ public class Neuron {
 
 	public float getOutput() {		
 		return output;
+	}
+
+	public void setActivationFunctionType(ACTIVATION_FUNCTION sigmoid) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public ACTIVATION_FUNCTION getActivationFunctionType() {
+		// TODO Auto-generated method stub
+		return ACTIVATION_FUNCTION.SIGMOID;
 	}
 	
 }

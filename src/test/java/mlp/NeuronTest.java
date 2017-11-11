@@ -15,17 +15,17 @@ public class NeuronTest {
 	@Test
 	void testingNetInputGet() {
 		sut.setNetInput(5);
-		int actualNet = sut.setGetNetInput();
-		int expectedNet = 5;
-		assertEquals(expectedNet,actualNet);
+		float actualNet = sut.setGetNetInput();
+		float expectedNet = 5.0f;
+		assertTrue(Float.compare(expectedNet,actualNet) == 0);
 	}
 	
 	@Test
 	void testingNetInputGetT1() {
 		sut.setNetInput(1);
-		int actualNet = sut.setGetNetInput();
+		float actualNet = sut.setGetNetInput();
 		int expectedNet = 1;
-		assertEquals(expectedNet,actualNet);
+		assertTrue(Float.compare(expectedNet,actualNet) == 0);
 	}
 
 	@Test
@@ -41,6 +41,14 @@ public class NeuronTest {
 		sut.setWeight(0.9f,0);
 		float actualActThreshold = sut.getWeight(0);    	
 		assertTrue(Float.compare(0.9f,actualActThreshold) == 0);
+	}
+	
+	@Test
+	void testingWeightSetGetT2() {
+		int weightIdx = 1;
+		sut.setWeight(3.9f,weightIdx);
+		float actualActThreshold = sut.getWeight(weightIdx);    	
+		assertTrue(Float.compare(3.9f,actualActThreshold) == 0);
 	}
 
 	@Test
@@ -67,5 +75,12 @@ public class NeuronTest {
 		assertTrue(Float.compare(actual, expected) == 0);
 	}
 	
+	@Test
+	void testingActivationFunctionTypeSetGet() {
+		sut.setActivationFunctionType(ANN_MLP.ACTIVATION_FUNCTION.SIGMOID);
+		int actual = sut.getActivationFunctionType().ordinal();
+		int expected = ANN_MLP.ACTIVATION_FUNCTION.SIGMOID.ordinal();
+		assertEquals(expected,actual);
+	}
 
 }
