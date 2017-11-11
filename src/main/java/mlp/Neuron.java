@@ -30,14 +30,19 @@ public class Neuron {
 		return activationThreshold;
 	}
 
-	public void setWeight(double weight, int i) {
-		//this.weights.set(i,(float)weight);
+	//TODO refactor, change places on weight and index
+	public void setWeight(float weight, int index) {
+		if(weights.size() <=index) {
+			for(int idx = weights.size()-1; idx <index+1;idx++ ) {
+				weights.add(0.0f);
+			}
+		}
+		this.weights.set(index,weight);
 		
 	}
 
-	public float getWeight(int n) {
-	//	return weight;
-		return 0.9f;
+	public float getWeight(int index) {
+		return weights.get(index);
 	}
 
 	public void setId(int id) {

@@ -38,23 +38,23 @@ public class NeuronLayerTest {
 		n.setWeight(1,0);
 		Neuron n2 = new Neuron();
 		n2.setOutput(1.0f);
-		n2.setWeight(1,1);
+		n2.setWeight(1,0);
 		Neuron n3 = new Neuron();
 		n3.setOutput(1.0f);
-		n3.setWeight(1,2);
+		n3.setWeight(1,0);
 		Neuron n4 = new Neuron();
 		n4.setOutput(1.0f);
-		n4.setWeight(1,3);
+		n4.setWeight(1,0);
 		Neuron n5 = new Neuron();
 		n5.setOutput(1.0f);
-		n5.setWeight(1,4);
+		n5.setWeight(1,0);
 		
 		sut.addNeuron(n);
 		sut.addNeuron(n2);
 		sut.addNeuron(n3);
 		sut.addNeuron(n4);
 		sut.addNeuron(n5);
-		float actualNet = sut.propagate(1);
+		float actualNet = sut.propagate(0);
 		float expectedNet =5.0f;
 		assertTrue(Float.compare(expectedNet,actualNet) == 0);
 	}
@@ -66,26 +66,27 @@ public class NeuronLayerTest {
 		n.setWeight(1,0);
 		Neuron n2 = new Neuron();
 		n2.setOutput(2.0f);
-		n2.setWeight(1,1);
+		n2.setWeight(1,0);
 		Neuron n3 = new Neuron();
 		n3.setOutput(2.0f);
-		n3.setWeight(1,2);
+		n3.setWeight(1,0);
 		Neuron n4 = new Neuron();
 		n4.setOutput(2.0f);
-		n4.setWeight(1,3);
+		n4.setWeight(1,0);
 		Neuron n5 = new Neuron();
 		n5.setOutput(2.0f);
-		n5.setWeight(1,4);
+		n5.setWeight(1,0);
 		
 		sut.addNeuron(n);
 		sut.addNeuron(n2);
 		sut.addNeuron(n3);
 		sut.addNeuron(n4);
 		sut.addNeuron(n5);
-		float actualNet = sut.propagate(1);
+		float actualNet = sut.propagate(0);
 		float expectedNet =10.0f;
 		assertTrue(Float.compare(expectedNet,actualNet) == 0);
 	}
+	
 	@Test
 	void testingPrapagationFunctionNegativesT3() {
 		Neuron n = new Neuron();
@@ -93,24 +94,24 @@ public class NeuronLayerTest {
 		n.setWeight(-1,0);
 		Neuron n2 = new Neuron();
 		n2.setOutput(2.0f);
-		n2.setWeight(-1,1);
+		n2.setWeight(-1,0);
 		Neuron n3 = new Neuron();
 		n3.setOutput(2.0f);
-		n3.setWeight(-1,2);
+		n3.setWeight(-1,0);
 		Neuron n4 = new Neuron();
 		n4.setOutput(2.0f);
-		n4.setWeight(-1,3);
+		n4.setWeight(-1,0);
 		Neuron n5 = new Neuron();
 		n5.setOutput(2.0f);
-		n5.setWeight(-1,4);
+		n5.setWeight(-1,0);
 		
 		sut.addNeuron(n);
 		sut.addNeuron(n2);
 		sut.addNeuron(n3);
 		sut.addNeuron(n4);
 		sut.addNeuron(n5);
-		float actualNet = sut.propagate(1);
-		float expectedNet =10.0f;
+		float actualNet = sut.propagate(0);
+		float expectedNet =-10.0f;
 		assertTrue(Float.compare(expectedNet,actualNet) == 0);
 	}
 	
