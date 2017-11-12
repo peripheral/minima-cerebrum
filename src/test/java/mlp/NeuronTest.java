@@ -21,7 +21,7 @@ public class NeuronTest {
 	}
 	
 	@Test
-	void testingNetInputGetT1() {
+	void testingNetInputGetT2() {
 		sut.setNetInput(1);
 		float actualNet = sut.setGetNetInput();
 		int expectedNet = 1;
@@ -30,7 +30,6 @@ public class NeuronTest {
 
 	@Test
 	void testingActivationThresholdSetGet() {
-		sut.setNetInput(5);
 		sut.setActivationThreshold(0.9);
 		float actualActThreshold = sut.getActivationThreshold();    	
 		assertTrue(Float.compare(0.9f,actualActThreshold) == 0);
@@ -38,7 +37,7 @@ public class NeuronTest {
 
 	@Test
 	void testingWeightSetGet() {
-		sut.setWeight(0.9f,0);
+		sut.setWeight(0,0.9f);
 		float actualActThreshold = sut.getWeight(0);    	
 		assertTrue(Float.compare(0.9f,actualActThreshold) == 0);
 	}
@@ -46,7 +45,7 @@ public class NeuronTest {
 	@Test
 	void testingWeightSetGetT2() {
 		int weightIdx = 1;
-		sut.setWeight(3.9f,weightIdx);
+		sut.setWeight(weightIdx,3.9f);
 		float actualActThreshold = sut.getWeight(weightIdx);    	
 		assertTrue(Float.compare(3.9f,actualActThreshold) == 0);
 	}

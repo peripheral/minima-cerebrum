@@ -8,10 +8,10 @@ public class Neuron {
 	
 	private float netInput = 0;
 	private float activationThreshold = 0;
-	private float weight = 0;
-	private int id;
+	private int id = -1;
 	private float output;
 	private ArrayList<Float> weights = new ArrayList<Float>();
+	private ACTIVATION_FUNCTION aFunction = ACTIVATION_FUNCTION.SIGMOID;
 
 	public void setNetInput(float netinput) {
 		netInput = netinput;
@@ -30,15 +30,15 @@ public class Neuron {
 		return activationThreshold;
 	}
 
-	//TODO refactor, change places on weight and index
-	public void setWeight(float weight, int index) {
+	public void setWeight(int index, float weight) {
 		if(weights.size() <=index) {
-			for(int idx = weights.size()-1; idx <index+1;idx++ ) {
+			for(int idx = weights.size(); idx <index+1;idx++ ) {
 				weights.add(0.0f);
 			}
+			this.weights.set(index,weight);
+		}else {
+			this.weights.set(index,weight);
 		}
-		this.weights.set(index,weight);
-		
 	}
 
 	public float getWeight(int index) {
@@ -61,14 +61,12 @@ public class Neuron {
 		return output;
 	}
 
-	public void setActivationFunctionType(ACTIVATION_FUNCTION sigmoid) {
-		// TODO Auto-generated method stub
-		
+	public void setActivationFunctionType(ACTIVATION_FUNCTION function) {
+		aFunction = function;		
 	}
-
+	
 	public ACTIVATION_FUNCTION getActivationFunctionType() {
-		// TODO Auto-generated method stub
-		return ACTIVATION_FUNCTION.SIGMOID;
+		return aFunction;
 	}
 	
 }

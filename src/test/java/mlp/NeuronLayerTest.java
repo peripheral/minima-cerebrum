@@ -13,6 +13,16 @@ public class NeuronLayerTest {
 	}
 	
 	@Test
+	void testingLayerNeuronAddGet() {
+		Neuron n = new Neuron(); 
+		n.setId(1);
+		sut.addNeuron(n);
+		int actual = sut.getNeuron(0).getId();
+		int expectedId = 1;
+		assertEquals(expectedId,actual);
+	}
+	
+	@Test
 	void testingLayerSize() {
 		sut.addNeuron(new Neuron());
 		sut.addNeuron(new Neuron());
@@ -35,19 +45,19 @@ public class NeuronLayerTest {
 	void testingPrapagationFunction() {
 		Neuron n = new Neuron();
 		n.setOutput(1.0f);
-		n.setWeight(1,0);
+		n.setWeight(0,1);
 		Neuron n2 = new Neuron();
 		n2.setOutput(1.0f);
-		n2.setWeight(1,0);
+		n2.setWeight(0,1);
 		Neuron n3 = new Neuron();
 		n3.setOutput(1.0f);
-		n3.setWeight(1,0);
+		n3.setWeight(0,1);
 		Neuron n4 = new Neuron();
 		n4.setOutput(1.0f);
-		n4.setWeight(1,0);
+		n4.setWeight(0,1);
 		Neuron n5 = new Neuron();
 		n5.setOutput(1.0f);
-		n5.setWeight(1,0);
+		n5.setWeight(0,1);
 		
 		sut.addNeuron(n);
 		sut.addNeuron(n2);
@@ -63,19 +73,19 @@ public class NeuronLayerTest {
 	void testingPrapagationFunctionT2() {
 		Neuron n = new Neuron();
 		n.setOutput(2.0f);
-		n.setWeight(1,0);
+		n.setWeight(0,1);
 		Neuron n2 = new Neuron();
 		n2.setOutput(2.0f);
-		n2.setWeight(1,0);
+		n2.setWeight(0,1);
 		Neuron n3 = new Neuron();
 		n3.setOutput(2.0f);
-		n3.setWeight(1,0);
+		n3.setWeight(0,1);
 		Neuron n4 = new Neuron();
 		n4.setOutput(2.0f);
-		n4.setWeight(1,0);
+		n4.setWeight(0,1);
 		Neuron n5 = new Neuron();
 		n5.setOutput(2.0f);
-		n5.setWeight(1,0);
+		n5.setWeight(0,1);
 		
 		sut.addNeuron(n);
 		sut.addNeuron(n2);
@@ -91,19 +101,20 @@ public class NeuronLayerTest {
 	void testingPrapagationFunctionNegativesT3() {
 		Neuron n = new Neuron();
 		n.setOutput(2.0f);
-		n.setWeight(-1,0);
+		n.setWeight(0,-1);
 		Neuron n2 = new Neuron();
 		n2.setOutput(2.0f);
-		n2.setWeight(-1,0);
+		n2.setWeight(0,-1);
 		Neuron n3 = new Neuron();
 		n3.setOutput(2.0f);
-		n3.setWeight(-1,0);
+		n3.setWeight(0,-1);
 		Neuron n4 = new Neuron();
 		n4.setOutput(2.0f);
-		n4.setWeight(-1,0);
+		n4.setWeight(0,-1);
 		Neuron n5 = new Neuron();
 		n5.setOutput(2.0f);
-		n5.setWeight(-1,0);
+		n5.setWeight(1,-1);
+		n5.setWeight(0,-1);
 		
 		sut.addNeuron(n);
 		sut.addNeuron(n2);
