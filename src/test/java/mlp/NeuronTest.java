@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import mlp.ANN_MLP.ACTIVATION_FUNCTION;
+
 public class NeuronTest {
 	private Neuron sut;
 	@BeforeEach
@@ -80,6 +82,36 @@ public class NeuronTest {
 		int actual = sut.getActivationFunctionType().ordinal();
 		int expected = ANN_MLP.ACTIVATION_FUNCTION.SIGMOID.ordinal();
 		assertEquals(expected,actual);
+	}
+	
+	@Test
+	void testConstructorWithActivationAsParam() {
+		Neuron sut = new Neuron(ACTIVATION_FUNCTION.GAUSSIAN);
+		int actual = sut.getActivationFunctionType().ordinal();
+		int expected = ACTIVATION_FUNCTION.GAUSSIAN.ordinal();
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	void testConstructorWithUpperLayerSizeAsParam() {
+		int upperLayerSize = 5;
+		Neuron sut = new Neuron(upperLayerSize);
+		int actual = sut.getWeights().size();
+		int expected = 5;
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	void testConstructorWithActivationUpperLayerSizeAsParam() {
+		Neuron sut = new Neuron(ACTIVATION_FUNCTION.GAUSSIAN);
+		int actual = sut.getActivationFunctionType().ordinal();
+		int expected = ACTIVATION_FUNCTION.GAUSSIAN.ordinal();
+		assertEquals(expected, actual);
+		int upperLayerSize = 5;
+		sut = new Neuron(upperLayerSize);
+		actual = sut.getWeights().size();
+		expected = 5;
+		assertEquals(expected, actual);
 	}
 
 }

@@ -13,6 +13,24 @@ public class Neuron {
 	private ArrayList<Float> weights = new ArrayList<Float>();
 	private ACTIVATION_FUNCTION aFunction = ACTIVATION_FUNCTION.SIGMOID;
 
+	public Neuron() {}
+	
+	
+	public Neuron(ACTIVATION_FUNCTION f) {
+
+	}
+	
+	public Neuron(ACTIVATION_FUNCTION f,int upperLayerSize) {
+
+	}
+
+	
+
+	public Neuron(int upperLayerSize) {
+		// TODO Auto-generated constructor stub
+	}
+
+
 	public void setNetInput(float netinput) {
 		netInput = netinput;
 		
@@ -67,6 +85,12 @@ public class Neuron {
 	
 	public ACTIVATION_FUNCTION getActivationFunctionType() {
 		return aFunction;
+	}
+
+
+	public ArrayList<Float> getWeights() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

@@ -6,6 +6,15 @@ public class NeuronLayer {
 	private ArrayList<Neuron> neurons = new ArrayList<>();
 	
 	
+	public NeuronLayer(int size,ANN_MLP.ACTIVATION_FUNCTION f) {
+	}
+
+	public NeuronLayer(int size) {
+	}
+
+	public NeuronLayer() {
+	}
+
 	public void addNeuron(Neuron n) {
 		neurons.add(n);		
 	}
