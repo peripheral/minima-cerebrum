@@ -10,6 +10,9 @@ public class NeuronLayer {
 	}
 
 	public NeuronLayer(int size) {
+		for(int i = 0; i < size;i++) {
+			neurons.add(new Neuron());
+		}
 	}
 
 	public NeuronLayer() {

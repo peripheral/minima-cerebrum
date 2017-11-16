@@ -16,8 +16,8 @@ public class Neuron {
 	public Neuron() {}
 	
 	
-	public Neuron(ACTIVATION_FUNCTION f) {
-
+	public Neuron(ACTIVATION_FUNCTION aF) {
+		aFunction = aF;
 	}
 	
 	public Neuron(ACTIVATION_FUNCTION f,int upperLayerSize) {
@@ -27,7 +27,9 @@ public class Neuron {
 	
 
 	public Neuron(int upperLayerSize) {
-		// TODO Auto-generated constructor stub
+		for(int i = 0;i < upperLayerSize;i ++) {
+			weights.add(1.0f);
+		}
 	}
 
 
@@ -89,8 +91,7 @@ public class Neuron {
 
 
 	public ArrayList<Float> getWeights() {
-		// TODO Auto-generated method stub
-		return null;
+		return weights;
 	}
 	
 }

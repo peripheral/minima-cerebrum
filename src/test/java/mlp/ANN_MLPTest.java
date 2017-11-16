@@ -27,11 +27,11 @@ public class ANN_MLPTest {
 		int[] layerSizes = {2,3,1};
 		sut = new ANN_MLP(layerSizes);
 		int[] actualInputLayerSizes = new int[3];
-		actualInputLayerSizes[0] = sut.getInputLayer().length;
-		actualInputLayerSizes[1] = sut.getLayer(1).length;
-		actualInputLayerSizes[2] = sut.getOutputLayer().length;
+		actualInputLayerSizes[0] = sut.getInputLayer().size();
+		actualInputLayerSizes[1] = sut.getLayer(1).size();
+		actualInputLayerSizes[2] = sut.getOutputLayer().size();
 		int[] expected =  {2,3,1};
-		assertEquals(actualInputLayerSizes,expected);
+		assertArrayEquals(expected,actualInputLayerSizes);
 	}
 	
 }
