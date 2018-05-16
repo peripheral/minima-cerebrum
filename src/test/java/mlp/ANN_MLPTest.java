@@ -34,4 +34,61 @@ public class ANN_MLPTest {
 		assertArrayEquals(expected,actualInputLayerSizes);
 	}
 	
+	/**
+	 * Weights of first layer are 1 by default, the other weights 
+	 * initiated according to schema 
+	 */
+	@Test
+	void testInitiatedWeightsOfCreatedLayersWithConstantMethod() {
+		int[] layerSizes = {2,3,2};
+		sut = new ANN_MLP(layerSizes);
+		sut.setInitiationMethod(ANN_MLP.WEIGHT_INITIATION_METHOD.CONSTANT);
+		sut.initiate();
+		float[] expectedLayerWeights1 = new float[layerSizes[0]*layerSizes[1]];
+		for(int i = 0;i < expectedLayerWeights1.length;i++) {
+			expectedLayerWeights1[i] = 1;
+		}
+		float[] expectedLayerWeights2 = new float[layerSizes[1]*layerSizes[2]];
+		for(int i = 0;i < expectedLayerWeights2.length;i++) {
+			expectedLayerWeights2[i] = sut.getWeightConstant();
+		}
+		float[][] actual = sut.getWeights();
+		assertArrayEquals(expectedLayerWeights1,actual[0],0.01f);
+		assertArrayEquals(expectedLayerWeights2,actual[1],0.01f);
+		
+	}
+	
+	@Test
+	void testSetGetWeigtInitiationMethod() {
+		int[] layerSizes = {2,3,1};
+		sut = new ANN_MLP(layerSizes);
+		ANN_MLP.WEIGHT_INITIATION_METHOD expected = ANN_MLP.WEIGHT_INITIATION_METHOD.CONSTANT;
+		sut.setInitiationMethod(ANN_MLP.WEIGHT_INITIATION_METHOD.CONSTANT);
+		ANN_MLP.WEIGHT_INITIATION_METHOD actual = sut.getInitiationMethod();
+		assertEquals(expected,actual);
+	}
+	
+
+	@Test
+	void testSetGetWeightConstant() {
+		int[] layerSizes = {2,3,1};
+		sut = new ANN_MLP(layerSizes);
+		float expected = 0.7f;
+		sut.setWeightConstant(0.7f);
+		float actual = sut.getWeightConstant();
+		assertEquals(expected,actual,0.0f);
+	}
+	
+	/**
+	 * Default weight constant 0.5f
+	 */
+	@Test
+	void testGetDefaultWeightConstant() {
+		int[] layerSizes = {2,3,1};
+		sut = new ANN_MLP(layerSizes);
+		float expected = 0.5f;
+		float actual = sut.getWeightConstant();
+		assertEquals(expected,actual,0.0f);
+	}
+	
 }
