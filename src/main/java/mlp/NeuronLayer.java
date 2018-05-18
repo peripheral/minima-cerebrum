@@ -1,10 +1,13 @@
 package mlp;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class NeuronLayer {
 	private ArrayList<Neuron> neurons = new ArrayList<>();
 	
+	public NeuronLayer() {}
 	
 	public NeuronLayer(int size,ANN_MLP.ACTIVATION_FUNCTION f) {
 	}
@@ -15,9 +18,6 @@ public class NeuronLayer {
 		}
 	}
 
-	public NeuronLayer() {
-	}
-
 	public void addNeuron(Neuron n) {
 		neurons.add(n);		
 	}
@@ -26,6 +26,10 @@ public class NeuronLayer {
 		return 	neurons.get(i);
 	}
 
+	/**
+	 * Returns size of layer
+	 * @return
+	 */
 	public int size() {
 		return neurons.size();
 	}
@@ -38,4 +42,26 @@ public class NeuronLayer {
 		return sum;
 	}
 
+	/**
+	 * Returns all weights from the neurons
+	 */
+	public float[] getWeights() {
+		ArrayList<Float> weights = new ArrayList<>();
+		for(Neuron n:neurons) {
+			weights.addAll(n.getWeights());
+		}
+		float[] weightsArr = new float[weights.size()];
+		for(int i = 0; i < weights.size();i++) {
+			weightsArr[i] = weights.get(i);
+		}
+		return weightsArr;				
+	}
+
+	/**
+	 * Returns neuron list
+	 * @return
+	 */
+	public ArrayList<Neuron> getNeurons() {
+		return neurons;
+	}
 }

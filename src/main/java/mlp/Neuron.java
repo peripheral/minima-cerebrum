@@ -50,6 +50,11 @@ public class Neuron {
 		return activationThreshold;
 	}
 
+	/**
+	 * Set weight under index. By default weights are zero
+	 * @param index
+	 * @param weight
+	 */
 	public void setWeight(int index, float weight) {
 		if(weights.size() <=index) {
 			for(int idx = weights.size(); idx <index+1;idx++ ) {
