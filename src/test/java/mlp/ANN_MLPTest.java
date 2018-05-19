@@ -14,7 +14,7 @@ public class ANN_MLPTest {
 	}
 	
 	@Test
-	void testOnConstructorWithArray() {
+	void constructorShallCreateMLPWithArrayOFLayerSizesAsArgument() {
 		int[] actualLayerSizes = {2,3,1};
 		sut = new ANN_MLP(actualLayerSizes);
 		actualLayerSizes = sut.getLayerSizes();
@@ -23,7 +23,7 @@ public class ANN_MLPTest {
 	}
 	
 	@Test
-	void testLengthOfCreatedLayers() {
+	void getInputOutputLayerShouldReturnExpectedLayerSizes() {
 		int[] layerSizes = {2,3,1};
 		sut = new ANN_MLP(layerSizes);
 		int[] actualInputLayerSizes = new int[3];
@@ -39,7 +39,7 @@ public class ANN_MLPTest {
 	 * initiated according to schema 
 	 */
 	@Test
-	void testInitiatedWeightsOfCreatedLayersWithConstantMethod() {
+	void weightsMustBeInitiatedAccordingToConstantMethod() {
 		int[] layerSizes = {2,3,2};
 		sut = new ANN_MLP(layerSizes);
 		sut.setInitiationMethod(ANN_MLP.WEIGHT_INITIATION_METHOD.CONSTANT);
@@ -54,12 +54,11 @@ public class ANN_MLPTest {
 		}
 		float[][] actual = sut.getWeights();
 		assertArrayEquals(expectedLayerWeights1,actual[0],0.01f);
-		assertArrayEquals(expectedLayerWeights2,actual[1],0.01f);
-		
+		assertArrayEquals(expectedLayerWeights2,actual[1],0.01f);	
 	}
 	
 	@Test
-	void testSetGetWeigtInitiationMethod() {
+	void setGetInitiationMethod() {
 		int[] layerSizes = {2,3,1};
 		sut = new ANN_MLP(layerSizes);
 		ANN_MLP.WEIGHT_INITIATION_METHOD expected = ANN_MLP.WEIGHT_INITIATION_METHOD.CONSTANT;
@@ -70,7 +69,7 @@ public class ANN_MLPTest {
 	
 
 	@Test
-	void testSetGetWeightConstant() {
+	void setterAndGetterOfWeightConstant() {
 		int[] layerSizes = {2,3,1};
 		sut = new ANN_MLP(layerSizes);
 		float expected = 0.7f;
