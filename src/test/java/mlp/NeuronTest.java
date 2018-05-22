@@ -15,7 +15,7 @@ public class NeuronTest {
 	}
 
 	@Test
-	void testingNetInputGet() {
+	void testNetInputGet() {
 		sut.setNetInput(5);
 		float actualNet = sut.setGetNetInput();
 		float expectedNet = 5.0f;
@@ -23,7 +23,7 @@ public class NeuronTest {
 	}
 	
 	@Test
-	void testingNetInputGetT2() {
+	void testNetInputGetT2() {
 		sut.setNetInput(1);
 		float actualNet = sut.setGetNetInput();
 		int expectedNet = 1;
@@ -31,21 +31,21 @@ public class NeuronTest {
 	}
 
 	@Test
-	void testingActivationThresholdSetGet() {
+	void testActivationThresholdSetGet() {
 		sut.setActivationThreshold(0.9);
 		float actualActThreshold = sut.getActivationThreshold();    	
 		assertTrue(Float.compare(0.9f,actualActThreshold) == 0);
 	}
 
 	@Test
-	void testingWeightSetGet() {
+	void testWeightSetGet() {
 		sut.setWeight(0,0.9f);
 		float actualActThreshold = sut.getWeight(0);    	
 		assertTrue(Float.compare(0.9f,actualActThreshold) == 0);
 	}
 	
 	@Test
-	void testingWeightSetGetT2() {
+	void testWeightSetGetT2() {
 		int weightIdx = 1;
 		sut.setWeight(weightIdx,3.9f);
 		float actualActThreshold = sut.getWeight(weightIdx);    	
@@ -53,7 +53,7 @@ public class NeuronTest {
 	}
 
 	@Test
-	void testingIdSetGet() {
+	void testIdSetGet() {
 		sut.setId(1);
 		int expected = 1;
 		int actual = sut.getId();    	
@@ -61,7 +61,7 @@ public class NeuronTest {
 	}
 	
 	@Test
-	void testingIdSetGetT2() {
+	void testIdSetGetT2() {
 		sut.setId(2);
 		int expected = 2;
 		int actual = sut.getId();    	
@@ -69,7 +69,7 @@ public class NeuronTest {
 	}
 	
 	@Test
-	void testingOutputSetGet() {
+	void testOutputSetGet() {
 		sut.setOutput(2.0f);
 		float expected = 2;
 		float actual = sut.getOutput();    	
@@ -77,7 +77,7 @@ public class NeuronTest {
 	}
 	
 	@Test
-	void testingActivationFunctionTypeSetGet() {
+	void testSetGetActivationFunctionType() {
 		sut.setActivationFunctionType(ANN_MLP.ACTIVATION_FUNCTION.SIGMOID);
 		int actual = sut.getActivationFunctionType().ordinal();
 		int expected = ANN_MLP.ACTIVATION_FUNCTION.SIGMOID.ordinal();
