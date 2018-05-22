@@ -10,6 +10,7 @@ public class ANN_MLP {
 	public float DEFAULT_WEIGHT_CONSTANT = 0.5f;
 	private float WEIGHT_CONSTANT = DEFAULT_WEIGHT_CONSTANT;
 	private WEIGHT_INITIATION_METHOD INITIATION_METHOD;
+	private ACTIVATION_FUNCTION activationFunction;
 	public ANN_MLP() {}
 
 	public ANN_MLP(int[] layerSizes) {
@@ -21,7 +22,7 @@ public class ANN_MLP {
 		layers[layers.length-1] = new NeuronLayer(layerSizes[layers.length-1]);
 	}
 
-	public static enum ACTIVATION_FUNCTION{SIGMOID, GAUSSIAN}
+	public static enum ACTIVATION_FUNCTION{SIGMOID, GAUSSIAN, IDENTITY}
 
 	public int[] getLayerSizes() {
 		int[] layerSizes = new int[layers.length];
@@ -107,6 +108,14 @@ public class ANN_MLP {
 
 	public float getWeightConstant() {
 		return WEIGHT_CONSTANT;		
+	}
+
+	public void setActivationFunction(ACTIVATION_FUNCTION type) {
+		activationFunction = type;		
+	}
+
+	public ACTIVATION_FUNCTION getActivationFunction() {
+		return activationFunction;
 	}
 
 }
