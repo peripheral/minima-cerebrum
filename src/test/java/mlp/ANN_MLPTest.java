@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import mlp.ANN_MLP.ACTIVATION_FUNCTION;
+
 public class ANN_MLPTest {
 	private ANN_MLP sut;
 	
@@ -90,4 +92,17 @@ public class ANN_MLPTest {
 		assertEquals(expected,actual,0.0f);
 	}
 	
+	/**
+	 * Test prediction function, with 
+	 */
+	@Test
+	void testSetGetActivationFunction(){
+		int[] layerSizes = {2,3,1};
+		sut = new ANN_MLP(layerSizes);
+		ACTIVATION_FUNCTION expected = ACTIVATION_FUNCTION.IDENTITY;
+		sut.setActivationFunction(ACTIVATION_FUNCTION.IDENTITY);
+		ACTIVATION_FUNCTION actual = sut.getActivationFunction();
+		assertEquals(expected,actual);
+	}
+
 }
