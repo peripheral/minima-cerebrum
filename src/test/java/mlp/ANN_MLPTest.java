@@ -93,7 +93,7 @@ public class ANN_MLPTest {
 	}
 	
 	/**
-	 * Test prediction function, with 
+	 * Test setter and getter for activation function
 	 */
 	@Test
 	void testSetGetActivationFunction(){

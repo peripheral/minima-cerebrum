@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import mlp.ANN_MLP.ACTIVATION_FUNCTION;
+import mlp.Neuron.TRANSFER_FUNCTION;
 
 public class NeuronTest {
 	private Neuron sut;
@@ -113,5 +114,38 @@ public class NeuronTest {
 		expected = 5;
 		assertEquals(expected, actual);
 	}
-
+	
+	@Test
+	void testNeuronActivationFunctionShouldReturn0() {
+		Neuron sut = new Neuron(ACTIVATION_FUNCTION.SIGMOID);
+		sut.setNetInput(0);
+		float actual = sut.activate();
+		//Symmetrical sigmoid f(x) = B *(1-e^-Ax)/(1+e^-Ax)  with B = 1,A = 1, netinput = 0
+		float expected = 0.0f;
+		assertEquals(expected, actual,0.0f);
+		actual = sut.activate();
+		
+	}
+	
+	@Test
+	void testNeuronActivationFunctionShouldReturn1() {
+		Neuron sut = new Neuron(ACTIVATION_FUNCTION.SIGMOID);
+		sut.setNetInput(10);
+		float actual = sut.activate();
+		//Symmetrical sigmoid f(x) = B *(1-e^-Ax)/(1+e^-Ax)  with B = 1,A = 1, netinput = 0
+		float expected = 1.0f;
+		assertEquals(expected, actual,0.1f);
+		actual = sut.activate();
+		
+	}
+	
+	@Test
+	void testSetterGetterTransferFunctionType() {
+		Neuron sut = new Neuron();
+		sut.setTransferFunction(TRANSFER_FUNCTION.IDENTITY);
+		TRANSFER_FUNCTION actual = sut.getTransferFunction();
+		//Symmetrical sigmoid f(x) = B *(1-e^-Ax)/(1+e^-Ax)  with B = 1,A = 1, netinput = 0
+		TRANSFER_FUNCTION expected = TRANSFER_FUNCTION.IDENTITY;
+		assertEquals(expected, actual);
+	}
 }

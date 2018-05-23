@@ -6,6 +6,9 @@ import mlp.ANN_MLP.ACTIVATION_FUNCTION;
 
 public class Neuron {
 	
+	public enum TRANSFER_FUNCTION {IDENTITY}
+
+
 	private float netInput = 0;
 	private float activationThreshold = 0;
 	private int id = -1;
@@ -97,6 +100,24 @@ public class Neuron {
 
 	public ArrayList<Float> getWeights() {
 		return weights;
+	}
+
+
+	public float activate() {
+		// TODO Auto-generated method stub
+		return -1.0f;
+	}
+
+
+	public void setTransferFunction(TRANSFER_FUNCTION identity) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public TRANSFER_FUNCTION getTransferFunction() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
