@@ -15,6 +15,9 @@ public class Neuron {
 	private float output;
 	private ArrayList<Float> weights = new ArrayList<Float>();
 	private ACTIVATION_FUNCTION aFunction = ACTIVATION_FUNCTION.SIGMOID;
+	private TRANSFER_FUNCTION transferFunction;
+	private float a = 1;
+	private float b = 1;
 
 	public Neuron() {}
 	
@@ -104,20 +107,17 @@ public class Neuron {
 
 
 	public float activate() {
-		// TODO Auto-generated method stub
-		return -1.0f;
+		return ActivationFunctionModel.activate(aFunction,a,b ,netInput);
 	}
 
 
-	public void setTransferFunction(TRANSFER_FUNCTION identity) {
-		// TODO Auto-generated method stub
-		
+	public void setTransferFunction(TRANSFER_FUNCTION type) {
+		transferFunction = type;		
 	}
 
 
 	public TRANSFER_FUNCTION getTransferFunction() {
-		// TODO Auto-generated method stub
-		return null;
+		return transferFunction;
 	}
 	
 }

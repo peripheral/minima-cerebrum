@@ -144,7 +144,6 @@ public class NeuronTest {
 		Neuron sut = new Neuron();
 		sut.setTransferFunction(TRANSFER_FUNCTION.IDENTITY);
 		TRANSFER_FUNCTION actual = sut.getTransferFunction();
-		//Symmetrical sigmoid f(x) = B *(1-e^-Ax)/(1+e^-Ax)  with B = 1,A = 1, netinput = 0
 		TRANSFER_FUNCTION expected = TRANSFER_FUNCTION.IDENTITY;
 		assertEquals(expected, actual);
 	}
