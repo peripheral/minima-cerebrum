@@ -1,9 +1,12 @@
-package mlp;
+package mlp.tests;
 
 import static org.junit.Assert.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import mlp.Neuron;
+import mlp.NeuronLayer;
 
 public class NeuronLayerTest {
 	private NeuronLayer sut;
@@ -128,8 +131,6 @@ public class NeuronLayerTest {
 	
 	@Test
 	void testingInitiationOfLayer() {
-		int size = 5;
-		NeuronLayer topLayer = new NeuronLayer(size);
 		Neuron n = new Neuron();
 		n.setOutput(2.0f);
 		n.setWeight(0,-1);

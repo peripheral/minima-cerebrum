@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class ANN_MLP {
 
-	public static enum WEIGHT_INITIATION_METHOD{CONSTANT};
+	public static enum WEIGHT_INITIATION_METHOD{CONSTANT, RANDOM};
 	private NeuronLayer[] layers = null;
 	public WEIGHT_INITIATION_METHOD DEFAULT_WEIGHT_INITIATION_METHOD = WEIGHT_INITIATION_METHOD.CONSTANT;
 	public float DEFAULT_WEIGHT_CONSTANT = 0.5f;

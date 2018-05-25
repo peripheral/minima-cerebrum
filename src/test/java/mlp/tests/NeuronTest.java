@@ -1,10 +1,12 @@
-package mlp;
+package mlp.tests;
 
 import static org.junit.Assert.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import mlp.ANN_MLP;
+import mlp.Neuron;
 import mlp.ANN_MLP.ACTIVATION_FUNCTION;
 import mlp.Neuron.TRANSFER_FUNCTION;
 
