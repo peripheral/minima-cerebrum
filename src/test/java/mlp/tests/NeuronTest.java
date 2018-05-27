@@ -121,8 +121,8 @@ public class NeuronTest {
 	void testNeuronActivationFunctionShouldReturn0() {
 		Neuron sut = new Neuron(ACTIVATION_FUNCTION.SIGMOID);
 		sut.setNetInput(0);
+		//Symmetrical sigmoid activation function f(x) = B *(1-e^-Ax)/(1+e^-Ax)  with B = 1,A = 1, netinput = 0
 		float actual = sut.activate();
-		//Symmetrical sigmoid f(x) = B *(1-e^-Ax)/(1+e^-Ax)  with B = 1,A = 1, netinput = 0
 		float expected = 0.0f;
 		assertEquals(expected, actual,0.0f);
 		actual = sut.activate();
@@ -133,8 +133,8 @@ public class NeuronTest {
 	void testNeuronActivationFunctionShouldReturn1() {
 		Neuron sut = new Neuron(ACTIVATION_FUNCTION.SIGMOID);
 		sut.setNetInput(10);
+		//Symmetrical sigmoid activation function f(x) = B *(1-e^-Ax)/(1+e^-Ax)  with B = 1,A = 1, netinput = 0
 		float actual = sut.activate();
-		//Symmetrical sigmoid f(x) = B *(1-e^-Ax)/(1+e^-Ax)  with B = 1,A = 1, netinput = 0
 		float expected = 1.0f;
 		assertEquals(expected, actual,0.1f);
 		actual = sut.activate();
