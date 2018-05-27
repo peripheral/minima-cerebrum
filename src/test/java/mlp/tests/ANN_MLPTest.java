@@ -109,7 +109,7 @@ public class ANN_MLPTest {
 	}
 	
 	/**
-	 * Test predict function
+	 * Test random weight initiation
 	 */
 	void testRandomWeightInitiation(){
 		int[] layerSizes = {2,3,1};
@@ -129,7 +129,7 @@ public class ANN_MLPTest {
 			}
 		}
 		float variance = StatisticUtils.variance(array);
-		
+		assertTrue(variance>0);
 	}
 
 }

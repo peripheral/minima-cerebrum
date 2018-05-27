@@ -14,5 +14,15 @@ public class ActivationFunctionModel {
 
 		}
 	}
+	
+	public static float derivativeOf(ACTIVATION_FUNCTION type,float a,float b,float x) {
+		switch(type) {
+		case SIGMOID:
+			return (float) (b*a*2*(Math.pow(Math.E,-a*x))/Math.pow(1+Math.pow(Math.E,-a*x),2));
+		default:
+			System.err.println("Unnknown type");
+			return -1;
+		}
+	}
 
 }
