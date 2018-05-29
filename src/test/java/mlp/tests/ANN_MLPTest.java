@@ -18,8 +18,69 @@ public class ANN_MLPTest {
 		sut = new ANN_MLP();
 	}
 	
+	/**
+	 * Functional tests
+	 */
+	
+	/**
+	 * Test of prediction function of MLP with 3 input neurons, 4 hidden neurons
+	 * and 3 output neurons. Weight Initiation uses default
+	 * Under input of 10,10,10
+	 * first hidden neuron:
+	 * 	Net input:10*0.5 + 10*0.5 + 10*0.5 = 15
+	 * 	Neuron output:f(15) = 0.99999938819
+	 * first output neuron:
+	 * 	Net input:0.99999938819*0.5 + 0.99999938819*0.5 + 0.99999938819*0.5 + 0.99999938819*0.5 = 3.99999755278
+	 * 	Neuron output:f(3.99999755278) = 0.96402749362
+	 */
 	@Test
-	void constructorShallCreateMLPWithArrayOFLayerSizesAsArgument() {
+	void testOfPredictFunction1() {
+		int[] layerSizes = {3,4,3};
+		sut = new ANN_MLP(layerSizes);
+		sut.setInitiationMethod(WEIGHT_INITIATION_METHOD.CONSTANT);
+		sut.initiate();
+
+		float[] input = {10,10,10};
+		float[] expected = {0.964f,0.964f,0.964f};
+		float[] actual = sut.predict(input);
+		assertArrayEquals(actual,expected,0.01f);
+		input = new float[]{10,10,10};
+		expected = new float[]{0,0,0};
+		actual = sut.predict(input);
+		assertArrayEquals(actual,expected,0.01f);
+	}
+	
+	/**
+	 * Test of prediction function of MLP with 3 input neurons, 4 hidden neurons
+	 * and 3 output neurons. Weight Initiation uses default
+	 * Under input of 0,0,0
+	 * first hidden neuron:
+	 * 	Net input:0
+	 * 	Neuron output:f(0) = 0
+	 * first output neuron:
+	 * 	Net input:0
+	 * 	Neuron output:f(0) = 0
+	 */
+	@Test
+	void testOfPredictFunction2() {
+		int[] layerSizes = {3,4,3};
+		sut = new ANN_MLP(layerSizes);
+		sut.setInitiationMethod(WEIGHT_INITIATION_METHOD.CONSTANT);
+		sut.initiate();
+
+		float[] input = new float[]{10,10,10};
+		float[] expected = new float[]{0,0,0};
+		float[] actual = sut.predict(input);
+		assertArrayEquals(actual,expected,0.01f);
+	}
+	
+	
+	/**
+	 * Integrational and unit tests
+	 */
+	
+	@Test
+	void constructorShallCreateMLPFromArrayOFLayerSizesAsArgument() {
 		int[] actualLayerSizes = {2,3,1};
 		sut = new ANN_MLP(actualLayerSizes);
 		actualLayerSizes = sut.getLayerSizes();
