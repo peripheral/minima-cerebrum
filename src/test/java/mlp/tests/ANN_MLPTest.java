@@ -23,6 +23,19 @@ public class ANN_MLPTest {
 	 */
 	
 	/**
+	 * Test of ANN_MLP constructor with argument as an array, the test 
+	 * compares compares layer sizes provides and measured
+	 */
+	@Test
+	void testConstructANNMLPFromArrayOFLayerSizesAsArgument() {
+		int[] actualLayerSizes = {2,3,1};
+		sut = new ANN_MLP(actualLayerSizes);
+		actualLayerSizes = sut.getLayerSizes();
+		int[] expectedLayerSizes = {2,3,1};
+		assertArrayEquals(actualLayerSizes,expectedLayerSizes);
+	}
+	
+	/**
 	 * Test of prediction function of MLP with 3 input neurons, 4 hidden neurons
 	 * and 3 output neurons. Weight Initiation uses default
 	 * Under input of 10,10,10
@@ -70,19 +83,10 @@ public class ANN_MLPTest {
 		assertArrayEquals(expected,actual,0.01f);
 	}
 	
-	
 	/**
-	 * Integrational and unit tests
+	 * Integration and unit tests
 	 */
 	
-	@Test
-	void constructorShallCreateMLPFromArrayOFLayerSizesAsArgument() {
-		int[] actualLayerSizes = {2,3,1};
-		sut = new ANN_MLP(actualLayerSizes);
-		actualLayerSizes = sut.getLayerSizes();
-		int[] expectedLayerSizes = {2,3,1};
-		assertArrayEquals(actualLayerSizes,expectedLayerSizes);
-	}
 	
 	@Test
 	void getInputOutputLayerShouldReturnExpectedLayerSizes() {

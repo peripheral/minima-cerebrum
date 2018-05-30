@@ -9,16 +9,19 @@ import mlp.ANN_MLP.LAYER_TYPE;
 public class NeuronLayer {
 	private ArrayList<Neuron> neurons = new ArrayList<>();
 	private LAYER_TYPE layerType = LAYER_TYPE.HIDDEN;
+	private Neuron bias = new Neuron();
 
 	public NeuronLayer() {}
 
-	public NeuronLayer(int size,ANN_MLP.ACTIVATION_FUNCTION f) {
-	}
-
+	/**
+	 * Produces number of neurons according to size and +1 bias with default net input of 1
+	 * @param size
+	 */
 	public NeuronLayer(int size) {
 		for(int i = 0; i < size;i++) {
 			neurons.add(new Neuron());
 		}
+		bias.setNetInput(1);
 	}
 
 	public void addNeuron(Neuron n) {
@@ -41,7 +44,6 @@ public class NeuronLayer {
 		float sum = 0;
 		for(Neuron ne:neurons) {
 			sum =sum + ne.getOutput()*ne.getWeight(neuronIdx);
-			System.out.println("Weight index:"+neuronIdx+" weight:"+ne.getWeight(neuronIdx));
 		}
 		return sum;
 	}
@@ -74,9 +76,7 @@ public class NeuronLayer {
 			if(layerType != LAYER_TYPE.INPUT) {
 				n.activate();
 				n.transfer();
-				System.out.println("LAYER type:"+layerType);
 			}else {
-				System.out.println("INPUT");
 				n.transferNoActivation();
 			}
 		}		
@@ -108,6 +108,10 @@ public class NeuronLayer {
 			n.setNetInput(propagate(neuronIdx));
 			neuronIdx++;
 		}
+	}
+
+	public Neuron getBiasNeuron() {
+		return bias;
 	}
 
 }

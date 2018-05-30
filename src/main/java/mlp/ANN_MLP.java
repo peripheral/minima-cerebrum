@@ -78,6 +78,8 @@ public class ANN_MLP {
 		case CONSTANT:
 			initiateMethodConstant();
 			break;
+		default:
+			break;
 		}
 	}
 
@@ -87,22 +89,31 @@ public class ANN_MLP {
 	private void initiateMethodConstant() {
 		ArrayList<Neuron> neurons;
 		Neuron neuron;
+		/* For every layer */
 		for(int layerIdx = 0;layerIdx < layers.length-1;layerIdx++ ) {
+			/*Get neurons from layer */
 			neurons = layers[layerIdx].getNeurons();
+			/* Layer not input */
 			if(layerIdx >0) {
+				/* For each neuron in layer make a weight for each neuron it is connected to */
 				for(int neuronIdx = 0; neuronIdx < neurons.size();neuronIdx++ ) {
 					neuron = neurons.get(neuronIdx);
 					for(int i = 0;i < layers[layerIdx+1].size();i++) {
 						neuron.setWeight(i,WEIGHT_CONSTANT);
 					}
+					for(int i = 0;i < layers[layerIdx+1].size();i++) {
+						layers[layerIdx+1].getBiasNeuron().setWeight(i,0);
+					}
 				}
-			}else {
+			}
+			/*If layer is input layer set weight to one */
+			else {
 				for(int neuronIdx = 0; neuronIdx < neurons.size();neuronIdx++ ) {
 					neuron = neurons.get(neuronIdx);
 					for(int i = 0;i < layers[layerIdx+1].size();i++) {
 						neuron.setWeight(i,1);
 					}
-				} 
+				}
 			}
 		}
 	}
@@ -142,8 +153,6 @@ public class ANN_MLP {
 				previous.propagate(l);
 			}
 			l.execute();
-			System.out.println(Arrays.toString(l.getNetInputs()));
-			System.out.println(Arrays.toString(l.getOutputs()));
 			previous = l;
 		}
 		return layers[layers.length-1].getOutputs();
