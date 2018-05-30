@@ -6,15 +6,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import mlp.ANN_MLP.ACTIVATION_FUNCTION;
-import mlp.ActivationFunctionModel;
+import mlp.NeuronFunctionModels;
 
 public class ActivationFunctionModelTest {
 
-private ActivationFunctionModel sut;
+private NeuronFunctionModels sut;
 	
 	@BeforeEach
 	void init() {
-		sut = new ActivationFunctionModel();
+		sut = new NeuronFunctionModels();
 	}
 	
 	@Test
@@ -23,7 +23,7 @@ private ActivationFunctionModel sut;
 		float a = 1;
 		float b = 1;
 		float netInput = 0;
-		float actual = (float) ActivationFunctionModel.derivativeOf(ACTIVATION_FUNCTION.SIGMOID, a, b, netInput); 
+		float actual = (float) NeuronFunctionModels.derivativeOf(ACTIVATION_FUNCTION.SIGMOID, a, b, netInput); 
 		assertEquals(expected,actual,0.1f);
 	}
 

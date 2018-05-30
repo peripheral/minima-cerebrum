@@ -15,9 +15,10 @@ public class Neuron {
 	private float output;
 	private ArrayList<Float> weights = new ArrayList<Float>();
 	private ACTIVATION_FUNCTION aFunction = ACTIVATION_FUNCTION.SIGMOID;
-	private TRANSFER_FUNCTION transferFunction;
+	private TRANSFER_FUNCTION transferFunction = TRANSFER_FUNCTION.IDENTITY;
 	private float a = 1;
 	private float b = 1;
+	private float activationResult;
 
 	public Neuron() {}
 	
@@ -44,7 +45,7 @@ public class Neuron {
 		
 	}
 
-	public float setGetNetInput() {
+	public float getNetInput() {
 		return netInput;
 	}
 
@@ -106,8 +107,13 @@ public class Neuron {
 	}
 
 
+	/**
+	 * Uses activation function model
+	 * @return result of activation function
+	 */
 	public float activate() {
-		return ActivationFunctionModel.activate(aFunction,a,b ,netInput);
+		activationResult = NeuronFunctionModels.activate(aFunction,a,b ,netInput);
+		return activationResult;
 	}
 
 
@@ -118,6 +124,15 @@ public class Neuron {
 
 	public TRANSFER_FUNCTION getTransferFunction() {
 		return transferFunction;
+	}
+
+
+	public void transfer() {
+		output = NeuronFunctionModels.transfer(transferFunction,activationResult);		
+	}
+	
+	public void transferNoActivation() {
+		output = NeuronFunctionModels.transfer(transferFunction,netInput);		
 	}
 	
 }

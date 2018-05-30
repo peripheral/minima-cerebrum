@@ -20,7 +20,7 @@ public class NeuronTest {
 	@Test
 	void testNetInputGet() {
 		sut.setNetInput(5);
-		float actualNet = sut.setGetNetInput();
+		float actualNet = sut.getNetInput();
 		float expectedNet = 5.0f;
 		assertTrue(Float.compare(expectedNet,actualNet) == 0);
 	}
@@ -28,7 +28,7 @@ public class NeuronTest {
 	@Test
 	void testNetInputGetT2() {
 		sut.setNetInput(1);
-		float actualNet = sut.setGetNetInput();
+		float actualNet = sut.getNetInput();
 		int expectedNet = 1;
 		assertTrue(Float.compare(expectedNet,actualNet) == 0);
 	}

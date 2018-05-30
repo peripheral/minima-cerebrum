@@ -1,10 +1,13 @@
 package mlp;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ANN_MLP {
 
 	public static enum WEIGHT_INITIATION_METHOD{CONSTANT, RANDOM};
+	public static enum ACTIVATION_FUNCTION{SIGMOID, GAUSSIAN, IDENTITY};
+	public static enum LAYER_TYPE{INPUT,HIDDEN,OUTPUT}
 	private NeuronLayer[] layers = null;
 	public WEIGHT_INITIATION_METHOD DEFAULT_WEIGHT_INITIATION_METHOD = WEIGHT_INITIATION_METHOD.CONSTANT;
 	public float DEFAULT_WEIGHT_CONSTANT = 0.5f;
@@ -19,10 +22,12 @@ public class ANN_MLP {
 		for(int i = 1;i < layerSizes.length-1;i++) {
 			layers[i] = new NeuronLayer(layerSizes[i]);
 		}
+		layers[0].setLayerType(LAYER_TYPE.INPUT);
 		layers[layers.length-1] = new NeuronLayer(layerSizes[layers.length-1]);
+		layers[layers.length-1].setLayerType(LAYER_TYPE.OUTPUT);
 	}
 
-	public static enum ACTIVATION_FUNCTION{SIGMOID, GAUSSIAN, IDENTITY}
+
 
 	public int[] getLayerSizes() {
 		int[] layerSizes = new int[layers.length];
@@ -106,6 +111,10 @@ public class ANN_MLP {
 		WEIGHT_CONSTANT = f;		
 	}
 
+	/**
+	 * The default weight constant is 0.5f
+	 * @return
+	 */
 	public float getWeightConstant() {
 		return WEIGHT_CONSTANT;		
 	}
@@ -116,6 +125,28 @@ public class ANN_MLP {
 
 	public ACTIVATION_FUNCTION getActivationFunction() {
 		return activationFunction;
+	}
+
+	public float[] predict(float[] input) {
+		ArrayList<Neuron> neuronList = layers[0].getNeurons();
+		if(input.length !=neuronList.size()) {
+			System.err.println("Incorrect number of inputs! Expected:"+neuronList.size());
+			return null;
+		}
+		for(int i = 0;i < input.length;i++) {
+			neuronList.get(i).setNetInput(input[i]);
+		}
+		NeuronLayer previous = null;
+		for(NeuronLayer l:layers) {
+			if(previous != null) {
+				previous.propagate(l);
+			}
+			l.execute();
+			System.out.println(Arrays.toString(l.getNetInputs()));
+			System.out.println(Arrays.toString(l.getOutputs()));
+			previous = l;
+		}
+		return layers[layers.length-1].getOutputs();
 	}
 
 }

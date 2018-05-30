@@ -1,8 +1,9 @@
 package mlp;
 
 import mlp.ANN_MLP.ACTIVATION_FUNCTION;
+import mlp.Neuron.TRANSFER_FUNCTION;
 
-public class ActivationFunctionModel {
+public class NeuronFunctionModels {
 
 	public static float activate(ACTIVATION_FUNCTION type,float a,float b,float x) {
 		switch(type) {
@@ -22,6 +23,16 @@ public class ActivationFunctionModel {
 		default:
 			System.err.println("Unnknown type");
 			return -1;
+		}
+	}
+
+	public static float transfer(TRANSFER_FUNCTION type,float value) {
+		switch(type) {
+		case IDENTITY:
+			return value;
+		default:
+			System.err.println("Transferfunction:"+type+" not implented.");
+			return 0;
 		}
 	}
 
