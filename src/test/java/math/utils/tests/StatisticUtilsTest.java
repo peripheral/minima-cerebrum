@@ -1,6 +1,7 @@
 package math.utils.tests;
 
-import static org.junit.Assert.assertArrayEquals;
+
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -50,5 +51,5 @@ private StatisticUtils sut;
 		float actualVariance = (float) StatisticUtils.variance(values); 
 		assertEquals(expectedVariance,actualVariance,0.01f);
 	}
-
+	
 }
