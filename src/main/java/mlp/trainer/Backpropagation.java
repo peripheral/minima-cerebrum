@@ -2,6 +2,11 @@ package mlp.trainer;
 
 public class Backpropagation {
 
+	/**
+	 * Tests if the attributes in data are zero mean
+	 * @param data - m by n matrix, m - rows, n - columns
+	 * @return array with booleans in order A1,A2
+	 */
 	public boolean[] isNoneZeroMean(float[][] data) {
 		if(data.length == 0) {
 			return null;
@@ -20,6 +25,12 @@ public class Backpropagation {
 		return result;
 	}
 
+	/**
+	 * Calculate variances per attribute, all values under same column belongs to same
+	 * attributes 
+	 * @param data - m by n matrix, m - rows, n - columns
+	 * @return array with booleans in order A1,A2
+	 */
 	public boolean[] isLargeVariance(float[][] data, float threshold) {
 		if(data.length == 0) {
 			return null;
@@ -47,6 +58,14 @@ public class Backpropagation {
 		return result;
 	}
 
+	/**function that determines if inputs are correlated. 
+	 * Function takes as input array of float arrays.
+	 * The row presents an input example, the column presents attribute
+	 * Correlation with Person's moment product  Pxy = Cov(X,Y)/(sY*sX);
+	 * @param data - m by n matrix, m - rows, n - columns
+	 * @param threshold - limit that evaluates correlation to true. 1 is positive correlation, -1 negative
+	 * @return array with booleans in order A1,A2
+	 */
 	public boolean[] areInputsCorrelated(float[][] data, float threshold) {
 		if(data.length == 0) {
 			return null;
@@ -76,7 +95,7 @@ public class Backpropagation {
 
 		for(int i = 0;i < covariance.length;i++) {
 			for(int ii = 0;ii< mean.length-1;ii++) {
-				if(threshold < covariance[i]/(mean[ii]*mean[ii+1])) {
+				if(threshold < Math.abs(covariance[i]/(mean[ii]*mean[ii+1]))) {
 					result[i] = true;
 				}else {
 					result[i] = false;

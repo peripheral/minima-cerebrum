@@ -10,14 +10,14 @@ import mlp.trainer.Backpropagation;
 
 public class BackpropagationTest {
 	private Backpropagation sut;
-	
+
 	@BeforeEach
 	void init() {
 		sut = new Backpropagation();
 	}
-	
+
 	void testCalculateSquiredErrorPerNeuron() {
-		
+
 	}
 
 	/**
@@ -35,7 +35,7 @@ public class BackpropagationTest {
 		boolean[] expected = {true,true,false};
 		assertArrayEquals(expected,isNoneZeroMeanActual);
 	}
-	
+
 	/**
 	 * Test tests function that determines if Variance is too large.
 	 *  Function takes as input array with input arrays.
@@ -59,7 +59,7 @@ public class BackpropagationTest {
 		boolean[] isVarianceLargeActual = sut.isLargeVariance(data,threshold);
 		assertArrayEquals(expected,isVarianceLargeActual);
 	}
-	
+
 	/**
 	 * Test tests function that determines if inputs are correlated. 
 	 * Function takes as input array with input arrays.
@@ -78,12 +78,13 @@ public class BackpropagationTest {
 	@Test
 	void testTestOnCorrelationAmongVariables () {
 		float[][] data = {{1,4,7},
-						 {2,5,8},
-						{3,6,9}};
+				{2,5,8},
+				{3,6,9}};
 		boolean[] isCorrelatedExpected = {false,false,false};
 		float threshold = 0.3f;
 		boolean[] isCorrelated = sut.areInputsCorrelated(data,threshold);
-		
+
 		assertArrayEquals(isCorrelatedExpected,isCorrelated);
 	}
+
 }
