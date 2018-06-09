@@ -41,7 +41,6 @@ public class TrainingDataTest {
 	 * Variance A1 = ((1-2)^2+(2-2)^2+(3-2)^2)/3 = (1+0+1)/3 = 2/3
 	 * Variance A2 = ((4-5)^2+(5-5)^2+(6-5)^2)/3 = (1+0+1)/3 = 2/3
 	 * Variance A3 = ((7-19)^2+(100-19)^2+(-50-19)^2)/3 = 3822
-	 * standard dev A3 = 62.5479815821
 	 */
 	@Test
 	void testGetVariances() {
@@ -59,10 +58,6 @@ public class TrainingDataTest {
 	 *Test function get means
 	 * A1 = {1,2,3}, A2 = {4,5,6}, A3 = {7,100,-50}
 	 * Mean A1 = 2, mean A2 = 5, mean A3 = 19; 
-	 * Variance A1 = (1-2)^2+(2-2)^2+(3-2)^2 = 1+0+1 = 2
-	 * Variance A2 = (4-5)^2+(5-5)^2+(6-5)^2 = 1+0+1 = 5
-	 * Variance A3 = ((7-19)^2+(100-28.5)^2+(-50-28.5)^2)/3 = 3912.25
-	 * standard dev A3 = 62.5479815821
 	 */
 	@Test
 	void testGetMeans() {
