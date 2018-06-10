@@ -93,6 +93,7 @@ public class TrainingDataTest {
 				{2,5,8},
 				{3,6,9}};
 		sut.setData(data);
+		sut.calculateMeans();
 		float[] expected = {-1,-1,-1};
 		float[] expected1 = {0,0,0};
 		float[] expected2 = {1,1,1};

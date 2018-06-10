@@ -1,10 +1,13 @@
 package mlp.trainer;
 
+import java.util.Arrays;
+
 public class TrainingData {
 
 	private float[][] data = null;
 	private float[] means = null;
 	private float[] variances;
+	private boolean subtractMean = false;
 
 	public void setData(float[][] data) {
 		this.data = data;
@@ -54,18 +57,21 @@ public class TrainingData {
 	}
 
 	public void setSubtractMean(boolean b) {
-		// TODO Auto-generated method stub
-		
+		subtractMean = b;		
 	}
 
 	public boolean isMeanSubstracted() {
-		// TODO Auto-generated method stub
-		return false;
+		return subtractMean;
 	}
 
-	public float[] getInputRow(int i) {
-		// TODO Auto-generated method stub
-		return null;
+	public float[] getInputRow(int row) {
+		float[] dataRow = Arrays.copyOf(data[row], data[0].length);
+		if(subtractMean) {
+			for(int col = 0; col < dataRow.length; col++) {
+				dataRow[col] = dataRow[col] - means[col];
+			}
+		}
+		return dataRow;
 	}
 
 }
