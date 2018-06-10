@@ -83,8 +83,7 @@ public class BackpropagationTest {
 		boolean[] isCorrelatedExpected = {false,false,false};
 		float threshold = 0.3f;
 		boolean[] isCorrelated = sut.areInputsCorrelated(data,threshold);
-
 		assertArrayEquals(isCorrelatedExpected,isCorrelated);
 	}
-
+	
 }

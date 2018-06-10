@@ -3,6 +3,7 @@ package mlp.trainer.tests;
 
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -69,6 +70,39 @@ public class TrainingDataTest {
 		sut.calculateMeans();
 		float[] isVarianceLargeActual = sut.getMeans();
 		assertArrayEquals(expected,isVarianceLargeActual,0.00001f);
+	}
+	
+	@Test
+	void meanSubtractionVariableMustBeFalseInitially() {
+		boolean expected = false;
+		boolean actual = sut.isMeanSubstracted();
+		assertEquals(expected,actual);
+	}
+	
+	@Test
+	void meanSubtractionVariableMustBeTrue() {
+		boolean expected = true;
+		sut.setSubtractMean(true);
+		boolean actual = sut.isMeanSubstracted();
+		assertEquals(expected,actual);
+	}
+	
+	@Test
+	void testSubtractMeanFromInput() {
+		float[][] data = {{1,4,7},
+				{2,5,8},
+				{3,6,9}};
+		sut.setData(data);
+		float[] expected = {-1,-1,-1};
+		float[] expected1 = {0,0,0};
+		float[] expected2 = {1,1,1};
+		sut.setSubtractMean(true);
+		float[] actual = sut.getInputRow(0);
+		float[] actual1 =  sut.getInputRow(1);
+		float[] actual2 =  sut.getInputRow(2);
+		assertArrayEquals(expected,actual);
+		assertArrayEquals(expected1,actual1);
+		assertArrayEquals(expected2,actual2);
 	}
 
 }

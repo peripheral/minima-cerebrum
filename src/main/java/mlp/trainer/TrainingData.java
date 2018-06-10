@@ -53,4 +53,19 @@ public class TrainingData {
 		}
 	}
 
+	public void setSubtractMean(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public boolean isMeanSubstracted() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public float[] getInputRow(int i) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
