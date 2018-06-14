@@ -8,6 +8,10 @@ public class TrainingData {
 	private float[] means = null;
 	private float[] variances;
 	private boolean subtractMean = false;
+	private boolean varianceNormalized = false;
+	private boolean meanNormalized = false;
+	private float averageMean;
+	private float averageVariance;
 
 	public void setData(float[][] data) {
 		this.data = data;
@@ -40,7 +44,7 @@ public class TrainingData {
 			}
 		}
 	}
-	
+
 	public void calculateVariances() {
 		if(variances == null && data !=null) {
 			variances = new float[data[0].length];
@@ -66,52 +70,68 @@ public class TrainingData {
 
 	public float[] getInputRow(int row) {
 		float[] dataRow = Arrays.copyOf(data[row], data[0].length);
-		if(subtractMean) {
-			for(int col = 0; col < dataRow.length; col++) {
-				dataRow[col] = dataRow[col] - means[col];
+		if(varianceNormalized) {
+			for(int i = 0; i < dataRow.length;i++) {
+				dataRow[i] = (float) ((dataRow[i]-means[i]+averageMean)*Math.sqrt(averageVariance)
+						/Math.sqrt(variances[i]));
+			}
+		}else if(meanNormalized) {
+			for(int i = 0; i < dataRow.length;i++) {
+				dataRow[i] = (float) (dataRow[i]-means[i]+averageMean);
+			}
+		}
+		if(subtractMean && !varianceNormalized) {
+			if(meanNormalized) {
+				for(int col = 0; col < dataRow.length; col++) {
+					dataRow[col] = dataRow[col] - averageMean;
+				}
+			}else {
+				for(int col = 0; col < dataRow.length; col++) {
+					dataRow[col] = dataRow[col] - means[col];
+				}
 			}
 		}
 		return dataRow;
 	}
 
-	public void calculateAverageMeans() {
-		// TODO Auto-generated method stub
-		
+	public void calculateAverageMean() {
+		averageMean = 0.0f;
+		for(int i = 0; i < means.length;i++) {
+			averageMean = averageMean +means[i];
+		}
+		averageMean = averageMean/means.length;
 	}
 
 	public float getAverageMean() {
-		// TODO Auto-generated method stub
-		return 0;
+		return averageMean;
 	}
 
-	public void calculateAverageVariances() {
-		// TODO Auto-generated method stub
-		
+	public void calculateAverageVariance() {
+		averageVariance = 0f;
+		for(int i = 0; i < variances.length;i++) {
+			averageVariance = averageVariance + variances[i];
+		}
+		averageVariance = averageVariance/variances.length;
 	}
 
 	public float getAverageVaraince() {
-		// TODO Auto-generated method stub
-		return 0;
+		return averageVariance;
 	}
 
 	public void setNormalizedMeanTransformInput(boolean b) {
-		// TODO Auto-generated method stub
-		
+		meanNormalized = b;		
 	}
 
 	public boolean isInputTransformedWithNormalizedMean() {
-		// TODO Auto-generated method stub
-		return false;		
+		return meanNormalized;		
 	}
 
 	public void setNormalizedVarianceTransformInput(boolean b) {
-		// TODO Auto-generated method stub
-		
+		varianceNormalized = b;		
 	}
 
 	public boolean isInputTransformedWithNormalizedVariance() {
-		// TODO Auto-generated method stub
-		return false;
+		return varianceNormalized;
 	}
 
 }
