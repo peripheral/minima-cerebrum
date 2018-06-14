@@ -74,4 +74,44 @@ public class TrainingData {
 		return dataRow;
 	}
 
+	public void calculateAverageMeans() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public float getAverageMean() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public void calculateAverageVariances() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public float getAverageVaraince() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public void setNormalizedMeanTransformInput(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public boolean isInputTransformedWithNormalizedMean() {
+		// TODO Auto-generated method stub
+		return false;		
+	}
+
+	public void setNormalizedVarianceTransformInput(boolean b) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public boolean isInputTransformedWithNormalizedVariance() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
