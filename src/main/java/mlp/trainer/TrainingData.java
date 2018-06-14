@@ -71,11 +71,13 @@ public class TrainingData {
 	public float[] getInputRow(int row) {
 		float[] dataRow = Arrays.copyOf(data[row], data[0].length);
 		if(varianceNormalized) {
+			prepareForVarianceNormalization();
 			for(int i = 0; i < dataRow.length;i++) {
 				dataRow[i] = (float) ((dataRow[i]-means[i]+averageMean)*Math.sqrt(averageVariance)
 						/Math.sqrt(variances[i]));
 			}
 		}else if(meanNormalized) {
+			prepareForMeanNoralization();
 			for(int i = 0; i < dataRow.length;i++) {
 				dataRow[i] = (float) (dataRow[i]-means[i]+averageMean);
 			}
@@ -92,6 +94,17 @@ public class TrainingData {
 			}
 		}
 		return dataRow;
+	}
+
+	private void prepareForMeanNoralization() {
+		calculateMeans();
+		calculateAverageMean();
+	}
+
+	private void prepareForVarianceNormalization() {
+		calculateVariances();
+		calculateAverageVariance();
+		calculateAverageMean();		
 	}
 
 	public void calculateAverageMean() {

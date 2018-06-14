@@ -107,8 +107,11 @@ public class TrainingDataTest {
 	}
 
 	/**
-	 * Test on function that calculates a mean among means of each
-	 *  attribute
+	 * Test on function that calculates average mean among attributes
+	 * Mean A1 = (1+2+3)/3 = 2
+	 * Mean A2 = (4+5+6)/3 = 5
+	 * Mean A3 = (7+8+9)/3 = 8
+	 * Mean = (2+5+8)/3 = 5;
 	 *  
 	 */
 	@Test
@@ -118,9 +121,31 @@ public class TrainingDataTest {
 				{3,6,9}};
 		sut.setData(data);
 		sut.calculateMeans();
-		sut.calculateAverageMeans();
+		sut.calculateAverageMean();
 		float expected = 5;
 		float actual = sut.getAverageMean();
+		assertEquals(expected,actual);
+	}
+	
+	/**
+	 * Test on function that calculates average variance
+	 * Mean A1 = (1+2+3)/3 = 2
+	 * Mean A2 = (4+5+6)/3 = 5
+	 * Mean A3 = (7+8+9)/3 = 8
+	 * Variance A1 = ((1-2)^2+(2-2)^2+(3-2)^2)/3 = (1+0+1)/3 = 2/3
+	 * Variance A2 = ((4-5)^2+(5-5)^2+(6-5)^2)/3 = (1+0+1)/3 = 2/3
+	 * Variance A3 = ((7-8)^2+(8-8)^2+(9-8)^2)/3 =2/3	 
+	 */
+	@Test
+	void testCalculateAverageVariance() {
+		float[][] data = {{1,4,7},
+				{2,5,8},
+				{3,6,9}};
+		sut.setData(data);
+		sut.calculateVariances();
+		sut.calculateAverageVariance();
+		float expected = 2/3f;
+		float actual = sut.getAverageVaraince();
 		assertEquals(expected,actual);
 	}
 
@@ -137,8 +162,6 @@ public class TrainingDataTest {
 				{2,5,8},
 				{3,6,9}};
 		sut.setData(data);
-		sut.calculateMeans();
-		sut.calculateAverageMeans();
 		sut.setNormalizedMeanTransformInput(true);
 		/*
 		 * x1 = (x1 - meanA1 + mean)sqrt(Variance)/sqrt(VarianceA1)
@@ -169,9 +192,7 @@ public class TrainingDataTest {
 				{2,5,8},
 				{3,6,9}};
 		sut.setData(data);
-		sut.calculateVariances();
-		sut.calculateAverageVariances();
-		sut.setNormalizedMeanTransformInput(true);
+		sut.setNormalizedVarianceTransformInput(true);
 		/*
 		 * x1 = (x1 - meanA1 + mean)sqrt(Variance)/sqrt(VarianceA1)
 		 */
