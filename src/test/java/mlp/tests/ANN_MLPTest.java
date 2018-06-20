@@ -172,25 +172,35 @@ public class ANN_MLPTest {
 	/**
 	 * Test random weight initiation
 	 */
+	@Test
 	void testRandomWeightInitiation(){
 		int[] layerSizes = {2,3,1};
 		sut = new ANN_MLP(layerSizes);
 		sut.setInitiationMethod(WEIGHT_INITIATION_METHOD.RANDOM);
 		sut.initiate();
+		/* size -Number of all Weights in the network */
 		int size = 0;
+		/*Weights from the networks */
 		float[][] weights = sut.getWeights();
-		for(int i = 0;i <weights.length;i++) {
-			size = size + weights[i].length;
+		/* Count number of weights in the network and store 
+		 * in variable size */
+		for(int layerIdx = 0;layerIdx <weights.length;layerIdx++) {
+			size = size + weights[layerIdx].length;
 		}
+		/* Converting to one dimensional array before calculating variance */
 		float[] array = new float[size];
 		int counter = 0;
 		for(int layerIdx = 0;layerIdx <weights.length;layerIdx++) {
-			for(int i = 0;i<weights[layerIdx].length;i++) {
-				array[counter++] = weights[layerIdx][i];
+			for(int column = 0;column<weights[layerIdx].length;column++) {
+				array[counter++] = weights[layerIdx][column];
+				System.out.println("Weight"+array[counter-1]);
 			}
 		}
 		float variance = StatisticUtils.variance(array);
 		assertTrue(variance>0);
 	}
+	
+
+	
 
 }
