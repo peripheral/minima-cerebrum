@@ -9,6 +9,7 @@ import math.utils.StatisticUtils;
 import mlp.ANN_MLP;
 import mlp.ANN_MLP.ACTIVATION_FUNCTION;
 import mlp.ANN_MLP.WEIGHT_INITIATION_METHOD;
+import mlp.trainer.Backpropagation;
 import mlp.trainer.TrainingData;
 
 public class ANN_MLPTest {
@@ -51,7 +52,7 @@ public class ANN_MLPTest {
 	void testOfPredictFunction1() {
 		int[] layerSizes = {3,4,3};
 		sut = new ANN_MLP(layerSizes);
-		sut.setInitiationMethod(WEIGHT_INITIATION_METHOD.CONSTANT);
+		sut.setWeightInitiationMethod(WEIGHT_INITIATION_METHOD.CONSTANT);
 		sut.initiate();
 
 		float[] input = {10,10,10};
@@ -75,7 +76,7 @@ public class ANN_MLPTest {
 	void testOfPredictFunction2() {
 		int[] layerSizes = {3,4,3};
 		sut = new ANN_MLP(layerSizes);
-		sut.setInitiationMethod(WEIGHT_INITIATION_METHOD.CONSTANT);
+		sut.setWeightInitiationMethod(WEIGHT_INITIATION_METHOD.CONSTANT);
 		sut.initiate();
 
 		float[] input = new float[]{0,0,0};
@@ -108,7 +109,7 @@ public class ANN_MLPTest {
 	void weightsMustBeInitiatedAccordingToConstantMethod() {
 		int[] layerSizes = {2,3,2};
 		sut = new ANN_MLP(layerSizes);
-		sut.setInitiationMethod(ANN_MLP.WEIGHT_INITIATION_METHOD.CONSTANT);
+		sut.setWeightInitiationMethod(ANN_MLP.WEIGHT_INITIATION_METHOD.CONSTANT);
 		sut.initiate();
 		float[] expectedLayerWeights1 = new float[(layerSizes[0]+1)*layerSizes[1]];
 		for(int i = 0;i < expectedLayerWeights1.length - layerSizes[1];i++) {
@@ -134,8 +135,8 @@ public class ANN_MLPTest {
 		int[] layerSizes = {2,3,1};
 		sut = new ANN_MLP(layerSizes);
 		ANN_MLP.WEIGHT_INITIATION_METHOD expected = ANN_MLP.WEIGHT_INITIATION_METHOD.CONSTANT;
-		sut.setInitiationMethod(ANN_MLP.WEIGHT_INITIATION_METHOD.CONSTANT);
-		ANN_MLP.WEIGHT_INITIATION_METHOD actual = sut.getInitiationMethod();
+		sut.setWeightInitiationMethod(ANN_MLP.WEIGHT_INITIATION_METHOD.CONSTANT);
+		ANN_MLP.WEIGHT_INITIATION_METHOD actual = sut.getWeightInitiationMethod();
 		assertEquals(expected,actual);
 	}
 	
@@ -182,7 +183,7 @@ public class ANN_MLPTest {
 	void testRandomWeightInitiation(){
 		int[] layerSizes = {2,3,1};
 		sut = new ANN_MLP(layerSizes);
-		sut.setInitiationMethod(WEIGHT_INITIATION_METHOD.RANDOM);
+		sut.setWeightInitiationMethod(WEIGHT_INITIATION_METHOD.RANDOM);
 		sut.initiate();
 		/* size -Number of all Weights in the network */
 		int size = 0;
@@ -216,4 +217,14 @@ public class ANN_MLPTest {
 		assertEquals(expected,actual);
 	}
 	
+	/**
+	 * Test for setter and getter of Backpropagation trainer
+	 */
+	@Test
+	void testSetGetBackpropagationTrainer() {
+		Backpropagation expected = new Backpropagation();
+		sut.setBackpropagationTrainer(expected);
+		Backpropagation actual = sut.getBackpropagationTrainer();
+		assertEquals(expected,actual);
+	}
 }
