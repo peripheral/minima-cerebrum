@@ -17,6 +17,7 @@ public class ANN_MLP {
 	private float WEIGHT_CONSTANT = DEFAULT_WEIGHT_CONSTANT;
 	private WEIGHT_INITIATION_METHOD INITIATION_METHOD;
 	private ACTIVATION_FUNCTION activationFunction;
+	private TrainingData trainingData;
 	public ANN_MLP() {}
 
 	public ANN_MLP(int[] layerSizes) {
@@ -194,13 +195,12 @@ public class ANN_MLP {
 	}
 
 	public void setTrainingData(TrainingData td) {
-		// TODO Auto-generated method stub
+		trainingData = td;
 
 	}
 
 	public TrainingData getTrainingData() {
-		// TODO Auto-generated method stub
-		return null;
+		return trainingData;
 	}
 
 }
