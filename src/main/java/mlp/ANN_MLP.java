@@ -19,6 +19,7 @@ public class ANN_MLP {
 	private WEIGHT_INITIATION_METHOD INITIATION_METHOD;
 	private ACTIVATION_FUNCTION activationFunction;
 	private TrainingData trainingData;
+	private Backpropagation trainer = new Backpropagation();
 	public ANN_MLP() {}
 
 	public ANN_MLP(int[] layerSizes) {
@@ -204,9 +205,13 @@ public class ANN_MLP {
 		return trainingData;
 	}
 
-	public void setBackpropagationTrainer(Backpropagation sut) {
-		// TODO Auto-generated method stub
+	public void setBackpropagationTrainer(Backpropagation tr) {
+		trainer = tr;
 		
+	}
+
+	public Backpropagation getBackpropagationTrainer() {
+		return trainer;
 	}
 
 }

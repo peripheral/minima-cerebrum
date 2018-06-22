@@ -227,4 +227,13 @@ public class ANN_MLPTest {
 		Backpropagation actual = sut.getBackpropagationTrainer();
 		assertEquals(expected,actual);
 	}
+	
+	/**
+	 * ANN_MLP should return Backpropagation trainer as default
+	 */
+	@Test
+	void testGetBackpropagationTrainerShouldNotReturnNull() {
+		Backpropagation actual = sut.getBackpropagationTrainer();
+		assertTrue(actual != null);
+	}
 }
