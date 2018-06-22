@@ -101,8 +101,7 @@ public class ANN_MLPTest {
 	}
 	
 	/**
-	 * Weights of first layer are 1 by default, the other weights 
-	 * initiated according to schema 
+	 * Weights initiated according to constant value schema where biases were given 0 weight and input 1 . 
 	 */
 	@Test
 	void weightsMustBeInitiatedAccordingToConstantMethod() {
@@ -110,13 +109,19 @@ public class ANN_MLPTest {
 		sut = new ANN_MLP(layerSizes);
 		sut.setInitiationMethod(ANN_MLP.WEIGHT_INITIATION_METHOD.CONSTANT);
 		sut.initiate();
-		float[] expectedLayerWeights1 = new float[layerSizes[0]*layerSizes[1]];
-		for(int i = 0;i < expectedLayerWeights1.length;i++) {
-			expectedLayerWeights1[i] = 1;
+		float[] expectedLayerWeights1 = new float[(layerSizes[0]+1)*layerSizes[1]];
+		for(int i = 0;i < expectedLayerWeights1.length - layerSizes[1];i++) {
+			expectedLayerWeights1[i] = sut.getWeightConstant();
 		}
-		float[] expectedLayerWeights2 = new float[layerSizes[1]*layerSizes[2]];
-		for(int i = 0;i < expectedLayerWeights2.length;i++) {
+		for(int i = expectedLayerWeights1.length - layerSizes[1];i < expectedLayerWeights1.length;i++) {
+			expectedLayerWeights1[i] = 0;
+		}
+		float[] expectedLayerWeights2 = new float[(layerSizes[1]+1)*layerSizes[2]];
+		for(int i = 0;i < expectedLayerWeights2.length - layerSizes[2];i++) {
 			expectedLayerWeights2[i] = sut.getWeightConstant();
+		}
+		for(int i =  expectedLayerWeights2.length - layerSizes[2];i < expectedLayerWeights2.length;i++) {
+			expectedLayerWeights2[i] = 0;
 		}
 		float[][] actual = sut.getWeights();
 		assertArrayEquals(expectedLayerWeights1,actual[0],0.01f);
@@ -174,7 +179,7 @@ public class ANN_MLPTest {
 	 */
 	@Test
 	void testRandomWeightInitiation(){
-		int[] layerSizes = {2,3,1};
+		int[] layerSizes = {2,3,2};
 		sut = new ANN_MLP(layerSizes);
 		sut.setInitiationMethod(WEIGHT_INITIATION_METHOD.RANDOM);
 		sut.initiate();
@@ -193,14 +198,10 @@ public class ANN_MLPTest {
 		for(int layerIdx = 0;layerIdx <weights.length;layerIdx++) {
 			for(int column = 0;column<weights[layerIdx].length;column++) {
 				array[counter++] = weights[layerIdx][column];
-				System.out.println("Weight"+array[counter-1]);
-			}
+			}			
 		}
 		float variance = StatisticUtils.variance(array);
 		assertTrue(variance>0);
 	}
 	
-
-	
-
 }

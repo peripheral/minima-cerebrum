@@ -3,6 +3,9 @@ package mlp;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import math.utils.StatisticUtils;
+import mlp.trainer.TrainingData;
+
 public class ANN_MLP {
 
 	public static enum WEIGHT_INITIATION_METHOD{CONSTANT, RANDOM};
@@ -71,16 +74,59 @@ public class ANN_MLP {
 	}
 
 	/**
-	 * Initiates weights
+	 * Initiates weights, default is the constant value
 	 */
 	public void initiate() {
 		switch(INITIATION_METHOD) {
 		case CONSTANT:
 			initiateMethodConstant();
 			break;
+		case RANDOM:
+			initiateMethodRandom();
+			break;
 		default:
 			break;
 		}
+	}
+
+	private void initiateMethodRandom() {
+		ArrayList<Neuron> neurons;
+		Neuron neuron;
+		/* For every layer */
+		for(int layerIdx = 0;layerIdx < layers.length-1;layerIdx++ ) {
+			layers[layerIdx].getBiasNeuron().setNetInput(1);
+			/*Get neurons from layer */
+			neurons = layers[layerIdx].getNeurons();
+			/* Layer is not input and not output layer*/
+			//if(layerIdx >0 && layerIdx < layers.length - 1) {
+			/* For each neuron in layer make a weight for each neuron it is connected to */
+			for(int neuronIdx = 0; neuronIdx < neurons.size();neuronIdx++ ) {
+				neuron = neurons.get(neuronIdx);
+				for(int i = 0;i < layers[layerIdx+1].size();i++) {
+					neuron.setWeight(i,StatisticUtils.getXavierRandomWeight(layers[layerIdx].size(),
+							(layerIdx < layers.length ? layers[layerIdx+1].size():0)));
+				}
+				for(int i = 0;i < layers[layerIdx+1].size();i++) {
+					layers[layerIdx].getBiasNeuron().setWeight(i,0);
+				}
+			}
+			//}
+
+			/*If layer is input layer set weight to one */
+			/*	else if(layerIdx == 0){
+				for(int neuronIdx = 0; neuronIdx < neurons.size();neuronIdx++ ) {
+					neuron = neurons.get(neuronIdx);
+					for(int i = 0;i < layers[layerIdx+1].size();i++) {
+						neuron.setWeight(i,1);
+					}
+				}
+				neuron = layers[layerIdx].getBiasNeuron();
+				for(int i = 0;i < layers[layerIdx+1].size();i++) {
+					neuron.setWeight(i, 0);
+				}				
+			}*/
+		}
+
 	}
 
 	/**
@@ -93,27 +139,16 @@ public class ANN_MLP {
 		for(int layerIdx = 0;layerIdx < layers.length-1;layerIdx++ ) {
 			/*Get neurons from layer */
 			neurons = layers[layerIdx].getNeurons();
-			/* Layer not input */
-			if(layerIdx >0) {
-				/* For each neuron in layer make a weight for each neuron it is connected to */
-				for(int neuronIdx = 0; neuronIdx < neurons.size();neuronIdx++ ) {
-					neuron = neurons.get(neuronIdx);
-					for(int i = 0;i < layers[layerIdx+1].size();i++) {
-						neuron.setWeight(i,WEIGHT_CONSTANT);
-					}
-					for(int i = 0;i < layers[layerIdx+1].size();i++) {
-						layers[layerIdx+1].getBiasNeuron().setWeight(i,0);
-					}
+			layers[layerIdx].getBiasNeuron().setNetInput(1);
+			/* For each neuron in layer make a weight for each neuron it is connected to */
+			for(int neuronIdx = 0; neuronIdx < neurons.size();neuronIdx++ ) {
+				neuron = neurons.get(neuronIdx);
+				for(int i = 0;i < layers[layerIdx+1].size();i++) {
+					neuron.setWeight(i,WEIGHT_CONSTANT);
 				}
 			}
-			/*If layer is input layer set weight to one */
-			else {
-				for(int neuronIdx = 0; neuronIdx < neurons.size();neuronIdx++ ) {
-					neuron = neurons.get(neuronIdx);
-					for(int i = 0;i < layers[layerIdx+1].size();i++) {
-						neuron.setWeight(i,1);
-					}
-				}
+			for(int i = 0;i < layers[layerIdx+1].size();i++) {
+				layers[layerIdx].getBiasNeuron().setWeight(i,0);
 			}
 		}
 	}
@@ -156,6 +191,11 @@ public class ANN_MLP {
 			previous = l;
 		}
 		return layers[layers.length-1].getOutputs();
+	}
+
+	public void setTrainingData(TrainingData td) {
+		// TODO Auto-generated method stub
+
 	}
 
 }
