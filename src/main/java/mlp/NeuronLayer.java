@@ -33,7 +33,7 @@ public class NeuronLayer {
 	}
 
 	/**
-	 * Returns size of layer
+	 * Returns size of layer, bias neuron is not included
 	 * @return
 	 */
 	public int size() {
@@ -56,6 +56,7 @@ public class NeuronLayer {
 		for(Neuron n:neurons) {
 			weights.addAll(n.getWeights());
 		}
+		weights.addAll(bias.getWeights());
 		float[] weightsArr = new float[weights.size()];
 		for(int i = 0; i < weights.size();i++) {
 			weightsArr[i] = weights.get(i);

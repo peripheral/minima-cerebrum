@@ -1,5 +1,7 @@
 package math.utils;
 
+import java.util.Random;
+
 public class StatisticUtils {
 
 	public static float variance(float[] values) {
@@ -121,5 +123,18 @@ public class StatisticUtils {
 			mean = 0;
 		}
 		return result;
+	}
+
+	/**
+	 * Produces next random weight according to Xavier Glorort et al distribution
+	 *  U[- sqrt(6)/(n + n1),sqrt(6)/(n + n1)] n -size of lower, n1 - size of upper distribution
+	 * @return
+	 */
+	public static float getXavierRandomWeight(int n,int n1) {
+		double amplitude = (Math.sqrt(6)/(n+n1))*2;
+		double lowerLimit = - Math.sqrt(6)/(n+n1);
+		Random rm = new Random();
+		double value = rm.nextDouble()*amplitude;
+		return (float) (value+lowerLimit);
 	}
 }

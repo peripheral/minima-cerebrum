@@ -179,7 +179,7 @@ public class ANN_MLPTest {
 	 */
 	@Test
 	void testRandomWeightInitiation(){
-		int[] layerSizes = {2,3,2};
+		int[] layerSizes = {2,3,1};
 		sut = new ANN_MLP(layerSizes);
 		sut.setInitiationMethod(WEIGHT_INITIATION_METHOD.RANDOM);
 		sut.initiate();
