@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import math.utils.StatisticUtils;
+import mlp.trainer.Backpropagation;
 import mlp.trainer.TrainingData;
 
 public class ANN_MLP {
@@ -53,11 +54,11 @@ public class ANN_MLP {
 		return layers[layers.length-1];
 	}
 
-	public void setInitiationMethod(WEIGHT_INITIATION_METHOD constant) {
+	public void setWeightInitiationMethod(WEIGHT_INITIATION_METHOD constant) {
 		INITIATION_METHOD = constant;		
 	}
 
-	public WEIGHT_INITIATION_METHOD getInitiationMethod() {
+	public WEIGHT_INITIATION_METHOD getWeightInitiationMethod() {
 		return INITIATION_METHOD;
 	}
 
@@ -201,6 +202,11 @@ public class ANN_MLP {
 
 	public TrainingData getTrainingData() {
 		return trainingData;
+	}
+
+	public void setBackpropagationTrainer(Backpropagation sut) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
