@@ -15,7 +15,7 @@ public class TrainingData {
 	private boolean preparationExecuted = false;
 
 	public TrainingData(float[][] data) {
-		// TODO Auto-generated constructor stub
+		this.data = data;
 	}
 
 	public TrainingData() {	}
