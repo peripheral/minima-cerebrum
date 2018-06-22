@@ -14,6 +14,12 @@ public class TrainingData {
 	private float averageVariance;
 	private boolean preparationExecuted = false;
 
+	public TrainingData(float[][] data) {
+		// TODO Auto-generated constructor stub
+	}
+
+	public TrainingData() {	}
+
 	public void setData(float[][] data) {
 		this.data = data;
 	}

@@ -34,6 +34,22 @@ public class TrainingDataTest {
 		float[][] actuals = sut.getData();
 		assertArrayEquals(expected,actuals);
 	}
+	
+	/**
+	 * Test for constructor with data as argument
+	 */
+	@Test
+	void testConstructorWithDataAsArgument() {
+		float[][] data = {{1,2,-2},
+				{1,5,6},
+				{1,5,-4}};
+		float[][] expected = {{1,2,-2},
+				{1,5,6},
+				{1,5,-4}};
+		sut = new TrainingData(data);
+		float[][] actuals = sut.getData();
+		assertArrayEquals(expected,actuals);
+	}
 
 	/**
 	 *Test function get variances
