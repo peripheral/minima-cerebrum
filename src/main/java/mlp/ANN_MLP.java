@@ -198,4 +198,9 @@ public class ANN_MLP {
 
 	}
 
+	public TrainingData getTrainingData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

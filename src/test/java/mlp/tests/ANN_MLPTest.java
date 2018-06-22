@@ -9,6 +9,7 @@ import math.utils.StatisticUtils;
 import mlp.ANN_MLP;
 import mlp.ANN_MLP.ACTIVATION_FUNCTION;
 import mlp.ANN_MLP.WEIGHT_INITIATION_METHOD;
+import mlp.trainer.TrainingData;
 
 public class ANN_MLPTest {
 	private ANN_MLP sut;
@@ -202,6 +203,17 @@ public class ANN_MLPTest {
 		}
 		float variance = StatisticUtils.variance(array);
 		assertTrue(variance>0);
+	}
+	
+	/**
+	 * Test set get TestData
+	 */
+	@Test
+	void testSetGetTestDataMethods() {
+		TrainingData expected = new TrainingData();
+		sut.setTrainingData(expected);
+		TrainingData actual = sut.getTrainingData();
+		assertEquals(expected,actual);
 	}
 	
 }
