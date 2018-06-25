@@ -108,7 +108,7 @@ private StatisticUtils sut;
 	 * Pa1a2 = Cov(A1,A2)/(sA1*sA2) = 0
 	 */
 	@Test
-	void testTestOnCorrelationAmongVariables () {
+	void testOnCorrelationAmongVariables () {
 		float[][] data = {{1,4,7},
 				{2,5,8},
 				{3,6,9}};
@@ -116,6 +116,11 @@ private StatisticUtils sut;
 		float threshold = 0.3f;
 		boolean[] isCorrelated = sut.areInputsCorrelated(data,threshold);
 		assertArrayEquals(isCorrelatedExpected,isCorrelated);
+	}
+	
+	@Test 
+	void testOfSoftmaxFunction() {
+		
 	}
 	
 }

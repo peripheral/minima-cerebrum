@@ -30,11 +30,11 @@ public class ANN_MLPTest {
 	 */
 	@Test
 	void testConstructANNMLPFromArrayOFLayerSizesAsArgument() {
-		int[] actualLayerSizes = {2,3,1};
+		int[] actualLayerSizes = {2,3,3};
 		sut = new ANN_MLP(actualLayerSizes);
 		actualLayerSizes = sut.getLayerSizes();
-		int[] expectedLayerSizes = {2,3,1};
-		assertArrayEquals(actualLayerSizes,expectedLayerSizes);
+		int[] expectedLayerSizes = {2,3,3};
+		assertArrayEquals(expectedLayerSizes,actualLayerSizes);
 	}
 	
 	/**
