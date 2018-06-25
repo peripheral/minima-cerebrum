@@ -118,9 +118,22 @@ private StatisticUtils sut;
 		assertArrayEquals(isCorrelatedExpected,isCorrelated);
 	}
 	
+	/**
+	 * Test of softmax function. It 
+	 */
 	@Test 
 	void testOfSoftmaxFunction() {
-		
+		float[] data = {1,10,5,3,100};
+		float[] actual = sut.calculateSoftmax(data);
+		float[] expected = new float[data.length];
+		float sum = 0;
+		for(float f:data) {
+			sum = sum +f;
+		}
+		for(int i = 0;i < data.length; i++) {
+			expected[i] = data[i]/sum;
+		}
+		assertArrayEquals(expected,actual,0.00f);		
 	}
 	
 }
