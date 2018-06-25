@@ -51,28 +51,35 @@ public class BackpropagationTest {
 			for( int col = 0; col < input.length; col++) {
 				input[col] = data[sampleIdx][col];
 			}
+
 			for(int layerIdx = 0; layerIdx < weights.length; layerIdx++) {
 
 				output = new float[layerSizes[layerIdx+1]];
-				for(int colTopLayer = 0; colTopLayer < layerSizes[layerIdx+1]; colTopLayer++) {
-					for(int colBotLayer = 0; colBotLayer < layerSizes[layerIdx];colBotLayer++) {
-						output[colTopLayer] = output[colTopLayer] + input[colBotLayer]*weights[layerIdx][colBotLayer*colTopLayer];
+				/* Each neuron of bottom layer contributes to each neuron in the top layer*/
+				for(int colBotLayer = 0; colBotLayer < layerSizes[layerIdx];colBotLayer++) {
+					/* Iteration for each neuron of the top layer */
+					for(int colTopLayer = 0; colTopLayer < layerSizes[layerIdx+1]; colTopLayer++) {
+
+						/* produce netinput to each neuron */
+						output[colTopLayer] = output[colTopLayer] + input[colBotLayer]*
+								weights[layerIdx][layerSizes[layerIdx+1]*colBotLayer + colTopLayer];
 					}
 				}
+				/* Apply activation function		 */
 				for(int i = 0; i < output.length; i++) {
-					output[i] = NeuronFunctionModels.activate(ANN_MLP.ACTIVATION_FUNCTION.SIGMOID, 1, 1, output[i]);
+					output[i] = NeuronFunctionModels.activate(mlp.getActivationFunction(),
+							1, 1, output[i]);
 				}
 				input = output;
-
 			}
+	
 			/* Mean Squared error */
 			for(int i = 0; i < output.length;i++) {
-				expected[i] = (float) (Math.pow(output[i] - data[sampleIdx][data[sampleIdx].length-output.length+i],2)/data.length);
+				expected[i] = (float) (expected[i]+Math.pow(output[i] - 
+						data[sampleIdx][data[sampleIdx].length-output.length+i],2)/data.length);
 			}
 
 		}
-		System.out.println(Arrays.toString(expected));
-
 		sut.setMLP(mlp);
 		sut.setTrainingData(td);
 		float[] actual = sut.calCulateSquiedErrorPerNeuron();

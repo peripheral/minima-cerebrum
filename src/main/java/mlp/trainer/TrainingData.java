@@ -157,4 +157,18 @@ public class TrainingData {
 		return varianceNormalized;
 	}
 
+	/**
+	 * 
+	 * @param idx - data row
+	 * @param offset - start of new array
+	 * @return target array
+	 */
+	public float[] getTargetData(int idx,int offset) {
+		return Arrays.copyOfRange(data[idx], offset, data[idx].length);
+	}
+
+	public double size() {
+		return data.length;
+	}
+
 }
