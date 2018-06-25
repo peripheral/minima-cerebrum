@@ -137,4 +137,16 @@ public class StatisticUtils {
 		double value = rm.nextDouble()*amplitude;
 		return (float) (value+lowerLimit);
 	}
+
+	public float[] calculateSoftmax(float[] data) {
+		float sum = 0;
+		float[] result = new float[data.length];
+		for(float f:data) {
+			sum = sum +f;
+		}
+		for(int i = 0;i < data.length; i++) {
+			result[i] = data[i]/sum;
+		}
+		return result;
+	}
 }
