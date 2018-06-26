@@ -119,12 +119,12 @@ private StatisticUtils sut;
 	}
 	
 	/**
-	 * Test of softmax function. It 
+	 * Alternative function to softmax
 	 */
 	@Test 
-	void testOfSoftmaxFunction() {
+	void testOfAlternativeToSoftmaxFunction() {
 		float[] data = {1,10,5,3,100};
-		float[] actual = sut.calculateSoftmax(data);
+		float[] actual = sut.calculateSoftmaxWithoutE(data);
 		float[] expected = new float[data.length];
 		float sum = 0;
 		for(float f:data) {
@@ -134,6 +134,24 @@ private StatisticUtils sut;
 			expected[i] = data[i]/sum;
 		}
 		assertArrayEquals(expected,actual,0.00f);		
+	}
+	
+	/**
+	 * Test of softmax function.
+	 */
+	@Test 
+	void testOfSoftmaxFunction() {
+		float[] data = {1,10,5,3,30};
+		float[] actual = sut.calculateSoftmax(data);
+		float[] expected = new float[data.length];
+		float sum = 0;
+		for(float f:data) {
+			sum = sum + (float) (Math.pow(Math.E,f));
+		}
+		for(int i = 0;i < data.length; i++) {
+			expected[i] = (float) (Math.pow(Math.E,data[i])/sum);
+		}
+		assertArrayEquals(expected,actual,0.00001f);		
 	}
 	
 }

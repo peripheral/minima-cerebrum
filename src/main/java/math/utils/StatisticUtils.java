@@ -138,7 +138,13 @@ public class StatisticUtils {
 		return (float) (value+lowerLimit);
 	}
 
-	public float[] calculateSoftmax(float[] data) {
+	/**
+	 * The function uses alternative function which doesn't use natural base E
+	 * Sj = Aj/sum
+	 * @param data
+	 * @return
+	 */
+	public float[] calculateSoftmaxWithoutE(float[] data) {
 		float sum = 0;
 		float[] result = new float[data.length];
 		for(float f:data) {
@@ -146,6 +152,26 @@ public class StatisticUtils {
 		}
 		for(int i = 0;i < data.length; i++) {
 			result[i] = data[i]/sum;
+		}
+		return result;
+	}
+	
+	/**
+	 * The function implement traditional softmax
+	 * Sj = e^(Aj)/(e^(A1) + e^(A2) ..e^(An))
+	 * @param data
+	 * @return
+	 */
+	public float[] calculateSoftmax(float[] data) {
+		double sum = 0;
+		float[] result = new float[data.length];
+		float[] ePowsAj = new  float[data.length];
+		for(int i = 0 ;i < data.length;i++) {
+			ePowsAj[i] = (float) Math.pow(Math.E,data[i]);
+			sum = sum + ePowsAj[i];
+		}
+		for(int i = 0;i < data.length; i++) {
+			result[i] = (float) (ePowsAj[i]/sum);
 		}
 		return result;
 	}
