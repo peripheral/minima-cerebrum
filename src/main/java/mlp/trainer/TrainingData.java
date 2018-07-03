@@ -43,8 +43,12 @@ public class TrainingData {
 	public void calculateMeans() {
 		if(means == null && data !=null) {
 			means = new float[data[0].length];
+		}else if(data == null) {
+			System.out.println("Couldn't claculate means, no data");
+			return;
 		}
-		for(int col = 0 ; col < data.length;col++) {
+		System.out.println("Row length:"+data[0].length);
+		for(int col = 0 ; col < data[0].length;col++) {
 			means[col] = 0;
 			for(int row = 0; row < data[0].length;row++) {
 				means[col] = means[col]+data[row][col]/data.length;
@@ -75,7 +79,7 @@ public class TrainingData {
 		return subtractMean;
 	}
 
-	public float[] getInputRow(int row) {
+	public float[] getDataRow(int row) {
 		float[] dataRow = Arrays.copyOf(data[row], data[0].length);
 		if(!preparationExecuted) {
 			prepareForVarianceNormalization();
@@ -108,7 +112,7 @@ public class TrainingData {
 
 	private void prepareForMeanNoralization() {
 		calculateMeans();
-		calculateAverageMean();
+		calculateAverageMean();		
 	}
 
 	private void prepareForVarianceNormalization() {
@@ -167,7 +171,7 @@ public class TrainingData {
 		return Arrays.copyOfRange(data[idx], offset, data[idx].length);
 	}
 
-	public double size() {
+	public int size() {
 		return data.length;
 	}
 
