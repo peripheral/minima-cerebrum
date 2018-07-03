@@ -47,7 +47,6 @@ public class TrainingData {
 			System.out.println("Couldn't claculate means, no data");
 			return;
 		}
-		System.out.println("Row length:"+data[0].length);
 		for(int col = 0 ; col < data[0].length;col++) {
 			means[col] = 0;
 			for(int row = 0; row < data[0].length;row++) {
