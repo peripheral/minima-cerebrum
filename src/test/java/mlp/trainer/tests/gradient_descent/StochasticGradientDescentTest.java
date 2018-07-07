@@ -21,7 +21,8 @@ public class StochasticGradientDescentTest {
 		
 		@Test
 		void testRandomlyGenerateTrainingBatch() {
-			float[][] data = initiateData();
+			int rows = 100;
+			float[][] data = initiateData(rows);
 			TrainingData td = new TrainingData();
 			td.setData(data);
 			sut.setTrainingData(td);
@@ -29,14 +30,40 @@ public class StochasticGradientDescentTest {
 			TrainingData trainingBatch = sut.generateTrainingBatch(size);
 			assertEquals(size,trainingBatch.size());
 		}
+		
+		@Test
+		void testCalculateNewWeightFunction() {
+			float momentum = 0.001f;
+			float learningRate = 0.01f;
+			float oldWeight = 0.035f;
+			float deltaW = 0.05f;
+			float expected = oldWeight + momentum*oldWeight + learningRate * deltaW;
+			float actual = sut.generateNewWeight(momentum,learningRate,oldWeight,deltaW);
+			assertEquals(expected,actual);
+		}
+		
+		@Test
+		void testSetLearningRate() {
+			float learningRate = 0.01f;
+			sut.setLearningRate(learningRate);
+			float actual = sut.getLearningRate();
+			assertEquals(learningRate,actual);
+		}
+		
+		@Test
+		void testGetDefaultLearningRate() {
+			float learningRate = 0.1f;
+			float actual = sut.getLearningRate();
+			assertEquals(learningRate,actual);
+		}
+		
 
 		/**
 		 * Complementary to testRandomGenerateTrainingBatch
 		 * @return
 		 */
-		private float[][] initiateData() {
+		private float[][] initiateData(int rows) {
 			int inputSize = 3, outputSize = 3;
-			int rows = 100;
 			float[][] data = new float[rows][inputSize + outputSize];
 			int counter = 0, target = 0;
 			Random rm = new Random();

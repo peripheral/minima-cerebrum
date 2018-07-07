@@ -2,6 +2,7 @@ package mlp.trainer.tests;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 
@@ -85,4 +86,26 @@ public class BackpropagationTest {
 		float[] actual = sut.calCulateSquiedErrorPerNeuron();
 		assertArrayEquals(expected,actual,0.0001f);
 	}	
+	
+
+	/**
+	 * Set approximate error minimum
+	 */
+	@Test
+	void testSetGetApproximateErrorMinimum() {
+		float errMinimum = 0.15f;
+		sut.setApproximateErrorMinimum(errMinimum);
+		float actual = sut.getApproximateErrorMinimum();
+		assertEquals(errMinimum,actual);
+	}
+	
+	/**
+	 * Default approximate error minimum
+	 */
+	@Test
+	void testDefaultApproximateErrorMinimum() {
+		float expected = 0.1f;
+		float actual = sut.getApproximateErrorMinimum();
+		assertEquals(expected,actual);
+	}
 }

@@ -38,5 +38,15 @@ public class Backpropagation {
 		return result;
 	}
 
+	public void setApproximateErrorMinimum(float errMinimum) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public float getApproximateErrorMinimum() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 
 }

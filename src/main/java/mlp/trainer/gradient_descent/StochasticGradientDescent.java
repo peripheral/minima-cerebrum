@@ -27,5 +27,20 @@ public class StochasticGradientDescent {
 		td.setData(data);
 		return td;
 	}
+
+	public float getLearningRate() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public void setLearningRate(float learningRate) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public float generateNewWeight(float momentum, float learningRate, float oldWeight, float deltaW) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 	
 }
