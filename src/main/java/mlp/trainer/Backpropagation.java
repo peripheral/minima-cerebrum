@@ -8,6 +8,8 @@ public class Backpropagation {
 
 	private ANN_MLP mlp;
 	private TrainingData trainingData;
+	private float defaultErrorMinimimg = 0.1f;
+	private float approximateErrorMinimum = defaultErrorMinimimg;
 
 	public void setMLP(ANN_MLP mlp) {
 		this.mlp = mlp;
@@ -39,13 +41,15 @@ public class Backpropagation {
 	}
 
 	public void setApproximateErrorMinimum(float errMinimum) {
-		// TODO Auto-generated method stub
-		
+		approximateErrorMinimum = errMinimum;		
 	}
 
+	/**
+	 * Stopping criteria, error minimum
+	 * @return
+	 */
 	public float getApproximateErrorMinimum() {
-		// TODO Auto-generated method stub
-		return 0;
+		return approximateErrorMinimum;
 	}
 
 

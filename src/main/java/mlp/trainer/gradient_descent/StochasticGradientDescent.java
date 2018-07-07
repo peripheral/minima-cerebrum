@@ -7,6 +7,7 @@ import mlp.trainer.TrainingData;
 public class StochasticGradientDescent {
 
 	private TrainingData trainingData;
+	private float learningRate = 0.1f;
 
 	public void setTrainingData(TrainingData td) {
 		trainingData = td;
@@ -29,18 +30,23 @@ public class StochasticGradientDescent {
 	}
 
 	public float getLearningRate() {
-		// TODO Auto-generated method stub
-		return 0;
+		return learningRate;
 	}
 
 	public void setLearningRate(float learningRate) {
-		// TODO Auto-generated method stub
-		
+		this.learningRate = learningRate;		
 	}
 
+	/**
+	 * 
+	 * @param momentum - fraction of oldWeight
+	 * @param learningRate - learning rate, step size
+	 * @param oldWeight - initial weight
+	 * @param deltaW - delta to be added
+	 * @return - new weight
+	 */
 	public float generateNewWeight(float momentum, float learningRate, float oldWeight, float deltaW) {
-		// TODO Auto-generated method stub
-		return 0;
+		return oldWeight + momentum*oldWeight + learningRate * deltaW;
 	}
 	
 }

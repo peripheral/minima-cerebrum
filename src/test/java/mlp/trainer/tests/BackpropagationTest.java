@@ -100,7 +100,7 @@ public class BackpropagationTest {
 	}
 	
 	/**
-	 * Default approximate error minimum
+	 * Default approximate error minimum, stopping criteria
 	 */
 	@Test
 	void testDefaultApproximateErrorMinimum() {
