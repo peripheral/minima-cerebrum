@@ -67,7 +67,7 @@ public class StochasticGradientDescentTest {
 			float gradientSigmoid = (float) (b*a*2*(Math.pow(Math.E,-a*Io))/Math.pow(1+Math.pow(Math.E,-a*Io),2));	
 			/* expected 2E * Fo'(Io) =  2*0.5 * 0.00493301858 = 0.00493301858 */
 			float expected = 2*Error * gradientSigmoid;
-			float actual = sut.calculateGradientInputOverError(COST_FUNCTION_TYPE.SQUARED_ERROR,Error,Io,a,b);
+			float actual = sut.calculateGradientInputOverError(COST_FUNCTION_TYPE.SQUARED_ERROR,ACTIVATION_FUNCTION.SIGMOID,Error,Io,a,b);
 			assertEquals(expected,actual);
 		}
 		
@@ -89,18 +89,15 @@ public class StochasticGradientDescentTest {
 			float Error = 0.5f;
 			/* Weight between lower layer neuron and upper neuron */
 			float Wh = -0.04f;
-			
-			/* gradient sigmoid 2*(e^-5.4)/(1+e^-5.4)^2 = 0.00895211337 */
-			float gradientSigmoidO = (float) (b*a*2*(Math.pow(Math.E,-a*Io))/Math.pow(1+Math.pow(Math.E,-a*Io),2));
-			
+						
 			/* gradient sigmoid 2*(e^-6)/(1+e^-6)^2 = 0.00493301858 */
 			float gradientSigmoidH = (float) (b*a*2*(Math.pow(Math.E,-a*Ih))/Math.pow(1+Math.pow(Math.E,-a*Ih),2));
-		
-			float expected = 2*Error * gradientSigmoidO * Wh * gradientSigmoidH ;
 			/* arbitrary value, taken from previous test */
 			float gradientInputToError = 0.00493301858f;
+			float expected = gradientInputToError * Wh * gradientSigmoidH ;
 			
-			float actual = sut.calculateGradientInputOverError(ACTIVATION_FUNCTION.SIGMOID,gradientInputToError,Wh,Ih);
+			
+			float actual = sut.calculateGradientInputOverError(ACTIVATION_FUNCTION.SIGMOID,gradientInputToError,Wh,Ih,a,b);
 			assertEquals(expected,actual);
 		}
 		 
