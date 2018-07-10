@@ -4,7 +4,6 @@ import java.util.Random;
 
 import mlp.ANN_MLP.ACTIVATION_FUNCTION;
 import mlp.NeuronFunctionModels;
-import mlp.tests.ActivationFunctionModelTest;
 import mlp.trainer.TrainingData;
 
 public class StochasticGradientDescent {

@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import mlp.ANN_MLP.ACTIVATION_FUNCTION;
-import mlp.NeuronFunctionModels;
 import mlp.trainer.TrainingData;
 import mlp.trainer.gradient_descent.StochasticGradientDescent;
 import mlp.trainer.gradient_descent.StochasticGradientDescent.COST_FUNCTION_TYPE;
@@ -85,8 +84,7 @@ public class StochasticGradientDescentTest {
 			float a = 1;
 			float b = 1;
 			float Ih = 6f; /* Input of a hidden neuron*/
-			float Io = 5.4f;
-			float Error = 0.5f;
+
 			/* Weight between lower layer neuron and upper neuron */
 			float Wh = -0.04f;
 						

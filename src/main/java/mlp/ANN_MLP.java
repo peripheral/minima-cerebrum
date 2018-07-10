@@ -1,8 +1,6 @@
 package mlp;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-
 import math.utils.StatisticUtils;
 import mlp.trainer.Backpropagation;
 import mlp.trainer.TrainingData;
