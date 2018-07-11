@@ -14,8 +14,8 @@ public class ANN_MLP {
 	public WEIGHT_INITIATION_METHOD DEFAULT_WEIGHT_INITIATION_METHOD = WEIGHT_INITIATION_METHOD.CONSTANT;
 	public float DEFAULT_WEIGHT_CONSTANT = 0.5f;
 	private float WEIGHT_CONSTANT = DEFAULT_WEIGHT_CONSTANT;
-	private WEIGHT_INITIATION_METHOD INITIATION_METHOD;
-	private ACTIVATION_FUNCTION activationFunction;
+	private WEIGHT_INITIATION_METHOD initiationMethod;
+	private ACTIVATION_FUNCTION activationFunction = ACTIVATION_FUNCTION.SIGMOID;
 	private TrainingData trainingData;
 	private Backpropagation trainer = new Backpropagation();
 	public ANN_MLP() {}
@@ -32,6 +32,11 @@ public class ANN_MLP {
 	}
 
 
+
+	public ANN_MLP(WEIGHT_INITIATION_METHOD weightInitiationMethod, int[] layerSizes) {
+		this(layerSizes);
+		initiationMethod = weightInitiationMethod;
+	}
 
 	public int[] getLayerSizes() {
 		int[] layerSizes = new int[layers.length];
@@ -53,14 +58,23 @@ public class ANN_MLP {
 		return layers[layers.length-1];
 	}
 
-	public void setWeightInitiationMethod(WEIGHT_INITIATION_METHOD constant) {
-		INITIATION_METHOD = constant;		
+	/**
+	 * Specifies which 
+	 * @param type
+	 */
+	public void setWeightInitiationMethod(WEIGHT_INITIATION_METHOD type) {
+		initiationMethod = type;		
 	}
 
 	public WEIGHT_INITIATION_METHOD getWeightInitiationMethod() {
-		return INITIATION_METHOD;
+		return initiationMethod;
 	}
 
+	/**
+	 * Methods returns weights per layer.
+	 * weights arranged in sequence per neuron
+	 * @return
+	 */
 	public float[][] getWeights() {
 		float[][] weights;
 		if(layers.length >0) {
@@ -78,7 +92,7 @@ public class ANN_MLP {
 	 * Initiates weights, default is the constant value
 	 */
 	public void initiate() {
-		switch(INITIATION_METHOD) {
+		switch(initiationMethod) {
 		case CONSTANT:
 			initiateMethodConstant();
 			break;
@@ -108,7 +122,8 @@ public class ANN_MLP {
 							(layerIdx < layers.length ? layers[layerIdx+1].size():0)));
 				}
 				for(int i = 0;i < layers[layerIdx+1].size();i++) {
-					layers[layerIdx].getBiasNeuron().setWeight(i,0);
+					layers[layerIdx].getBiasNeuron().setWeight(i,StatisticUtils.getXavierRandomWeight(layers[layerIdx].size(),
+							(layerIdx < layers.length ? layers[layerIdx+1].size():0)));
 				}
 			}
 			//}
@@ -154,7 +169,12 @@ public class ANN_MLP {
 		}
 	}
 
-	public void setWeightConstant(float f) {
+	/**
+	 * Specifies a value to be used as weight at initiation procedure which sets identical 
+	 * value for all weights
+	 * @param f - value used as weight 
+	 */
+	public void setWeightInititiationConstant(float f) {
 		WEIGHT_CONSTANT = f;		
 	}
 
@@ -162,7 +182,7 @@ public class ANN_MLP {
 	 * The default weight constant is 0.5f
 	 * @return
 	 */
-	public float getWeightConstant() {
+	public float getWeightInitiationConstant() {
 		return WEIGHT_CONSTANT;		
 	}
 
@@ -170,7 +190,7 @@ public class ANN_MLP {
 		activationFunction = type;		
 	}
 
-	public ACTIVATION_FUNCTION getActivationFunction() {
+	public ACTIVATION_FUNCTION getActivationFunctionType() {
 		return activationFunction;
 	}
 

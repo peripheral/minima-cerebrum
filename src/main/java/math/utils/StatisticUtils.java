@@ -126,8 +126,10 @@ public class StatisticUtils {
 	}
 
 	/**
-	 * Produces next random weight according to Xavier Glorort et al distribution
+	 * * Produces next random weight according to Xavier Glorort et al distribution
 	 *  U[- sqrt(6)/(n + n1),sqrt(6)/(n + n1)] n -size of lower, n1 - size of upper distribution
+	 * @param n - lower layer size
+	 * @param n1 - top layer size
 	 * @return
 	 */
 	public static float getXavierRandomWeight(int n,int n1) {

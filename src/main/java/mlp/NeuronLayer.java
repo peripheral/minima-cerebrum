@@ -47,7 +47,8 @@ public class NeuronLayer {
 	}
 
 	/**
-	 * Returns all weights from the neurons
+	 * Returns all weights from the neurons. Weights are arranged in sequence per
+	 * neuron. bias included last. Each neuron has connect to each neuron in consequent layer
 	 */
 	public float[] getWeights() {
 		ArrayList<Float> weights = new ArrayList<>();

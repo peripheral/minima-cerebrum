@@ -56,8 +56,6 @@ public class StochasticGradientDescentTest {
 	 */
 	@Test
 	void testCalculateErrorForInputAndTargetRow() {	
-		float a = 1;
-		float b = 1;
 		int rowIdx = 50;
 		float[][] data = initiateData(100);
 		int outputLayerSize = 3;

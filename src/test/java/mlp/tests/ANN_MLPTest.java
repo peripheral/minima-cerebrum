@@ -113,14 +113,14 @@ public class ANN_MLPTest {
 		sut.initiate();
 		float[] expectedLayerWeights1 = new float[(layerSizes[0]+1)*layerSizes[1]];
 		for(int i = 0;i < expectedLayerWeights1.length - layerSizes[1];i++) {
-			expectedLayerWeights1[i] = sut.getWeightConstant();
+			expectedLayerWeights1[i] = sut.getWeightInitiationConstant();
 		}
 		for(int i = expectedLayerWeights1.length - layerSizes[1];i < expectedLayerWeights1.length;i++) {
 			expectedLayerWeights1[i] = 0;
 		}
 		float[] expectedLayerWeights2 = new float[(layerSizes[1]+1)*layerSizes[2]];
 		for(int i = 0;i < expectedLayerWeights2.length - layerSizes[2];i++) {
-			expectedLayerWeights2[i] = sut.getWeightConstant();
+			expectedLayerWeights2[i] = sut.getWeightInitiationConstant();
 		}
 		for(int i =  expectedLayerWeights2.length - layerSizes[2];i < expectedLayerWeights2.length;i++) {
 			expectedLayerWeights2[i] = 0;
@@ -146,8 +146,8 @@ public class ANN_MLPTest {
 		int[] layerSizes = {2,3,1};
 		sut = new ANN_MLP(layerSizes);
 		float expected = 0.7f;
-		sut.setWeightConstant(0.7f);
-		float actual = sut.getWeightConstant();
+		sut.setWeightInititiationConstant(0.7f);
+		float actual = sut.getWeightInitiationConstant();
 		assertEquals(expected,actual,0.0f);
 	}
 	
@@ -159,7 +159,7 @@ public class ANN_MLPTest {
 		int[] layerSizes = {2,3,1};
 		sut = new ANN_MLP(layerSizes);
 		float expected = 0.5f;
-		float actual = sut.getWeightConstant();
+		float actual = sut.getWeightInitiationConstant();
 		assertEquals(expected,actual,0.0f);
 	}
 	
@@ -172,7 +172,7 @@ public class ANN_MLPTest {
 		sut = new ANN_MLP(layerSizes);
 		ACTIVATION_FUNCTION expected = ACTIVATION_FUNCTION.IDENTITY;
 		sut.setActivationFunction(ACTIVATION_FUNCTION.IDENTITY);
-		ACTIVATION_FUNCTION actual = sut.getActivationFunction();
+		ACTIVATION_FUNCTION actual = sut.getActivationFunctionType();
 		assertEquals(expected,actual);
 	}
 	

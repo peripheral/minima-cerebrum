@@ -31,7 +31,7 @@ public class TrainingDataTest {
 				{1,5,6},
 				{1,5,-4}};
 		sut.setData(data);
-		float[][] actuals = sut.getData();
+		float[][] actuals = sut.getInputs();
 		assertArrayEquals(expected,actuals);
 	}
 	
@@ -40,14 +40,15 @@ public class TrainingDataTest {
 	 */
 	@Test
 	void testConstructorWithDataAsArgument() {
+		int offset = 2;
 		float[][] data = {{1,2,-2},
 				{1,5,6},
 				{1,5,-4}};
-		float[][] expected = {{1,2,-2},
-				{1,5,6},
-				{1,5,-4}};
-		sut = new TrainingData(data);
-		float[][] actuals = sut.getData();
+		float[][] expected = {{1,2},
+				{1,5},
+				{1,5}};
+		sut = new TrainingData(data,offset);
+		float[][] actuals = sut.getInputs();
 		assertArrayEquals(expected,actuals);
 	}
 
@@ -114,9 +115,9 @@ public class TrainingDataTest {
 		float[] expected1 = {0,0,0};
 		float[] expected2 = {1,1,1};
 		sut.setSubtractMean(true);
-		float[] actual = sut.getDataRow(0);
-		float[] actual1 =  sut.getDataRow(1);
-		float[] actual2 =  sut.getDataRow(2);
+		float[] actual = sut.getInputRow(0);
+		float[] actual1 =  sut.getInputRow(1);
+		float[] actual2 =  sut.getInputRow(2);
 		assertArrayEquals(expected,actual);
 		assertArrayEquals(expected1,actual1);
 		assertArrayEquals(expected2,actual2);
@@ -185,7 +186,7 @@ public class TrainingDataTest {
 		float[] expected = {(float) ((1 - 2 + 5)*(Math.sqrt(2/3.0)/Math.sqrt(2/3.0))),
 				(float) ((4 - 5 + 5)*(Math.sqrt(2/3.0)/Math.sqrt(2/3.0))),
 				(float) ((7 - 8 + 5)*(Math.sqrt(2/3.0)/Math.sqrt(2/3.0)))};
-		float[] actual = sut.getDataRow(0);
+		float[] actual = sut.getInputRow(0);
 		assertArrayEquals(expected,actual);
 	}
 
@@ -215,7 +216,7 @@ public class TrainingDataTest {
 		float[] expected = {(float) ((1 - 2 + 5)*(Math.sqrt(2/3.0)/Math.sqrt(2/3.0))),
 				(float) ((4 - 5 + 5)*(Math.sqrt(2/3.0)/Math.sqrt(2/3.0))),
 				(float) ((7 - 8 + 5)*(Math.sqrt(2/3.0)/Math.sqrt(2/3.0)))};
-		float[] actual = sut.getDataRow(0);
+		float[] actual = sut.getInputRow(0);
 		assertArrayEquals(expected,actual);
 	}
 	

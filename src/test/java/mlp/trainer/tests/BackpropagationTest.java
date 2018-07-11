@@ -32,7 +32,7 @@ public class BackpropagationTest {
 		float[][] data = {{10,10,10,1,0,0},
 				{2,2,2,0,1,0},
 				{30,30,30,0,0,1}};
-		TrainingData td = new TrainingData(data);
+		TrainingData td = new TrainingData(data,inputSize);
 		int[] mlp_topology = {inputSize,hiddenLayerSize,outputSize};
 		ANN_MLP mlp = new ANN_MLP(mlp_topology);
 		mlp.setActivationFunction(ACTIVATION_FUNCTION.SIGMOID);
@@ -65,7 +65,7 @@ public class BackpropagationTest {
 				}
 				/* Apply activation function		 */
 				for(int i = 0; i < output.length; i++) {
-					output[i] = NeuronFunctionModels.activate(mlp.getActivationFunction(),
+					output[i] = NeuronFunctionModels.activate(mlp.getActivationFunctionType(),
 							1, 1, output[i]);
 				}
 				input = output;
@@ -80,7 +80,7 @@ public class BackpropagationTest {
 		}
 		sut.setMLP(mlp);
 		sut.setTrainingData(td);
-		float[] actual = sut.calCulateSquiedErrorPerNeuron();
+		float[] actual = sut.calCulateMeanSquaredErrorPerNeuron();
 		assertArrayEquals(expected,actual,0.0001f);
 	}	
 	
