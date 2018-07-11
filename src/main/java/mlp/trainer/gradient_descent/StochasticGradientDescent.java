@@ -2,23 +2,16 @@ package mlp.trainer.gradient_descent;
 
 import java.util.Random;
 
+import mlp.ANN_MLP;
 import mlp.ANN_MLP.ACTIVATION_FUNCTION;
 import mlp.NeuronFunctionModels;
+import mlp.trainer.Backpropagation;
 import mlp.trainer.TrainingData;
 
-public class StochasticGradientDescent {
+public class StochasticGradientDescent extends Backpropagation {
 
-	public enum COST_FUNCTION_TYPE {
-		SQUARED_ERROR
-
-	}
-
-	private TrainingData trainingData;
 	private float learningRate = 0.1f;
-
-	public void setTrainingData(TrainingData td) {
-		trainingData = td;
-	}
+	private float[] errorPerNeuron;
 
 	/**
 	 * Randomly selects data rows from trainingData
@@ -30,7 +23,7 @@ public class StochasticGradientDescent {
 		Random rm = new Random();
 		float[][] data = new float[size][];
 		for(int i = 0; i < size; i++) {
-			data[i] = trainingData.getDataRow(rm.nextInt(trainingData.size()));
+			data[i] = trainingData.getInputRow(rm.nextInt(trainingData.size()));
 		}
 		td.setData(data);
 		return td;
@@ -102,6 +95,23 @@ public class StochasticGradientDescent {
 			break;
 		}
 		return 0;
+	}
+
+	public void calculateError() {
+		float[] mse =  calCulateMeanSquaredErrorPerNeuron();	
+		errorPerNeuron = new float[mse.length];
+		for(int i = 0; i < mse.length;i++) {
+			errorPerNeuron[i] = (float) Math.sqrt(mse[i]);
+		}
+	}
+
+	public float[] calculateGradientsForLayer(int i) {
+		
+		return null;		
+	}
+
+	public void setErrorPerNeuron(float[] errorPerNeuron) {
+		this.errorPerNeuron = errorPerNeuron;
 	}
 
 }
