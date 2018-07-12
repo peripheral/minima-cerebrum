@@ -234,12 +234,12 @@ public class ANN_MLP {
 	}
 
 	public void setUseSoftmaxOnOutput(boolean b) {
+		layers[layers.length-1].setUseSoftmaxOnOutput(b);
 		applySoftmaxOnOutput = b;
 	}
 	
-	public boolean isSoftmaxApplyedOnOutput() {
+	public boolean isSoftmaxAppliedOnOutput() {
 		return applySoftmaxOnOutput;
 	}
-
 
 }

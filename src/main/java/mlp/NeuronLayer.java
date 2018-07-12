@@ -2,12 +2,14 @@ package mlp;
 
 import java.util.ArrayList;
 
+import math.utils.StatisticUtils;
 import mlp.ANN_MLP.LAYER_TYPE;
 
 public class NeuronLayer {
 	private ArrayList<Neuron> neurons = new ArrayList<>();
 	private LAYER_TYPE layerType = LAYER_TYPE.HIDDEN;
 	private Neuron bias = new Neuron();
+	private boolean useSoftmaxFuction= false;
 
 	public NeuronLayer() {}
 
@@ -84,8 +86,17 @@ public class NeuronLayer {
 
 	public float[] getOutputs() {
 		float[] outputs = new float[neurons.size()];
-		for(int i = 0 ; i < outputs.length;i++) {
-			outputs[i] = neurons.get(i).getOutput();
+	
+		if(useSoftmaxFuction) {
+			float[] inputs = new float[neurons.size()];
+			for(int i = 0;i < inputs.length;i++) {
+				inputs[i] = neurons.get(i).getNetInput();
+			}
+			outputs = StatisticUtils.calculateSoftmax(inputs);
+		}else{
+			for(int i = 0 ; i < outputs.length;i++) {
+				outputs[i] = neurons.get(i).getOutput();
+			}
 		}
 		return outputs;
 	}
@@ -112,6 +123,13 @@ public class NeuronLayer {
 
 	public Neuron getBiasNeuron() {
 		return bias;
+	}
+
+	public void setUseSoftmaxOnOutput(boolean b) {
+		useSoftmaxFuction = b;		
+	}
+	public boolean isSoftmaxUsedOnOutput() {
+		return useSoftmaxFuction;		
 	}
 
 }

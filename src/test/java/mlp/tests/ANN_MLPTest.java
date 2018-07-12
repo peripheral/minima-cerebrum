@@ -95,7 +95,7 @@ public class ANN_MLPTest {
 	 * 	Neuron output:f(0) = 0
 	 * first output neuron:
 	 * 	Net input:0
-	 * 	Neuron output:f(0) = 0
+	 * 	Neuron output with softmax (e^0)/((e^0)*3) = 1/3 = 0.333
 	 */
 	@Test
 	void testOfPredictFunctionWithSoftmax() {
@@ -106,7 +106,7 @@ public class ANN_MLPTest {
 		sut.initiate();
 
 		float[] input = new float[]{0,0,0};
-		float[] expected = new float[]{0,0,0};
+		float[] expected = new float[]{0.333f,0.333f,0.333f};
 		float[] actual = sut.predict(input);
 		assertArrayEquals(expected,actual,0.01f);
 	}

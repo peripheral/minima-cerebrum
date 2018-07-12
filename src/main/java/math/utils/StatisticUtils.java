@@ -146,7 +146,7 @@ public class StatisticUtils {
 	 * @param data
 	 * @return
 	 */
-	public float[] calculateSoftmaxWithoutE(float[] data) {
+	public static float[] calculateSoftmaxWithoutE(float[] data) {
 		float sum = 0;
 		float[] result = new float[data.length];
 		for(float f:data) {
@@ -164,7 +164,7 @@ public class StatisticUtils {
 	 * @param data
 	 * @return
 	 */
-	public float[] calculateSoftmax(float[] data) {
+	public static float[] calculateSoftmax(float[] data) {
 		double sum = 0;
 		float[] result = new float[data.length];
 		float[] ePowsAj = new  float[data.length];
