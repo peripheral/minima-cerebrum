@@ -102,6 +102,8 @@ public class StochasticGradientDescentTest {
 		System.out.println("Expected:"+Arrays.toString(expected));
 		assertArrayEquals(expected,actual);
 	}
+	
+	
 
 	/**
 	 * Test for function that calculates gradient of input to error output layer

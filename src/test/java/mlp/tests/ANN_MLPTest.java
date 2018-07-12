@@ -86,6 +86,58 @@ public class ANN_MLPTest {
 	}
 	
 	/**
+	 * Test of prediction function of MLP with 3 input neurons, 4 hidden neurons
+	 * and 3 output neurons. Weight Initiation uses default
+	 * Sigmoid as activation for hidden and softmax as activation for output layer
+	 * Under input of 0,0,0
+	 * first hidden neuron:
+	 * 	Net input:0
+	 * 	Neuron output:f(0) = 0
+	 * first output neuron:
+	 * 	Net input:0
+	 * 	Neuron output:f(0) = 0
+	 */
+	@Test
+	void testOfPredictFunctionWithSoftmax() {
+		int[] layerSizes = {3,4,3};
+		sut = new ANN_MLP(WEIGHT_INITIATION_METHOD.CONSTANT,layerSizes);
+		boolean b = true;
+		sut.setUseSoftmaxOnOutput(b);
+		sut.initiate();
+
+		float[] input = new float[]{0,0,0};
+		float[] expected = new float[]{0,0,0};
+		float[] actual = sut.predict(input);
+		assertArrayEquals(expected,actual,0.01f);
+	}
+	
+	/**
+	 * Test of prediction function of MLP with 3 input neurons, 4 hidden neurons
+	 * and 3 output neurons. Weight Initiation uses default
+	 * Sigmoid as activation for hidden and softmax as activation for output layer
+	 * Under input of 10,10,10
+	 * first hidden neuron:
+	 * 	Net input:10*0.5 + 10*1 + 10*1 = 30
+	 * 	Neuron output:f(30) = 1 , f() - sigmoid
+	 * first output neuron:
+	 * 	Net input:1*0.5 + 1*0.5 + 1*0.5 + 1*0.5 = 2
+	 * 	Neuron output:(e^(2))/((e^(2))*3) = 0.333.. , f() - Softmax
+	 */
+	@Test
+	void testOfPredictFunctionWithSoftmax2() {
+		int[] layerSizes = {3,4,3};
+		sut = new ANN_MLP(WEIGHT_INITIATION_METHOD.CONSTANT,layerSizes);
+		boolean b = true;
+		sut.setUseSoftmaxOnOutput(b);
+		sut.initiate();
+
+		float[] input = new float[]{10,10,10};
+		float[] expected = new float[]{0.333f,0.333f,0.333f};
+		float[] actual = sut.predict(input);
+		assertArrayEquals(expected,actual,0.01f);
+	}
+	
+	/**
 	 * Integration and unit tests
 	 */
 	

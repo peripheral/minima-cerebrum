@@ -18,6 +18,7 @@ public class ANN_MLP {
 	private ACTIVATION_FUNCTION activationFunction = ACTIVATION_FUNCTION.SIGMOID;
 	private TrainingData trainingData;
 	private Backpropagation trainer = new Backpropagation();
+	private boolean applySoftmaxOnOutput = false;
 	public ANN_MLP() {}
 
 	public ANN_MLP(int[] layerSizes) {
@@ -231,5 +232,14 @@ public class ANN_MLP {
 	public Backpropagation getBackpropagationTrainer() {
 		return trainer;
 	}
+
+	public void setUseSoftmaxOnOutput(boolean b) {
+		applySoftmaxOnOutput = b;
+	}
+	
+	public boolean isSoftmaxApplyedOnOutput() {
+		return applySoftmaxOnOutput;
+	}
+
 
 }
