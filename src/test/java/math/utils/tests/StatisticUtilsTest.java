@@ -154,4 +154,23 @@ private StatisticUtils sut;
 		assertArrayEquals(expected,actual,0.00001f);		
 	}
 	
+	/**
+	 * Test of softmax function.
+	 * sum = e^(0) + e^(10) + e^(5) + e^(3) +e^(15) = 3291213.33696
+	 * partial derivate with respect to x1 
+	 *( e^(x1)((e^x1) + (e^x2) +(e^x3) +(e^x4)... ) -  (e^x1)(e^x1) )/((e^x1) + (e^x2) +(e^x3) +(e^x4)... )^2
+	 */
+	@Test 
+	void testOfSoftmaxFunctionPartialDerivative() {
+		float[] data = {0,10,5,3,15};
+		int variableIdx = 0;
+		float actual = StatisticUtils.calculateSoftmaxPartialDerivative(data, variableIdx);
+	
+		float sum = 3291213.33696f;
+		float denominator = (float) (3291213.33696 * 3291213.33696);
+		float expected = (1 * sum - 1)/denominator;
+			
+		assertEquals(expected,actual,0.00001f);		
+	}
+	
 }
