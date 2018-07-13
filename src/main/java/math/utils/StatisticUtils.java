@@ -177,4 +177,22 @@ public class StatisticUtils {
 		}
 		return result;
 	}
+	
+	/**
+	 * The function implement traditional softmax partial derivative
+	 * Sj = e^(Aj)/(e^(A1) + e^(A2) ..e^(An)) , partial derivative - ((e^A1)(e^(A1) + e^(A2) ..e^(An)) - 
+	 * (e^A1)(e^(A1))/(e^(A1) + e^(A2) ..e^(An)^2
+	 * @param data
+	 * @return
+	 */
+	public static float calculateSoftmaxPartialDerivative(float[] data,int idx) {
+		double sum = 0;
+		double ePowIdx = (float) Math.pow(Math.E, data[idx]);
+		float result ;
+		for(int i = 0 ;i < data.length;i++) {	
+			sum = sum + Math.pow(Math.E,data[i]);
+		}
+		result = (float) ((sum*ePowIdx - ePowIdx*ePowIdx)/(sum*sum));
+		return result;
+	}
 }
