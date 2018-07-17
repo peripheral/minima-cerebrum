@@ -49,6 +49,12 @@ public class GradientDescent extends Backpropagation {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	
+	public float calculateGradientInputOverError(ACTIVATION_FUNCTION outputActivationFunction, float error, float[] io,
+			int neuronIdx, float a, float b) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
 	public float calculateDelta(COST_FUNCTION_TYPE squaredError, float error, float io, float a, float b) {
 		// TODO Auto-generated method stub
@@ -65,5 +71,7 @@ public class GradientDescent extends Backpropagation {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+
 
 }
