@@ -82,4 +82,37 @@ public class GradientDescentTest{
 		float actual = sut.calculateGradientInputOverError(activationFunction, gradient, Ih, Who, a, b);
 		assertEquals(expected,actual);
 	}
+	
+	/**
+	 * Test for function that calculates delta weight for Who, where h sending neuron 
+	 * and o receiver.
+	 * Io - neuron input
+	 * ∂(E)^2/∂Io = gradient
+	 * (∂E^2/∂Io) => 2E  - first step of derivation
+	 * (∂f(Io)/∂Io) => f'(Io)
+	 * 2E * fo'(Io) = gradient
+	 * ∂(E)^2/∂Ih = (∂E^2/∂Io) * (∂Io/∂Oh) * (∂Oh/∂Ih) = gradient
+	 * ∂(E)^2/∂Who = (∂E^2/∂Io) * (∂Io/∂Oh) * (∂Oh/∂Ih) * (∂Ih/∂Who)
+	 * (∂Ih/∂Who) => ∂(OpWpo+Op+1Wp+1o+ ..+OhWho) = Oh
+	 *  delta = gradient * Oh
+	 */
+	@Test
+	void testCalculateDeltaWeight() {
+		float[] Oh = {3f,4f,6f};
+		float Ih = 6f;
+		int neuronIdx = 1;
+		float error = 0.5f;
+		float Who = 0.045f; /* weight from neuron h to o*/
+
+		float softmaxDerivative = 0.10115465582f;
+		
+		float sigmoidDerivative = 0.00493301858f;
+		float gradient = 2 * error * softmaxDerivative;
+		/* expected = 0.10115465582 * 0.045f * 0.00493301858f = 0.0000224549 */
+		float gradient1 = gradient * Who * sigmoidDerivative;
+		float expected = gradient1 * Oh[neuronIdx]; 
+		/* Oh[neuronIdx] - output of sending neuron */
+		float actual = sut.calculateDeltaWeight(gradient, Oh[neuronIdx]);
+		assertEquals(expected,actual);
+	}
 }

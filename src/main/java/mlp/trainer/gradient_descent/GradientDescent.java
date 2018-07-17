@@ -91,6 +91,11 @@ public class GradientDescent extends Backpropagation {
 		return 0;
 	}
 
+	public float calculateDeltaWeight(float gradient, float Oh) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 
 
 }
