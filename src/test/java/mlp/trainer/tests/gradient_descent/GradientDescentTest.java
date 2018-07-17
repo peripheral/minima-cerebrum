@@ -62,7 +62,7 @@ public class GradientDescentTest{
 	 */
 	@Test
 	void testCalculateGradientInputToErrorInPreceedingLayers() {
-		ACTIVATION_FUNCTION outputActivationFunction = ACTIVATION_FUNCTION.SIGMOID;
+		ACTIVATION_FUNCTION activationFunction = ACTIVATION_FUNCTION.SIGMOID;
 		float a = 1;
 		float b = 1;
 		float[] Io = {3f,4f,6f};
@@ -79,7 +79,7 @@ public class GradientDescentTest{
 		float gradient = 2 * error * softmaxDerivative;
 		/* expected = 0.10115465582 * 0.045f * 0.00493301858f = 0.0000224549 */
 		float expected = gradient * Who * sigmoidDerivative;
-		float actual = sut.calculateGradientInputOverError(outputActivationFunction, gradient, Io, neuronIdx, a, b);
+		float actual = sut.calculateGradientInputOverError(activationFunction, gradient, Ih, Who, a, b);
 		assertEquals(expected,actual);
 	}
 }

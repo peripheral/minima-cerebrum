@@ -2,6 +2,7 @@ package mlp.trainer.gradient_descent;
 
 import math.utils.StatisticUtils;
 import mlp.ANN_MLP.ACTIVATION_FUNCTION;
+import mlp.NeuronFunctionModels;
 import mlp.trainer.Backpropagation;
 
 public class GradientDescent extends Backpropagation {
@@ -49,11 +50,29 @@ public class GradientDescent extends Backpropagation {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	
-	public float calculateGradientInputOverError(ACTIVATION_FUNCTION outputActivationFunction, float error, float[] io,
-			int neuronIdx, float a, float b) {
-		// TODO Auto-generated method stub
-		return 0;
+
+	/**
+	 * 	 * Function calculates gradient for following(Hidden) layer gradients by using gradient of output layer.
+	 * Gradient_l-1 = Gradient * Who * fsig'(Ih)
+	 * @param activFunction - type of activation function
+	 * @param gradient - gradient of upper layer
+	 * @param Ih - netinput to neuron h
+	 * @param Who - weight from neuron H to Neuron O
+	 * @param a
+	 * @param b
+	 * @return
+	 */
+	public float calculateGradientInputOverError(ACTIVATION_FUNCTION activFunction, float gradient,float Ih, float Who, float a, float b) {
+		float derivativeActivationFunction = 0;
+		switch(activFunction) {
+		case SIGMOID:
+			derivativeActivationFunction = NeuronFunctionModels.derivativeOf(activFunction, a, b, Ih);
+			break;		
+		default: 
+			System.err.println("Activation function:"+activFunction+" not supported.");
+			break;
+		}
+		return gradient * Who * derivativeActivationFunction;
 	}
 
 	public float calculateDelta(COST_FUNCTION_TYPE squaredError, float error, float io, float a, float b) {
