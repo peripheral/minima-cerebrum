@@ -91,9 +91,18 @@ public class GradientDescent extends Backpropagation {
 		return 0;
 	}
 
+	/**
+	 * Produces delta weight from gradient and the sending neuron output
+	 * ∂(E)^2/∂Ih = (∂E^2/∂Io) * (∂Io/∂Oh) * (∂Oh/∂Ih) = gradient
+	 * ∂(E)^2/∂Who = (∂E^2/∂Io) * (∂Io/∂Oh) * (∂Oh/∂Ih) * (∂Ih/∂Who)
+	 * (∂Ih/∂Who) => ∂(OpWpo+Op+1Wp+1o+ ..+OhWho) = Oh
+	 *  delta = gradient * Oh
+	 * @param gradient
+	 * @param Oh
+	 * @return
+	 */
 	public float calculateDeltaWeight(float gradient, float Oh) {
-		// TODO Auto-generated method stub
-		return 0;
+		return gradient * Oh;
 	}
 
 
