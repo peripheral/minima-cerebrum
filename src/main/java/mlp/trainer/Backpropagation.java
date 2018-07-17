@@ -25,6 +25,10 @@ public class Backpropagation {
 		this.trainingData = td;
 	}
 
+	/**
+	 * Calculates total error as sum by applying the training data on ann mlp
+	 * @return
+	 */
 	public float[] calCulateMeanSquaredErrorPerNeuron() {
 		double[] MSE = new double[mlp.getOutputLayer().size()];
 		float[][] inputs = trainingData.getInputs();

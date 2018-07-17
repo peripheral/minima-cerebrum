@@ -8,7 +8,7 @@ import mlp.trainer.TrainingData;
 public class ANN_MLP {
 
 	public static enum WEIGHT_INITIATION_METHOD{CONSTANT, RANDOM};
-	public static enum ACTIVATION_FUNCTION{SIGMOID, GAUSSIAN, IDENTITY};
+	public static enum ACTIVATION_FUNCTION{SIGMOID, GAUSSIAN, IDENTITY, SOFTMAX};
 	public static enum LAYER_TYPE{INPUT,HIDDEN,OUTPUT}
 	private NeuronLayer[] layers = null;
 	public WEIGHT_INITIATION_METHOD DEFAULT_WEIGHT_INITIATION_METHOD = WEIGHT_INITIATION_METHOD.CONSTANT;
@@ -37,6 +37,11 @@ public class ANN_MLP {
 	public ANN_MLP(WEIGHT_INITIATION_METHOD weightInitiationMethod, int[] layerSizes) {
 		this(layerSizes);
 		initiationMethod = weightInitiationMethod;
+	}
+
+	public ANN_MLP(WEIGHT_INITIATION_METHOD weightInitiationMethod, boolean useSoftmax, int[] layerSizes) {
+		this(weightInitiationMethod,layerSizes);
+		setUseSoftmaxOnOutput(useSoftmax);
 	}
 
 	public int[] getLayerSizes() {
