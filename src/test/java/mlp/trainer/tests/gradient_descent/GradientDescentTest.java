@@ -43,7 +43,7 @@ public class GradientDescentTest{
 		float softmaxDerivative = 0.10115465582f;
 		/* Gradient 2 * E * derivative =  2 * 0.5 * 0.10115465582 = 0.10115465582  */
 		float expected = 2 * error * softmaxDerivative;
-		float actual = sut.calculateGradientInputOverError(costFType, outputActivationFunction, error, Io[neuronIdx], a, b);
+		float actual = sut.calculateGradientInputOverError(costFType, outputActivationFunction, error, Io, neuronIdx, a, b);
 		assertEquals(expected,actual);
 	}
 }
