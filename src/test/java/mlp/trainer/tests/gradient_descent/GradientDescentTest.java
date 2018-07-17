@@ -99,18 +99,12 @@ public class GradientDescentTest{
 	@Test
 	void testCalculateDeltaWeight() {
 		float[] Oh = {3f,4f,6f};
-		float Ih = 6f;
 		int neuronIdx = 1;
 		float error = 0.5f;
-		float Who = 0.045f; /* weight from neuron h to o*/
-
 		float softmaxDerivative = 0.10115465582f;
-		
-		float sigmoidDerivative = 0.00493301858f;
+
 		float gradient = 2 * error * softmaxDerivative;
-		/* expected = 0.10115465582 * 0.045f * 0.00493301858f = 0.0000224549 */
-		float gradient1 = gradient * Who * sigmoidDerivative;
-		float expected = gradient1 * Oh[neuronIdx]; 
+			float expected = gradient * Oh[neuronIdx]; 
 		/* Oh[neuronIdx] - output of sending neuron */
 		float actual = sut.calculateDeltaWeight(gradient, Oh[neuronIdx]);
 		assertEquals(expected,actual);
