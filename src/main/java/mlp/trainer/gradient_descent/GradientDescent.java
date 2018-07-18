@@ -106,10 +106,18 @@ public class GradientDescent extends Backpropagation {
 		return gradient * Oh * currentWeight;
 	}
 
-	public float calculateWeight(float deltaWeight, float oldDelta, float learningRate, float momentum,
+	/**
+	 * Calcualtes new weight
+	 * @param gradient -  ∂(E)^2/∂Who
+	 * @param oldGradient - gradient previously used weight to calc
+	 * @param learningRate - learning rate, factor decreases
+	 * @param momentum - to help to progress through low gradient
+	 * @param oldWeight - old Weight
+	 * @return oldWeight - (learningRate * gradient * oldWeight) - (momentum * oldGradient * oldWeight)
+	 */
+	public float calculateWeight(float gradient, float oldGradient, float learningRate, float momentum,
 			float oldWeight) {
-		// TODO Auto-generated method stub
-		return 0;
+		return oldWeight - (learningRate * gradient * oldWeight) - (momentum * oldGradient * oldWeight);
 	}
 	
 	
