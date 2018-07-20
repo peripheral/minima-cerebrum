@@ -23,7 +23,7 @@ public class GradientDescent extends Backpropagation {
 	 * 2E * fo'(Io) = gradient
 	 * @return
 	 */
-	public float calculateGradientInputOverError(COST_FUNCTION_TYPE costFType, ACTIVATION_FUNCTION activationFType,
+	public float calculateNodeGradient(COST_FUNCTION_TYPE costFType, ACTIVATION_FUNCTION activationFType,
 			float error, float[] io, int neuronIdx, float a, float b) {
 		float partialDerivative = 0;
 		switch(activationFType) {
@@ -37,19 +37,34 @@ public class GradientDescent extends Backpropagation {
 		float result = 2 * error * partialDerivative;
 		return result;
 	}
-
+	
 	/**
-	 * 
-	 * @param costFType - type of cost function to apply
-	 * @param error - (predicted - required)
-	 * @param neuronIdx 
-	 * @param io - array with net inputs for output layer 
+	 * Function calculates gradient from error and given input and activation of layer
+	 * function parameters parameter a = 1 and b = 1
+	 * @param costFType -type of cost function 
+	 * @param activationFType - type of fo(.)
+	 * @param error - (predicted - required )
+	 * @param io - net input of the output neuron
+	 * 2E * fo'(Io) = gradient
 	 * @return
 	 */
-	public float calculateGradientInputOverError(COST_FUNCTION_TYPE costFType, float error,int neuronIdx, float[] io) {
-		// TODO Auto-generated method stub
-		return 0;
+	public float calculateGradientInputOverError(COST_FUNCTION_TYPE costFType, ACTIVATION_FUNCTION activationFType,
+			float error, float[] io, int neuronIdx) {
+		
+		float partialDerivative = 0;
+		switch(activationFType) {
+		case SOFTMAX:
+			partialDerivative = StatisticUtils.calculateSoftmaxPartialDerivative(io, neuronIdx);
+			break;
+		default:
+			System.err.println("Derivative of "+activationFType+" not implemented");
+			break;
+		}
+		float result = 2 * error * partialDerivative;
+		return result;
 	}
+
+
 
 	/**
 	 * 	 * Function calculates gradient for following(Hidden) layer gradients by using gradient of output layer.
@@ -62,8 +77,32 @@ public class GradientDescent extends Backpropagation {
 	 * @param b
 	 * @return
 	 */
-	public float calculateGradientInputOverError(ACTIVATION_FUNCTION activFunction, float gradient,float Ih, float Who, float a, float b) {
+	public float calculateNodeGradient(ACTIVATION_FUNCTION activFunction, float gradient,float Ih, float Who, float a, float b) {
 		float derivativeActivationFunction = 0;
+		switch(activFunction) {
+		case SIGMOID:
+			derivativeActivationFunction = NeuronFunctionModels.derivativeOf(activFunction, a, b, Ih);
+			break;		
+		default: 
+			System.err.println("Activation function:"+activFunction+" not supported.");
+			break;
+		}
+		return gradient * Who * derivativeActivationFunction;
+	}
+	
+	/**
+	 * Function calculates gradient for following(Hidden) layer gradients by using gradient of output layer.
+	 * param a = 1, param b = 1
+	 * Gradient_l-1 = Gradient * Who * fsig'(Ih)
+	 * @param activFunction - type of activation function
+	 * @param gradient - gradient of upper layer
+	 * @param Ih - netinput to neuron h
+	 * @param Who - weight from neuron H to Neuron O
+	 * @return
+	 */
+	public float calculateGradientInputOverError(ACTIVATION_FUNCTION activFunction, float gradient,float Ih, float Who) {
+		float derivativeActivationFunction = 0;
+		float a = 1,b = 1;
 		switch(activFunction) {
 		case SIGMOID:
 			derivativeActivationFunction = NeuronFunctionModels.derivativeOf(activFunction, a, b, Ih);
@@ -119,6 +158,40 @@ public class GradientDescent extends Backpropagation {
 			float oldWeight) {
 		return oldWeight - (learningRate * gradient * oldWeight) - (momentum * oldGradient * oldWeight);
 	}
+
+	public void trainOnSample(float[] inputRow, float[] targetRow) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public COST_FUNCTION_TYPE getCostFunctionType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public float getMomentum() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public void setMomentum(float momentum) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public float[] calculateNodeGradient(ACTIVATION_FUNCTION activationFunction, float[] outputNodeGradients, float ih,
+			float[] who, float a, float b) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public float[] calculateNodeGradient(ACTIVATION_FUNCTION activationFunction, float[] outputNodeGradients, float ih,
+			float[] who) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 	
 	
 }

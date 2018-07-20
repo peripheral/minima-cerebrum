@@ -14,6 +14,7 @@ import mlp.ANN_MLP.WEIGHT_INITIATION_METHOD;
 import mlp.NeuronFunctionModels;
 import mlp.trainer.Backpropagation;
 import mlp.trainer.TrainingData;
+import mlp.trainer.Backpropagation.COST_FUNCTION_TYPE;
 
 public class BackpropagationTest {
 	private Backpropagation sut;
@@ -105,4 +106,5 @@ public class BackpropagationTest {
 		float actual = sut.getApproximateErrorMinimum();
 		assertEquals(expected,actual);
 	}
+	
 }

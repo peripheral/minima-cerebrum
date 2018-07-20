@@ -76,6 +76,21 @@ public class Backpropagation {
 		}
 		return null;
 	}
+	
+	public void setCostFunctionType(COST_FUNCTION_TYPE squaredError) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public float getLearningRate() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
 
+	public void setLearningRate(float momentum) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }
