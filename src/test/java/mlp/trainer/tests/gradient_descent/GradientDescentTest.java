@@ -59,10 +59,9 @@ public class GradientDescentTest{
 	 * (∂E^2/∂Io) => 2E  - first step of derivation
 	 * (∂f(Io)/∂Io) => f'(Io), f(.) - softmax
 	 * 2E * fo'(Io) = gradient
-	 * ∂(E)^2/∂Ih = (∂E^2/∂Io) * (∂Io/∂Oh) * (∂Oh/∂Ih)
-	 * ∂Io/∂Oh => ∂(OpWpo + Op+1Wp+1 .. OhWho )/∂Oh => Who 
-	 * ∂Oh/∂Ih => fsig'(Ih)
-	 *  Gradient_l-1 = Gradient * Who * fsig'(Ih)
+	 * hidden node gradient = f'(Ih)*(Whi* Gradrient_i + Whi+1* Gradrient_i+1 .. + )
+	 * Ih - input to node, Whi - weight from node h to node i, Gradient_i - gradient for neuron 
+	 * for node i 
 	 */
 	@Test
 	void testCalculationNodeGradient() {
@@ -81,10 +80,10 @@ public class GradientDescentTest{
 		float sigmoidDerivative = 0.00493301858f;
 		/* Gradient = 2 * E * derivative =  2 * 0.5 * 0.10115465582 = 0.10115465582  */
 		float[] outputNodeGradients = { 2 * error * softmaxDerivative,  2 * error * softmaxDerivative};
-		/* expected = 0.10115465582 * 0.045f * 0.00493301858f = 0.0000224549 */
-		float[] expected = {outputNodeGradients[0] * Who[0] * sigmoidDerivative,outputNodeGradients[1] * Who[1] * sigmoidDerivative};
-		float[] actual = sut.calculateNodeGradient(activationFunction, outputNodeGradients, Ih, Who);
-		assertArrayEquals(expected,actual);
+		/* Gradient = f'(neuronInput)* (Whi* Gradrient_i + Whi+1* Gradrient_i+1 .. )*/
+		float expected = outputNodeGradients[0] * Who[0] * sigmoidDerivative + outputNodeGradients[1] * Who[1] * sigmoidDerivative;
+		float actual = sut.calculateNodeGradient(activationFunction, outputNodeGradients, Ih, Who);
+		assertEquals(expected,actual);
 	}
 	
 	/**

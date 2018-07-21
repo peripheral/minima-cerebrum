@@ -11,6 +11,8 @@ public class Backpropagation {
 	protected TrainingData trainingData;
 	private float defaultErrorMinimimg = 0.1f;
 	private float approximateErrorMinimum = defaultErrorMinimimg;
+	private float learningRate = 0.001f;
+	private COST_FUNCTION_TYPE costFunctionType;
 
 	public enum COST_FUNCTION_TYPE {
 		SQUARED_ERROR
@@ -77,20 +79,20 @@ public class Backpropagation {
 		return null;
 	}
 	
-	public void setCostFunctionType(COST_FUNCTION_TYPE squaredError) {
-		// TODO Auto-generated method stub
-		
+	public void setCostFunctionType(COST_FUNCTION_TYPE costFunctionType) {
+		this.costFunctionType = costFunctionType;		
 	}
 	
 	public float getLearningRate() {
-		// TODO Auto-generated method stub
-		return 0;
+		return learningRate;
 	}
 	
 
-	public void setLearningRate(float momentum) {
-		// TODO Auto-generated method stub
-		
+	public void setLearningRate(float learningRate) {
+		this.learningRate = learningRate;		
 	}
 
+	public COST_FUNCTION_TYPE getCostFunctionType() {
+		return costFunctionType;
+	}
 }

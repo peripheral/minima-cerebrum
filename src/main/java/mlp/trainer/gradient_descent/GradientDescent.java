@@ -7,6 +7,11 @@ import mlp.trainer.Backpropagation;
 
 public class GradientDescent extends Backpropagation {
 
+	/**
+	 * Default momentum
+	 */
+	private float momentum = 0.00001f;
+
 	public void getDeltasForLayer(int layerId) {
 		// TODO Auto-generated method stub
 
@@ -164,18 +169,12 @@ public class GradientDescent extends Backpropagation {
 		
 	}
 
-	public COST_FUNCTION_TYPE getCostFunctionType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public float getMomentum() {
-		// TODO Auto-generated method stub
-		return 0;
+		return momentum;
 	}
 
 	public void setMomentum(float momentum) {
-		// TODO Auto-generated method stub
+		this.momentum = momentum;
 		
 	}
 
@@ -185,10 +184,17 @@ public class GradientDescent extends Backpropagation {
 		return null;
 	}
 
-	public float[] calculateNodeGradient(ACTIVATION_FUNCTION activationFunction, float[] outputNodeGradients, float ih,
+	public float calculateNodeGradient(ACTIVATION_FUNCTION activationFunction, float[] outputNodeGradients, float ih,
 			float[] who) {
-		// TODO Auto-generated method stub
-		return null;
+		float a = 1;
+		float b = 1;
+		float gradient = NeuronFunctionModels.derivativeOf(activationFunction, a, b,ih);
+		float result = 0;
+		int counter = 0;
+		for(float outNodGrad:outputNodeGradients) {
+			result = result + gradient * outNodGrad * who[counter++];
+		}
+		return result;
 	}
 
 
