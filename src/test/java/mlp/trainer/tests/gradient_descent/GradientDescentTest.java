@@ -114,6 +114,7 @@ public class GradientDescentTest{
 	
 	/**
 	 *Test for update weight rule
+	 * Learning rate 
 	 */
 	@Test
 	void testUpdateWeightRule() {
@@ -123,14 +124,25 @@ public class GradientDescentTest{
 		float oldDelta = 0.004f;
 		float softmaxDerivative = 0.10115465582f;
 		float currentWeight = 0.03f;
-		float oldWeight = currentWeight;
 		float momentum = 0;
+		/* Gradient = 2* 0.5 * 0.10115465582f */
 		float gradient = 2 * error * softmaxDerivative;
 		float learningRate = 0.001f;
+		/* Delta weight = 0.10115465582f * 4f ~ 0.4044  */
 		float deltaWeight = sut.calculateDeltaWeight(gradient, Oh[neuronIdx]);
-		/* Oh[neuronIdx] - output of sending neuron */
-		float actual =  sut.calculateWeight(deltaWeight,oldDelta, learningRate,momentum,oldWeight);
-		float expected = oldWeight - (learningRate * deltaWeight * currentWeight) - (momentum * oldDelta * currentWeight);
+		if(deltaWeight > 0 && learningRate > 0) {
+			learningRate = learningRate * -1;
+		}else if(deltaWeight < 0 && learningRate < 0) {
+			learningRate = learningRate * -1;
+		}
+		/* Oh[neuronIdx] - output of sending neuron 
+		 * case: deltaWeight < 0
+		 * new_weight = dletaWeightOld*momentum + learningRate*deltaWeight 
+		 * case:deltaWeight > 0
+		 * new_weight = dletaWeightOld*momentum + learningRate*deltaWeight * -1
+		 */
+		float actual =  sut.calculateWeight(deltaWeight,oldDelta, learningRate,momentum,currentWeight);
+		float expected = currentWeight + learningRate * deltaWeight + (momentum * oldDelta);
 		assertEquals(expected,actual);
 	}	
 	

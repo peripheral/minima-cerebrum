@@ -143,7 +143,7 @@ public class GradientDescent extends Backpropagation {
 	 *  delta = gradient * Oh
 	 * @param gradient - gradient of neuron
 	 * @param Oh - output of neuron h
-	 * @return
+	 * @return - gradient * Oh
 	 */
 	public float calculateDeltaWeight(float gradient, float Oh) {
 		return gradient * Oh;
@@ -151,16 +151,16 @@ public class GradientDescent extends Backpropagation {
 
 	/**
 	 * Calcualtes new weight
-	 * @param gradient -  ∂(E)^2/∂Who
-	 * @param oldGradient - gradient previously used weight to calc
+	 * @param deltaWeight -  ∂(E)^2/∂Who
+	 * @param oldDeltaWeight - gradient previously used weight to calc
 	 * @param learningRate - learning rate, factor decreases
 	 * @param momentum - to help to progress through low gradient
-	 * @param oldWeight - old Weight
-	 * @return oldWeight - (learningRate * gradient * oldWeight) - (momentum * oldGradient * oldWeight)
+	 * @param currentWeight - initial weight
+	 * @return currentWeight + learningRate * deltaWeight + momentum * oldDeltaWeight
 	 */
-	public float calculateWeight(float gradient, float oldGradient, float learningRate, float momentum,
-			float oldWeight) {
-		return oldWeight - (learningRate * gradient * oldWeight) - (momentum * oldGradient * oldWeight);
+	public float calculateWeight(float deltaWeight, float oldDeltaWeight, float learningRate, float momentum,
+			float currentWeight) {
+		return currentWeight + learningRate * deltaWeight + (momentum * oldDeltaWeight);
 	}
 
 	public void trainOnSample(float[] inputRow, float[] targetRow) {
