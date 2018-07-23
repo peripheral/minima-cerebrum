@@ -105,11 +105,10 @@ public class GradientDescentTest{
 		int neuronIdx = 1;
 		float error = 0.5f;
 		float softmaxDerivative = 0.10115465582f;
-		float currentWeight = 0.03f;
 		float gradient = 2 * error * softmaxDerivative;
-		float expected = gradient * Oh[neuronIdx] * currentWeight; 
+		float expected = gradient * Oh[neuronIdx]; 
 		/* Oh[neuronIdx] - output of sending neuron */
-		float actual = sut.calculateDeltaWeight(gradient, Oh[neuronIdx], currentWeight);
+		float actual = sut.calculateDeltaWeight(gradient, Oh[neuronIdx]);
 		assertEquals(expected,actual);
 	}
 	
@@ -128,7 +127,7 @@ public class GradientDescentTest{
 		float momentum = 0;
 		float gradient = 2 * error * softmaxDerivative;
 		float learningRate = 0.001f;
-		float deltaWeight = sut.calculateDeltaWeight(gradient, Oh[neuronIdx], currentWeight);
+		float deltaWeight = sut.calculateDeltaWeight(gradient, Oh[neuronIdx]);
 		/* Oh[neuronIdx] - output of sending neuron */
 		float actual =  sut.calculateWeight(deltaWeight,oldDelta, learningRate,momentum,oldWeight);
 		float expected = oldWeight - (learningRate * deltaWeight * currentWeight) - (momentum * oldDelta * currentWeight);
@@ -242,6 +241,7 @@ public class GradientDescentTest{
 	
 	/**
 	 * test of get default learning momentum 
+	 * 
 	 */
 	@Test
 	void testGetDefaultLearningRate() {

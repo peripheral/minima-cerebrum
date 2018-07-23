@@ -141,13 +141,12 @@ public class GradientDescent extends Backpropagation {
 	 * ∂(E)^2/∂Who = (∂E^2/∂Io) * (∂Io/∂Oh) * (∂Oh/∂Ih) * (∂Ih/∂Who)
 	 * (∂Ih/∂Who) => ∂(OpWpo+Op+1Wp+1o+ ..+OhWho) = Oh
 	 *  delta = gradient * Oh
-	 * @param gradient
-	 * @param Oh
-	 * @param currentWeight - weight
+	 * @param gradient - gradient of neuron
+	 * @param Oh - output of neuron h
 	 * @return
 	 */
-	public float calculateDeltaWeight(float gradient, float Oh, float currentWeight) {
-		return gradient * Oh * currentWeight;
+	public float calculateDeltaWeight(float gradient, float Oh) {
+		return gradient * Oh;
 	}
 
 	/**
