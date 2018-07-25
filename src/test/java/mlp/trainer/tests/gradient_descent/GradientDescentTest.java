@@ -3,6 +3,8 @@ package mlp.trainer.tests.gradient_descent;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Arrays;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +16,7 @@ import mlp.trainer.TrainingData;
 import mlp.trainer.gradient_descent.GradientDescent;
 
 public class GradientDescentTest{
-	
+
 	/**
 	 * System under test
 	 */
@@ -24,7 +26,7 @@ public class GradientDescentTest{
 	void init() {
 		sut = new GradientDescent();
 	}
-	
+
 	/**
 	 * Test for function that calculates gradient of input to error in output layer
 	 * of the output neuron
@@ -50,7 +52,7 @@ public class GradientDescentTest{
 		float actual = sut.calculateNodeGradient(costFType, outputActivationFunction, error, Io, neuronIdx, a, b);
 		assertEquals(expected,actual);
 	}
-	
+
 	/**
 	 * Test for function that calculates gradient of input to error in output layer
 	 * of the output neuron
@@ -85,7 +87,7 @@ public class GradientDescentTest{
 		float actual = sut.calculateNodeGradient(activationFunction, outputNodeGradients, Ih, Who);
 		assertEquals(expected,actual);
 	}
-	
+
 	/**
 	 * Test for function that calculates delta weight for Who, where h sending neuron 
 	 * and o receiver.
@@ -111,7 +113,7 @@ public class GradientDescentTest{
 		float actual = sut.calculateDeltaWeight(gradient, Oh[neuronIdx]);
 		assertEquals(expected,actual);
 	}
-	
+
 	/**
 	 *Test for update weight rule
 	 * Learning rate 
@@ -145,66 +147,91 @@ public class GradientDescentTest{
 		float expected = currentWeight + learningRate * deltaWeight + (momentum * oldDelta);
 		assertEquals(expected,actual);
 	}	
-	
+
 	/**
 	 * Test for whole learning cycle of online learning
 	 * test MLP consists of input layer size 3, hidden layer 4 neurons, 3 output neurons
 	 * hidden layer activation function sigmoid, output activation softmax
 	 */
-//	@Test
-//	void testGradientDecentOneSample() {
-//		int[] layerSizes = new int[] {3,4,3};
-//		boolean useSoftmax = true;
-//		int trainingRowId = 0;
-//		COST_FUNCTION_TYPE costFType = COST_FUNCTION_TYPE.SQUARED_ERROR;
-//		ANN_MLP mlp = new ANN_MLP(WEIGHT_INITIATION_METHOD.RANDOM, useSoftmax, layerSizes);
-//		mlp.initiate();
-//		sut.setMLP(mlp);
-//		float[][] data = {{1f,0f,0f,1f,0f,0f},
-//				{0f,1f,0f,1f,0f,0f},
-//				{0f,0f,1f,1f,0f,0f},
-//				{1f,1f,0f,0f,1f,0f},
-//				{0f,1f,1f,0f,1f,0f},
-//				{1f,0f,1f,0f,1f,0f},
-//				{1f,1f,1f,0f,0f,1f},
-//				{0f,0f,0f,0f,0f,1f},
-//				{1f,1f,1f,0f,0f,1f}};
-//		TrainingData td = new TrainingData(data, 3);
-//		sut.setTrainingData(td);	
-//		sut.setCostFunctionType(COST_FUNCTION_TYPE.SQUARED_ERROR);
-//		sut.trainOnSample(td.getInputRow(trainingRowId),td.getTargetRow(trainingRowId));
-//		float[][] weights = mlp.getWeights();
-//		float[][] weightsExpected = new float[weights.length][weights[0].length];
-//		float[] errorVector = sut.getErrorPerNeuron(costFType, td.getInputRow(trainingRowId), td.getTargetRow(trainingRowId));
-//		float[] gradient = new float[errorVector.length]; 
-//		float[] weightGradient ;
-//		float momentum = sut.getMomentum();
-//		int outputLayerIdx = mlp.getLayerSizes().length -1;
-//		float[] io = mlp.getLayer(outputLayerIdx).getNetInputs();
-//		ACTIVATION_FUNCTION activationFType = ACTIVATION_FUNCTION.SOFTMAX;
-//		/* Produce error gradient per neuron */
-//		for(int errIdx = 0; errIdx < errorVector.length; errIdx++ ) {
-//			gradient[errIdx] = sut.calculateGradientInputOverError(costFType, activationFType, errorVector[errIdx], io, errIdx);
-//		}
-//		float oldGradient = 0;
-//		float[] inputs;
-//		float learningRate = sut.getLearningRate();
-//		int neuronId = 0;
-//		/* for each layer calculate new weights */
-//		for(int layerIdx = weights.length-1; layerIdx > 0 ; layerIdx--) {
-//			if(layerIdx < weights.length-1) {
-//				inputs = mlp.getLayer(layerIdx).getNetInputs();
-//				for(int neuronIdx = 0; neuronIdx < errorVector.length; neuronIdx++ ) {
-//					//gradient[neuronIdx] = sut.calculateGradientInputOverError(activationFType, gradient, inputs[0], weights[layerIdx][0]);
-//				}
-//			}
-//			for(int weightIdx = 0; weightIdx < weights[layerIdx].length; weightIdx++) {
-//				weightsExpected[layerIdx][weightIdx] = sut.calculateWeight(gradient[neuronId], oldGradient, learningRate, momentum, weights[layerIdx][weightIdx]);
-//				
-//			}
-//		}
-//	}	
-//	
+	@Test
+	void testGradientDecentOneSample() {
+		int[] layerSizes = new int[] {3,4,3};
+		float[][] data = getTrainingDataGD();
+		TrainingData td = new TrainingData(data, 3);
+		boolean useSoftmax = true;
+		int trainingRowId = 0;
+		COST_FUNCTION_TYPE costFType = COST_FUNCTION_TYPE.SQUARED_ERROR;
+		ANN_MLP mlp = new ANN_MLP(WEIGHT_INITIATION_METHOD.RANDOM, useSoftmax, layerSizes);
+		mlp.initiate();
+		sut.setMLP(mlp);	
+		sut.setTrainingData(td);	
+		sut.setCostFunctionType(COST_FUNCTION_TYPE.SQUARED_ERROR);
+		sut.trainOnSample(td.getInputRow(trainingRowId),td.getTargetRow(trainingRowId));
+		float[][] weights = mlp.getWeights();
+		float[][] expectedWeights = new float[weights.length][weights[0].length];
+		float[] errorVector = sut.getErrorPerNeuron(costFType, td.getInputRow(trainingRowId), td.getTargetRow(trainingRowId));
+		float[][] gradients = new float[mlp.getLayerSizes().length][]; 
+
+		float momentum = sut.getMomentum();
+		int outputLayerIdx = mlp.getLayerSizes().length -1;
+		float[] io = mlp.getLayer(outputLayerIdx).getNetInputs();
+
+		float oldGradient = 0;
+		float[] inputs;
+		float learningRate = 0.01f;
+		sut.setLearningRate(learningRate);
+		int neuronId = 0;
+		ACTIVATION_FUNCTION activationFType = ACTIVATION_FUNCTION.SOFTMAX;
+		/* Produce error gradient for each output neuron */
+		gradients[outputLayerIdx] = new float[errorVector.length];
+		for(int errIdx = 0; errIdx < errorVector.length; errIdx++ ) {
+			gradients[outputLayerIdx][errIdx] = sut.calculateNodeGradient(costFType, activationFType, errorVector[errIdx], io, errIdx);
+		}
+		activationFType = ACTIVATION_FUNCTION.SIGMOID;
+		/* Calculate gradients per weight layer */
+		for(int layerIdx = mlp.getLayerSizes().length-2; layerIdx >= 0 ; layerIdx--) {
+			/* Retrieve inputs for the layer */
+			inputs = mlp.getLayer(layerIdx).getNetInputs();
+			gradients[layerIdx] = new float[inputs.length];
+			/* calculate gradients per neuron of current neuron layer */
+			for(int neuronIdx = 0; neuronIdx < errorVector.length; neuronIdx++ ) {
+				gradients[layerIdx][neuronIdx] = sut.calculateNodeGradient(activationFType, gradients[layerIdx+1], inputs[neuronIdx], weights[layerIdx]);
+			}
+		}
+
+		/* Calculate weights per layer */
+		for(int layerIdx = weights.length-1; layerIdx >= 0 ; layerIdx--) {
+			for(int weightIdx = 0; weightIdx < weights[layerIdx].length; weightIdx++) {
+				/* Gradient must be negative to reach a valley. set Learning rate to negative to 
+				 * make delta negative */
+				if(gradients[layerIdx][neuronId] > 0 && learningRate > 0) {
+					learningRate = learningRate * -1;
+				}else if(gradients[layerIdx][neuronId] < 0 && learningRate < 0){
+					learningRate = learningRate * -1;
+				}
+				expectedWeights[layerIdx][weightIdx] = sut.calculateWeight(gradients[layerIdx][neuronId], 
+						oldGradient, learningRate, momentum, weights[layerIdx][weightIdx]);				
+			}
+		}
+	
+		for(int layerIdx = 0; layerIdx < expectedWeights.length;layerIdx++  ) {
+			assertArrayEquals(expectedWeights[layerIdx],weights[layerIdx]);
+		}
+	}
+
+	private float[][] getTrainingDataGD() {
+		/* two dimensional array with 3 input and 3 output elements */
+		return new float[][]{{1f,0f,0f,1f,0f,0f},
+			{0f,1f,0f,1f,0f,0f},
+			{0f,0f,1f,1f,0f,0f},
+			{1f,1f,0f,0f,1f,0f},
+			{0f,1f,1f,0f,1f,0f},
+			{1f,0f,1f,0f,1f,0f},
+			{1f,1f,1f,0f,0f,1f},
+			{0f,0f,0f,0f,0f,1f},
+			{1f,1f,1f,0f,0f,1f}};		
+	}
+
 	/**
 	 * test of set get cost function
 	 */
@@ -216,7 +243,7 @@ public class GradientDescentTest{
 		COST_FUNCTION_TYPE actual = sut.getCostFunctionType();
 		assertEquals(expected, actual);
 	}
-	
+
 	/**
 	 * test of set get learning momentum
 	 */
@@ -228,7 +255,7 @@ public class GradientDescentTest{
 		float expected = 0.001f;
 		assertEquals(expected, actual);
 	}
-	
+
 	/**
 	 * test of get default learning momentum 
 	 */
@@ -238,7 +265,7 @@ public class GradientDescentTest{
 		float expected = 0.00001f;
 		assertEquals(expected, actual);
 	}
-	
+
 	/**
 	 * test of set get learning rate
 	 */
@@ -250,7 +277,7 @@ public class GradientDescentTest{
 		float expected = 0.001f;
 		assertEquals(expected, actual);
 	}
-	
+
 	/**
 	 * test of get default learning momentum 
 	 * 
@@ -261,5 +288,5 @@ public class GradientDescentTest{
 		float expected = 0.001f;
 		assertEquals(expected, actual);
 	}
-	
+
 }

@@ -42,7 +42,42 @@ public class GradientDescent extends Backpropagation {
 		float result = 2 * error * partialDerivative;
 		return result;
 	}
-	
+
+	/**
+	 * Function calculates gradient from error and given input and activation of layer function parameters.
+	 * paramaters a and b = 1;
+	 * @param costFType -type of cost function 
+	 * @param activationFType - type of fo(.)
+	 * @param error - (predicted - required )
+	 * @param io - net input of the output neurons
+	 * 2E * fo'(Io) = gradient
+	 * @return
+	 */
+	public float calculateNodeGradient(COST_FUNCTION_TYPE costFType, ACTIVATION_FUNCTION activationFType,
+			float error, float[] io, int neuronIdx) {
+		float a =1,b=1;
+		float partialDerivative = 0;
+		float result = 0;
+		switch(costFType) {
+
+		case SQUARED_ERROR:
+			switch(activationFType) {
+			case SOFTMAX:
+				partialDerivative = StatisticUtils.calculateSoftmaxPartialDerivative(io, neuronIdx);
+				result = 2 * error * partialDerivative;
+				break;
+			default:
+				System.err.println("Derivative of "+activationFType+" not implemented");
+				break;
+			}
+			break;
+		default:
+			System.err.println("Cost function "+costFType+" not implemented");
+			break;
+		}	
+		return result;
+	}
+
 	/**
 	 * Function calculates gradient from error and given input and activation of layer
 	 * function parameters parameter a = 1 and b = 1
@@ -55,7 +90,7 @@ public class GradientDescent extends Backpropagation {
 	 */
 	public float calculateGradientInputOverError(COST_FUNCTION_TYPE costFType, ACTIVATION_FUNCTION activationFType,
 			float error, float[] io, int neuronIdx) {
-		
+
 		float partialDerivative = 0;
 		switch(activationFType) {
 		case SOFTMAX:
@@ -94,7 +129,7 @@ public class GradientDescent extends Backpropagation {
 		}
 		return gradient * Who * derivativeActivationFunction;
 	}
-	
+
 	/**
 	 * Function calculates gradient for following(Hidden) layer gradients by using gradient of output layer.
 	 * param a = 1, param b = 1
@@ -165,7 +200,7 @@ public class GradientDescent extends Backpropagation {
 
 	public void trainOnSample(float[] inputRow, float[] targetRow) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public float getMomentum() {
@@ -174,7 +209,7 @@ public class GradientDescent extends Backpropagation {
 
 	public void setMomentum(float momentum) {
 		this.momentum = momentum;
-		
+
 	}
 
 	public float[] calculateNodeGradient(ACTIVATION_FUNCTION activationFunction, float[] outputNodeGradients, float ih,
@@ -187,7 +222,17 @@ public class GradientDescent extends Backpropagation {
 			float[] who) {
 		float a = 1;
 		float b = 1;
-		float gradient = NeuronFunctionModels.derivativeOf(activationFunction, a, b,ih);
+		float gradient = 0;
+		switch(activationFunction) {
+		case SOFTMAX:
+		//	gradient = StatisticUtils.calculateSoftmaxPartialDerivative(data, idx)
+			System.err.println("Error SOFTMAX is not implemented");
+			break;
+		case SIGMOID:
+			gradient =  NeuronFunctionModels.derivativeOf(activationFunction, a, b,ih);
+			break;
+		}
+		
 		float result = 0;
 		int counter = 0;
 		for(float outNodGrad:outputNodeGradients) {
@@ -197,6 +242,6 @@ public class GradientDescent extends Backpropagation {
 	}
 
 
-	
-	
+
+
 }
