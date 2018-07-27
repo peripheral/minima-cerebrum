@@ -97,7 +97,7 @@ public class StochasticGradientDescentTest {
 			expected[i] = (float) Math.pow(output[i] -target[i],2);
 		}
 	
-		float[] actual = sut.getErrorPerNeuron(COST_FUNCTION_TYPE.SQUARED_ERROR,td.getInputRow(rowIdx),td.getTargetRow(rowIdx));
+		float[] actual = sut.calculateErrorPerNeuron(COST_FUNCTION_TYPE.SQUARED_ERROR,td.getInputRow(rowIdx),td.getTargetRow(rowIdx));
 		assertArrayEquals(expected,actual);
 	}
 	

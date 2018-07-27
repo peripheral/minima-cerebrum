@@ -10,7 +10,7 @@ public class NeuronFunctionModels {
 		case SIGMOID:
 			return (float) (b*(1-Math.pow(Math.E,-a*x))/(1+Math.pow(Math.E,-a*x)));
 		default:
-			System.err.println("Unnknown type");
+			System.err.println("Unimplemented activation function type:"+type);
 			return -1;
 
 		}
@@ -21,7 +21,7 @@ public class NeuronFunctionModels {
 		case SIGMOID:
 			return (float) (b*a*2*(Math.pow(Math.E,-a*x))/Math.pow(1+Math.pow(Math.E,-a*x),2));
 		default:
-			System.err.println("Unnknown type");
+			System.err.println("Unimplemented activation function type:"+type);
 			return -1;
 		}
 	}

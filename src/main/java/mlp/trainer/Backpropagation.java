@@ -7,12 +7,12 @@ import mlp.trainer.Backpropagation.COST_FUNCTION_TYPE;
 
 public class Backpropagation {
 
-	private ANN_MLP mlp;
+	protected ANN_MLP mlp;
 	protected TrainingData trainingData;
 	private float defaultErrorMinimimg = 0.1f;
 	private float approximateErrorMinimum = defaultErrorMinimimg;
-	private float learningRate = 0.001f;
-	private COST_FUNCTION_TYPE costFunctionType;
+	protected float learningRate = 0.001f;
+	protected COST_FUNCTION_TYPE costFunctionType = COST_FUNCTION_TYPE.SQUARED_ERROR;
 
 	public enum COST_FUNCTION_TYPE {
 		SQUARED_ERROR
@@ -63,7 +63,7 @@ public class Backpropagation {
 		return approximateErrorMinimum;
 	}
 
-	public float[] getErrorPerNeuron(COST_FUNCTION_TYPE costFunctionType, float[] input, float[] target) {
+	public float[] calculateErrorPerNeuron(COST_FUNCTION_TYPE costFunctionType, float[] input, float[] target) {
 		switch(costFunctionType) {
 		case SQUARED_ERROR:
 			float[] result = mlp.predict(input);
@@ -83,6 +83,10 @@ public class Backpropagation {
 		this.costFunctionType = costFunctionType;		
 	}
 	
+	/**
+	 * Returns learning rate. Default - 0.1
+	 * @return
+	 */
 	public float getLearningRate() {
 		return learningRate;
 	}

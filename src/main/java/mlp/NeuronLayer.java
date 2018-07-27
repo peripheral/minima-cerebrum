@@ -132,4 +132,29 @@ public class NeuronLayer {
 		return useSoftmaxFuction;		
 	}
 
+	public void setNeuronGradient(int neuronIdx, float nodeGradient) {
+		neurons.get(neuronIdx).setNodeGradient(nodeGradient);
+	}
+
+	public float[] getNodeGradients() {
+		float[] gradients = new float[neurons.size()];	
+		for(int i = 0; i < gradients.length;i++) {
+			gradients[i] = neurons.get(i).getNodeGradient(); 
+		}
+		return gradients;
+	}
+
+	public void setWeight(int weightIdx, float weight) {
+		int counter = weightIdx;
+		for(Neuron n:neurons) {
+			
+			if(0 < counter - n.getWeights().size()) {
+				counter=-n.getWeights().size();
+			}else {
+				n.setWeight(counter, weight);
+				break;
+			}
+		}
+	}
+
 }
