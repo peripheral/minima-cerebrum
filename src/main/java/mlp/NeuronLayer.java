@@ -29,11 +29,14 @@ public class NeuronLayer {
 	}
 
 	public Neuron getNeuron(int i) {
+		if(neurons.size() == i) {
+			return bias;
+		}
 		return 	neurons.get(i);
 	}
 
 	/**
-	 * Returns size of layer, bias neuron is not included
+	 * Returns size of layer, bias included
 	 * @return
 	 */
 	public int size() {
@@ -86,7 +89,7 @@ public class NeuronLayer {
 
 	public float[] getOutputs() {
 		float[] outputs = new float[neurons.size()];
-	
+
 		if(useSoftmaxFuction) {
 			float[] inputs = new float[neurons.size()];
 			for(int i = 0;i < inputs.length;i++) {
@@ -136,6 +139,10 @@ public class NeuronLayer {
 		neurons.get(neuronIdx).setNodeGradient(nodeGradient);
 	}
 
+	/** 
+	 * Node gradients, bias excluded
+	 * @return
+	 */
 	public float[] getNodeGradients() {
 		float[] gradients = new float[neurons.size()];	
 		for(int i = 0; i < gradients.length;i++) {
@@ -145,16 +152,14 @@ public class NeuronLayer {
 	}
 
 	public void setWeight(int weightIdx, float weight) {
-		int counter = weightIdx;
-		for(Neuron n:neurons) {
-			
-			if(0 < counter - n.getWeights().size()) {
-				counter=-n.getWeights().size();
-			}else {
-				n.setWeight(counter, weight);
-				break;
-			}
+		int neuronIdx = weightIdx/neurons.get(0).getWeights().size();
+		int offset = weightIdx%neurons.get(0).getWeights().size();
+		if(neuronIdx == neurons.size()) {
+			bias.setWeight(offset, weight);
+		}else {
+			neurons.get(neuronIdx).setWeight(offset, weight);
 		}
+
 	}
 
 }

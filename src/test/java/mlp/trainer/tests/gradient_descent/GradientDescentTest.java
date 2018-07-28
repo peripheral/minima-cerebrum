@@ -168,72 +168,60 @@ public class GradientDescentTest{
 		sut.setTrainingData(td);	
 		sut.setCostFunctionType(COST_FUNCTION_TYPE.SQUARED_ERROR);
 		sut.setLearningRate(learningRate);
-		sut.trainOnSample(td.getInputRow(trainingRowId),td.getTargetRow(trainingRowId));
 		float[][] weights = mlp.getWeights();
+		sut.trainOnSample(td.getInputRow(trainingRowId),td.getTargetRow(trainingRowId));
+		/* Produce error gradient for each output neuron */
+		float[][] gradients = mlp.getNetworkNodeGradients(); 
+
 		float[][] expectedWeights = new float[weights.length][];
-		float[] errorVector = sut.calculateErrorPerNeuron(costFType, td.getInputRow(trainingRowId), td.getTargetRow(trainingRowId));
-		float[][] gradients = new float[mlp.getLayerSizes().length][]; 
 
 		float momentum = sut.getMomentum();
-		int outputLayerIdx = mlp.getLayerSizes().length -1;
-		float[] io = mlp.getLayer(outputLayerIdx).getNetInputs();
 
-		float oldGradient = 0;
-		float[] inputs;
-
+		float oldNodeGradient = 0;
 		int neuronId = 0;
-		ACTIVATION_FUNCTION activationFType = ACTIVATION_FUNCTION.SOFTMAX;
-		/* Produce error gradient for each output neuron */
-		gradients[outputLayerIdx] = new float[errorVector.length];
-		for(int errIdx = 0; errIdx < errorVector.length; errIdx++ ) {
-			gradients[outputLayerIdx][errIdx] = sut.calculateNodeGradient(costFType, activationFType, errorVector[errIdx], io, errIdx);
-		}
-		activationFType = ACTIVATION_FUNCTION.SIGMOID;
+
+		float nodeGradient; 
 		/* Calculate node gradients for each hidden layers*/
-		for(int layerIdx = mlp.getLayerSizes().length-2; layerIdx >= 0 ; layerIdx--) {
-			/* Retrieve inputs for the layer */
-			inputs = mlp.getLayer(layerIdx).getNetInputs();
-			/* initiate gradient array for layerIdx */
-			gradients[layerIdx] = new float[inputs.length];
-			/* calculate gradients per neuron of current neuron layer */
-			for(int neuronIdx = 0; neuronIdx < gradients[layerIdx].length; neuronIdx++ ) {
-				/* gradient is product between f'(in) * sum ( upperLayerGradient_h*weight_ho + ..) */
-				gradients[layerIdx][neuronIdx] = sut.calculateNodeGradient(activationFType, gradients[layerIdx+1], inputs[neuronIdx], weights[layerIdx]);
-			}
-		}
 		int layerIdx = mlp.getLayerSizes().length-1;
-		/* Calculate weights per layer */
+		/* For each layer, top down*/
 		for(int weightLayerIdx = weights.length-1; weightLayerIdx >= 0 ; weightLayerIdx--) {
+			/* initiate array for expected weights in layer weightLayerIdx */
 			expectedWeights[weightLayerIdx] = new float[weights[weightLayerIdx].length];
+			/* for each weight in layer */
 			for(int weightIdx = 0; weightIdx < weights[weightLayerIdx].length; weightIdx++) {
-				/* Gradient must be negative to reach a valley. set Learning rate to negative to 
-				 * make delta negative */
-			
+
+				/*  */
 				neuronId = weightIdx%mlp.getLayerSizes()[layerIdx];
 
-				
-				if(gradients[layerIdx][neuronId] > 0 && learningRate > 0) {
+				/* Gradient must be negative to reach a valley. set Learning rate to negative to 
+				 * make delta negative */
+				nodeGradient  = gradients[layerIdx][neuronId];
+				if(nodeGradient  > 0 && learningRate > 0) {
 					learningRate = learningRate * -1;
-				}else if(gradients[layerIdx][neuronId] < 0 && learningRate < 0){
+				}else if(nodeGradient  < 0 && learningRate < 0){
 					learningRate = learningRate * -1;
 				}
-				
-				expectedWeights[weightLayerIdx][weightIdx] = sut.calculateWeight(gradients[layerIdx][neuronId], 
-						oldGradient, learningRate, momentum, weights[weightLayerIdx][weightIdx]);				
+				if(layerIdx == 0 && neuronId == 0) {
+					System.out.println("Layer id:"+layerIdx+" Neuron id:"+neuronId+" New weight:"+sut.calculateWeight(nodeGradient, 
+							oldNodeGradient, learningRate, momentum, weights[weightLayerIdx][weightIdx])+
+							" Node grad:"+nodeGradient+" Old grad:"+oldNodeGradient+" LearnR:"+learningRate);
+				}
+				expectedWeights[weightLayerIdx][weightIdx] = sut.calculateWeight(nodeGradient, 
+						oldNodeGradient, learningRate, momentum, weights[weightLayerIdx][weightIdx]);				
 			}
 			layerIdx--;
 		}
-	
+		weights = mlp.getWeights();
 		for(int layerId = 0; layerId < expectedWeights.length;layerId++ ) {
 			assertArrayEquals(expectedWeights[layerId],weights[layerId]);
 		}
 	}
-	
+
 	/**
 	 * Test for calculating of node gradients within network
 	 */
 	@Test
-	void testCalculateNodeGradients() {
+	void testCalculateNodeGradientsWithinNetwork() {
 		int[] layerSizes = new int[] {3,4,3};
 		float[][] data = getTrainingDataGD();
 		TrainingData td = new TrainingData(data, 3);
@@ -249,8 +237,8 @@ public class GradientDescentTest{
 		sut.setLearningRate(learningRate);
 
 		float[] errorVector = sut.calculateErrorPerNeuron(costFType, td.getInputRow(trainingRowId),td.getTargetRow(trainingRowId));
-		sut.calculateNetworkNodeGradients(errorVector);
-	
+		sut.calculateNetworkNodeGradients(costFType, td.getInputRow(trainingRowId),td.getTargetRow(trainingRowId));
+
 		float[][] actualGradients = mlp.getNetworkNodeGradients(); 
 		float[][] weights = mlp.getWeights();
 		int outputLayerIdx = mlp.getLayerSizes().length -1;
@@ -266,7 +254,7 @@ public class GradientDescentTest{
 		}
 		activationFType = ACTIVATION_FUNCTION.SIGMOID;
 		/* Calculate node gradients for each hidden layers*/
-		for(int layerIdx = mlp.getLayerSizes().length-2; layerIdx >= 0 ; layerIdx--) {
+		for(int layerIdx = mlp.getLayerSizes().length-2; layerIdx > 0 ; layerIdx--) {
 			/* Retrieve inputs for the layer */
 			inputs = mlp.getLayer(layerIdx).getNetInputs();
 			/* initiate gradient array for layerIdx */
@@ -277,10 +265,12 @@ public class GradientDescentTest{
 				expectedGradients[layerIdx][neuronIdx] = sut.calculateNodeGradient(activationFType, expectedGradients[layerIdx+1], inputs[neuronIdx], weights[layerIdx]);
 			}
 		}
+		/* Gradients are not computed for input nodes */
+		expectedGradients[0] = new float[mlp.getLayerSizes()[0]];
 		for(int layerIdx = 0;layerIdx < expectedGradients.length;layerIdx++) {
 			assertArrayEquals(expectedGradients[layerIdx], actualGradients[layerIdx]);
 		}
-		
+
 	}
 
 	private float[][] getTrainingDataGD() {
