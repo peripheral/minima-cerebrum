@@ -1,9 +1,6 @@
 package mlp.trainer;
 
-import java.util.Arrays;
-
 import mlp.ANN_MLP;
-import mlp.trainer.Backpropagation.COST_FUNCTION_TYPE;
 
 public class Backpropagation {
 

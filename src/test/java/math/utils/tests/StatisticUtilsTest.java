@@ -124,7 +124,7 @@ private StatisticUtils sut;
 	@Test 
 	void testOfAlternativeToSoftmaxFunction() {
 		float[] data = {1,10,5,3,100};
-		float[] actual = sut.calculateSoftmaxWithoutE(data);
+		float[] actual = StatisticUtils.calculateSoftmaxWithoutE(data);
 		float[] expected = new float[data.length];
 		float sum = 0;
 		for(float f:data) {
@@ -142,7 +142,7 @@ private StatisticUtils sut;
 	@Test 
 	void testOfSoftmaxFunction() {
 		float[] data = {1,10,5,3,30};
-		float[] actual = sut.calculateSoftmax(data);
+		float[] actual = StatisticUtils.calculateSoftmax(data);
 		float[] expected = new float[data.length];
 		float sum = 0;
 		for(float f:data) {
@@ -169,7 +169,6 @@ private StatisticUtils sut;
 		float sum = 3291213.33696f;
 		float denominator = (float) (3291213.33696 * 3291213.33696);
 		float expected = (1 * sum - 1)/denominator;
-			
 		assertEquals(expected,actual,0.00001f);		
 	}
 	

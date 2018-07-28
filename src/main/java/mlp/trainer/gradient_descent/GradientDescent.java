@@ -1,10 +1,7 @@
 package mlp.trainer.gradient_descent;
 
-import java.util.Arrays;
-
 import math.utils.StatisticUtils;
 import mlp.ANN_MLP.ACTIVATION_FUNCTION;
-import mlp.Neuron;
 import mlp.NeuronFunctionModels;
 import mlp.NeuronLayer;
 import mlp.trainer.Backpropagation;
@@ -60,7 +57,6 @@ public class GradientDescent extends Backpropagation {
 	 */
 	public float calculateNodeGradient(COST_FUNCTION_TYPE costFType, ACTIVATION_FUNCTION activationFType,
 			float error, float[] io, int neuronIdx) {
-		float a =1,b=1;
 		float partialDerivative = 0;
 		float result = 0;
 		switch(costFType) {
@@ -207,7 +203,7 @@ public class GradientDescent extends Backpropagation {
 
 		/* Calculate gradients per weight layer */
 		calculateNetworkNodeGradients(costFunctionType, inputRow, targetRow);
-	
+
 		float nodeGradient = 0;
 		float newWeight = 0;
 		float currentWeight ;
@@ -224,7 +220,7 @@ public class GradientDescent extends Backpropagation {
 				}
 				for(int weightIdx = 0; weightIdx < mlp.getLayer(layerIdx-1).getWeights().length;weightIdx+=mlp.getLayerSizes()[layerIdx] ) {
 					currentWeight = mlp.getLayer(layerIdx-1).getWeights()[weightIdx+neuronIdx];
-	
+
 					newWeight = calculateWeight(nodeGradient, oldGradient, learningRate, momentum, currentWeight);
 
 					mlp.getLayer(layerIdx-1).setWeight(weightIdx+neuronIdx,newWeight);
@@ -254,18 +250,21 @@ public class GradientDescent extends Backpropagation {
 		return null;
 	}
 
-	public float calculateNodeGradient(ACTIVATION_FUNCTION activationFunction, float[] outputNodeGradients, float ih,
+	public float calculateNodeGradient(ACTIVATION_FUNCTION activationFunctionType, float[] outputNodeGradients, float ih,
 			float[] who) {
 		float a = 1;
 		float b = 1;
 		float gradient = 0;
-		switch(activationFunction) {
+		switch(activationFunctionType) {
 		case SOFTMAX:
 			//	gradient = StatisticUtils.calculateSoftmaxPartialDerivative(data, idx)
 			System.err.println("Error SOFTMAX is not implemented");
 			break;
 		case SIGMOID:
-			gradient =  NeuronFunctionModels.derivativeOf(activationFunction, a, b,ih);
+			gradient =  NeuronFunctionModels.derivativeOf(activationFunctionType, a, b,ih);
+			break;
+		default:
+			System.err.println("Activation function not implemented:"+activationFunctionType);
 			break;
 		}
 

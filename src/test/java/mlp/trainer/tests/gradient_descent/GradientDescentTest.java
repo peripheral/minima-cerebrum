@@ -3,8 +3,6 @@ package mlp.trainer.tests.gradient_descent;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Arrays;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -68,11 +66,7 @@ public class GradientDescentTest{
 	@Test
 	void testCalculationNodeGradient() {
 		ACTIVATION_FUNCTION activationFunction = ACTIVATION_FUNCTION.SIGMOID;
-		float a = 1;
-		float b = 1;
-		float[] Io = {3f,4f,6f};
 		float Ih = 6f;
-		int neuronIdx = 1;
 		float error = 0.5f;
 		float[] Who = {0.045f,0.045f}; /* weight from neuron h to o*/
 		/* Derivative of softmax  ((e^4)((e^3)+(e^4)+(e^6)) - (e^4)(e^4))/((e^3)+(e^4)+(e^6))^2 = 0.10115465582 */
@@ -161,7 +155,6 @@ public class GradientDescentTest{
 		boolean useSoftmax = true;
 		int trainingRowId = 0;
 		float learningRate = 0.01f;
-		COST_FUNCTION_TYPE costFType = COST_FUNCTION_TYPE.SQUARED_ERROR;
 		ANN_MLP mlp = new ANN_MLP(WEIGHT_INITIATION_METHOD.RANDOM, useSoftmax, layerSizes);
 		mlp.initiate();
 		sut.setMLP(mlp);	
