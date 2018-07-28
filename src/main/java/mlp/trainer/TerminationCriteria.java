@@ -5,41 +5,39 @@ public class TerminationCriteria {
 		EPSILON, MAX_ITERATIONS, MIN_ERROR_DELTA
 	}
 
-	public TerminationCriteria(TERMINATION_CRITERIA[] criteria, int i, double d) {
-		// TODO Auto-generated constructor stub
+	private TERMINATION_CRITERIA[] terminationCriteria = {TERMINATION_CRITERIA.MAX_ITERATIONS,TERMINATION_CRITERIA.EPSILON};
+	private int iterations = 5;
+	private float epsilon  = 0.01f;
+
+	public TerminationCriteria(TERMINATION_CRITERIA[] criteria, int iterations, float epsilon) {
+		terminationCriteria = criteria;
+		this.iterations = iterations;
+		this.epsilon = epsilon;
 	}
 
-	public TerminationCriteria() {
-		// TODO Auto-generated constructor stub
-	}
+	public TerminationCriteria() {}
 
 	public TERMINATION_CRITERIA[] getTerminationCriterias() {
-		// TODO Auto-generated method stub
-		return null;
+		return terminationCriteria;
 	}
 
 	public int getIterations() {
-		// TODO Auto-generated method stub
-		return 0;
+		return iterations;
 	}
 
 	public float getEpsilon() {
-		// TODO Auto-generated method stub
-		return 0;
+		return epsilon;
 	}
 
-	public void setCriteria(TERMINATION_CRITERIA[] expected) {
-		// TODO Auto-generated method stub
-		
+	public void setCriteria(TERMINATION_CRITERIA[] criteria) {
+		terminationCriteria = criteria;		
 	}
 
-	public void setIterations(int expectedIterations) {
-		// TODO Auto-generated method stub
-		
+	public void setIterations(int it) {
+		iterations = it;
 	}
 
-	public void setEpsilon(float expectedEpsilon) {
-		// TODO Auto-generated method stub
-		
+	public void setEpsilon(float eps) {
+		this.epsilon = eps;		
 	}
 }
