@@ -335,5 +335,5 @@ public class GradientDescentTest{
 		float expected = 0.001f;
 		assertEquals(expected, actual);
 	}
-
+		
 }
