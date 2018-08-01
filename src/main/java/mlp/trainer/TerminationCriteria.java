@@ -17,6 +17,10 @@ public class TerminationCriteria {
 
 	public TerminationCriteria() {}
 
+	public TerminationCriteria(TERMINATION_CRITERIA[] criteria) {
+		terminationCriteria = criteria;
+	}
+
 	public TERMINATION_CRITERIA[] getTerminationCriterias() {
 		return terminationCriteria;
 	}
