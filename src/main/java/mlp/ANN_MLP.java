@@ -14,7 +14,7 @@ public class ANN_MLP {
 	public WEIGHT_INITIATION_METHOD DEFAULT_WEIGHT_INITIATION_METHOD = WEIGHT_INITIATION_METHOD.CONSTANT;
 	public float DEFAULT_WEIGHT_CONSTANT = 0.5f;
 	private float WEIGHT_CONSTANT = DEFAULT_WEIGHT_CONSTANT;
-	private WEIGHT_INITIATION_METHOD initiationMethod;
+	private WEIGHT_INITIATION_METHOD initiationMethod = WEIGHT_INITIATION_METHOD.CONSTANT;
 	private ACTIVATION_FUNCTION activationFunction = ACTIVATION_FUNCTION.SIGMOID;
 	private TrainingData trainingData;
 	private Backpropagation trainer = new Backpropagation();
@@ -275,6 +275,15 @@ public class ANN_MLP {
 			gradients[layerId] = getLayerNodeGradients(layerId);
 		}
 		return gradients;
+	}
+
+	public void setWeights(float[][] weights) {
+		for(int layerId = 0;layerId < weights.length;layerId++) {
+			for(int weightIdx = 0; weightIdx< weights[layerId].length;weightIdx++) {
+				layers[layerId].setWeight(weightIdx, weights[layerId][weightIdx]);
+			}
+		
+		}
 	}
 
 }

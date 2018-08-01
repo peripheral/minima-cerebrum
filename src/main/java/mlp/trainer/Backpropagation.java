@@ -17,7 +17,6 @@ public class Backpropagation {
 
 	public void setMLP(ANN_MLP mlp) {
 		this.mlp = mlp;
-
 	}
 
 	public void setTrainingData(TrainingData td) {
@@ -46,6 +45,33 @@ public class Backpropagation {
 		}
 
 		return result;
+	}
+	
+	/**
+	 * Calculates total error as sum by applying the training data on ann mlp
+	 * @return
+	 */
+	public float calculateTotalMSE() {
+		double[] MSE = new double[mlp.getOutputLayer().size()];
+		float[][] inputs = trainingData.getInputs();
+		float[] result = null;
+		float[] target;
+
+		for(int i = 0; i < inputs.length;i++) {
+			result = mlp.predict(inputs[i]);
+			target =  trainingData.getTargetRow(i);
+			for(int ii = 0; ii < result.length;ii++) {
+				MSE[ii] =  MSE[ii]+ Math.pow(result[ii] - target[ii],2)/inputs.length;
+			}
+		}
+		for(int i = 0; i < result.length;i++) {
+			result[i] = (float) MSE[i];
+		}
+		float sum = 0;
+		for(float f:result) {
+			sum = sum + f;
+		}
+		return sum;
 	}
 
 	public void setApproximateErrorMinimum(float errMinimum) {
