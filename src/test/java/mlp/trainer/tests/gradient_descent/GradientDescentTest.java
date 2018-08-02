@@ -224,7 +224,6 @@ public class GradientDescentTest{
 		int[] layerSizes = new int[] {3,4,3};
 		boolean useSoftmax = true;
 		float learningRate = 0.01f;
-		float momentum =  0.00001f;
 		int iterations = 10;
 		float[][] data = getTrainingDataGD();
 		TrainingData td = new TrainingData(data, 3);	
@@ -232,7 +231,7 @@ public class GradientDescentTest{
 		tc.setIterations(iterations);
 		ANN_MLP mlp = new ANN_MLP(WEIGHT_INITIATION_METHOD.RANDOM, useSoftmax, layerSizes);
 		mlp.initiate();
-		mlp.setWeights(getWeights());
+		mlp.setWeights(getTestWeights());
 		sut.setMLP(mlp);	
 		sut.setTrainingData(td);	
 		sut.setCostFunctionType(COST_FUNCTION_TYPE.SQUARED_ERROR);
@@ -247,6 +246,52 @@ public class GradientDescentTest{
 		sut.trainOnSampleWithGainParameter(td.getInputRow(td.size()/2), td.getTargetRow(td.size()/2));
 
 		float[][] actualNodeGains = sut.getNodeGains();
+		for(int i = 0; i < actualNodeGains.length;i++ ) {
+			for(int ii = 0; ii <actualNodeGains[i].length;ii++) {
+				actualNodeGains[i][ii] = Math.signum(actualNodeGains[i][ii] );
+			}
+		}
+		for(int i = 0; i < expectedNodeGains.length;i++ ) {
+			for(int ii = 0; ii <expectedNodeGains[i].length;ii++) {
+				expectedNodeGains[i][ii] = Math.signum(expectedNodeGains[i][ii] );
+			}
+		}
+		for(int layerId = 0; layerId < expectedNodeGains.length;layerId++ ) {
+			assertArrayEquals(expectedNodeGains[layerId],actualNodeGains[layerId]);
+		}
+	}
+
+	/**
+	 * Test learning with adaptive learningRate, halve the gain once the neuron gain changes signum
+	 * test MLP consists of input layer size 3, hidden layer 4 neurons, 3 output neurons
+	 * hidden layer activation function sigmoid, output activation softmax
+	 */
+	@Test
+	void testGradientDecentWithGainAdaptation() {
+		TERMINATION_CRITERIA[] criteria = {TERMINATION_CRITERIA.MAX_ITERATIONS};
+		int[] layerSizes = new int[] {3,4,3};
+		boolean useSoftmax = true;
+		float learningRate = 0.01f;
+		int iterations = 10;
+		float[][] data = getTrainingDataGD();
+		TrainingData td = new TrainingData(data, 3);	
+		TerminationCriteria tc = new TerminationCriteria(criteria);	
+		tc.setIterations(iterations);
+		ANN_MLP mlp = new ANN_MLP(WEIGHT_INITIATION_METHOD.RANDOM, useSoftmax, layerSizes);
+		mlp.initiate();
+		mlp.setWeights(getTestWeights());
+		sut.setMLP(mlp);	
+		sut.setTrainingData(td);	
+		sut.setCostFunctionType(COST_FUNCTION_TYPE.SQUARED_ERROR);
+		sut.setLearningRate(learningRate);
+		sut.setTerminationCriteria(tc);
+		/* Initial weights */
+		float[][] expectedNodeGains = getExpectedGains();
+
+		sut.initiateNodeGains();
+		sut.trainOnSampleWithGainParameter(td.getInputRow(td.size()/2), td.getTargetRow(td.size()/2));
+
+		float[][] actualNodeGains = sut.getNodeGains();
 		for(int layerId = 0; layerId < expectedNodeGains.length;layerId++ ) {
 			assertArrayEquals(expectedNodeGains[layerId],actualNodeGains[layerId]);
 		}
@@ -255,13 +300,13 @@ public class GradientDescentTest{
 	private float[][] getExpectedGains() {
 		float[][] nodeGains = {
 				{1.0f, 1.0f, 1.0f},
-				{-1.0f, -1.0f, -1.0f, -1.0f},
-				{-1.0f, -1.0f, -1.0f}
+				{-0.5f, -0.5f, -0.5f, -0.5f},
+				{-0.5f, -0.5f, -0.5f}
 		};
 		return nodeGains;
 	}
 
-	private float[][] getWeights() {
+	private float[][] getTestWeights() {
 		float[][] weights = new float[2][];
 		//Initial LR:0.01
 		weights[0] = new float[] {0.26172805f, -0.023212755f, 0.3237994f, 0.33701196f, -0.027228683f, 0.09190323f, -0.00764591f, 
