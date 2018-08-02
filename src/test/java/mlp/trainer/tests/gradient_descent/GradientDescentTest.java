@@ -267,7 +267,7 @@ public class GradientDescentTest{
 	 * hidden layer activation function sigmoid, output activation softmax
 	 */
 	@Test
-	void testGradientDecentWithGainAdaptation() {
+	void testGradientDecentWithGainAdaptationGainHalvetAtGradientDirectionChange() {
 		TERMINATION_CRITERIA[] criteria = {TERMINATION_CRITERIA.MAX_ITERATIONS};
 		int[] layerSizes = new int[] {3,4,3};
 		boolean useSoftmax = true;
