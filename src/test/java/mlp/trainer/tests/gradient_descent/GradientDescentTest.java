@@ -239,7 +239,7 @@ public class GradientDescentTest{
 		sut.setTerminationCriteria(tc);
 
 		/* Initial weights */
-		float[][] expectedNodeGains = getExpectedGains();
+		float[][] expectedNodeGains = getExpectedDecreasedGains();
 
 		sut.initiateNodeGains();
 
@@ -286,7 +286,7 @@ public class GradientDescentTest{
 		sut.setLearningRate(learningRate);
 		sut.setTerminationCriteria(tc);
 		/* Initial weights */
-		float[][] expectedNodeGains = getExpectedGains();
+		float[][] expectedNodeGains = getExpectedDecreasedGains();
 
 		sut.initiateNodeGains();
 		sut.trainOnSampleWithGainParameter(td.getInputRow(td.size()/2), td.getTargetRow(td.size()/2));
@@ -296,12 +296,58 @@ public class GradientDescentTest{
 			assertArrayEquals(expectedNodeGains[layerId],actualNodeGains[layerId]);
 		}
 	}
+	
+	/**
+	 * Test learning with adaptive learningRate, halve the gain once the neuron gain changes signum
+	 * test MLP consists of input layer size 3, hidden layer 4 neurons, 3 output neurons
+	 * hidden layer activation function sigmoid, output activation softmax
+	 */
+	@Test
+	void testIncreaseNodeLearningGainAtStepRepetion() {
+		TERMINATION_CRITERIA[] criteria = {TERMINATION_CRITERIA.MAX_ITERATIONS};
+		int[] layerSizes = new int[] {3,4,3};
+		boolean useSoftmax = true;
+		float learningRate = 0.01f;
+		int iterations = 10;
+		float[][] data = getTrainingDataGD();
+		TrainingData td = new TrainingData(data, 3);	
+		TerminationCriteria tc = new TerminationCriteria(criteria);	
+		tc.setIterations(iterations);
+		ANN_MLP mlp = new ANN_MLP(WEIGHT_INITIATION_METHOD.RANDOM, useSoftmax, layerSizes);
+		mlp.initiate();
+		mlp.setWeights(getTestWeights());
+		sut.setMLP(mlp);	
+		sut.setTrainingData(td);	
+		sut.setCostFunctionType(COST_FUNCTION_TYPE.SQUARED_ERROR);
+		sut.setLearningRate(learningRate);
+		sut.setTerminationCriteria(tc);
+		/* Initial weights */
+		float[][] expectedNodeGains = getExpectedIncreasedGains();
 
-	private float[][] getExpectedGains() {
-		float[][] nodeGains = {
+		sut.initiateNodeGains();
+		sut.trainOnSampleWithGainParameter(td.getInputRow(td.size()/2), td.getTargetRow(td.size()/2));
+		/* sign change of some gains */
+		sut.trainOnSampleWithGainParameter(td.getInputRow(td.size()/3), td.getTargetRow(td.size()/3));
+		/*repeatition increase gain by 0.005*/
+		float[][] actualNodeGains = sut.getNodeGains();
+		for(int layerId = 0; layerId < expectedNodeGains.length;layerId++ ) {
+			assertArrayEquals(expectedNodeGains[layerId],actualNodeGains[layerId]);
+		}
+	}
+
+	private float[][] getExpectedDecreasedGains() {
+		float[][] nodeGains = { 
 				{1.0f, 1.0f, 1.0f},
 				{-0.5f, -0.5f, -0.5f, -0.5f},
 				{-0.5f, -0.5f, -0.5f}
+		};
+		return nodeGains;
+	}
+	private float[][] getExpectedIncreasedGains() {
+		float[][] nodeGains = {
+				{1.005f, 1.005f, 1.005f},
+				{-0.505f, -0.505f, -0.505f, -0.505f},
+				{-0.505f, -0.505f, -0.505f}
 		};
 		return nodeGains;
 	}
