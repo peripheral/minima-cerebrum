@@ -286,4 +286,13 @@ public class ANN_MLP {
 		}
 	}
 
+	/**
+	 * Returns layer of weights
+	 * @param layerIdx - id of weight layer
+	 * @return
+	 */
+	public float[] getWeightLayer(int layerIdx) {
+		return 	layers[layerIdx].getWeights();
+	}
+
 }

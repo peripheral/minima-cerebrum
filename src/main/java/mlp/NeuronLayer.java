@@ -36,7 +36,7 @@ public class NeuronLayer {
 	}
 
 	/**
-	 * Returns size of layer, bias included
+	 * Returns count of neurons in layer, bias included
 	 * @return
 	 */
 	public int size() {

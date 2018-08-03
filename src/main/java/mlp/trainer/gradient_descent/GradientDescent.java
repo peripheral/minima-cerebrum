@@ -20,6 +20,7 @@ public class GradientDescent extends Backpropagation {
 	private float[][] nodeGradients = null;
 	private float[][] nodeGains = null;
 	private float gainReductionFactor = 0.5f;
+	private float gainMagnitudeIncrement = 0.005f;
 
 
 	public void getDeltasForLayer(int layerId) {
@@ -339,23 +340,22 @@ public class GradientDescent extends Backpropagation {
 	public void calculateNetworkNodeGradientsStoredLocaly(COST_FUNCTION_TYPE costFType, float[] input,
 			float[] target) {
 		if(nodeGradients == null) {
-			nodeGradients = new float[mlp.getLayerSizes().length][];
-			for(int layerId = 0; layerId < mlp.getLayerSizes().length;layerId++) {
-				nodeGradients[layerId] = new float[mlp.getLayerSizes()[layerId]];
-			}
+			initiateNodeGradients();
 		}
-		int outputLayerId = mlp.getLayerSizes().length - 1;
+		/* The outputlayer is one index lower since input layer ommited */
+		int outputGradienLayertId = mlp.getLayerSizes().length - 2;
+		int outputLayerId = mlp.getLayerSizes().length-1;
 		float[] inputs;
 		float[] io = mlp.getLayer(outputLayerId).getNetInputs();
 		float[] errorVector = calculateErrorPerNeuron(costFType, input, target);
 		if(mlp.isSoftmaxAppliedOnOutput()) {
 			for(int neuronId = 0; neuronId < errorVector.length;neuronId++) {
-				nodeGradients[outputLayerId][neuronId] = 
+				nodeGradients[outputGradienLayertId][neuronId] = 
 				calculateNodeGradient(costFType, ACTIVATION_FUNCTION.SOFTMAX, errorVector[neuronId], io, neuronId);
 			}
 		}else {
 			for(int neuronId = 0; neuronId < errorVector.length;neuronId++) {
-				nodeGradients[outputLayerId][neuronId] = calculateNodeGradient(costFType, ACTIVATION_FUNCTION.SIGMOID, errorVector[neuronId], io, neuronId);
+				nodeGradients[outputGradienLayertId][neuronId] = calculateNodeGradient(costFType, ACTIVATION_FUNCTION.SIGMOID, errorVector[neuronId], io, neuronId);
 			}
 		}
 		NeuronLayer layer = null;
@@ -367,9 +367,17 @@ public class GradientDescent extends Backpropagation {
 			/* calculate gradients per neuron of current neuron layer */
 			for(int neuronIdx = 0; neuronIdx < mlp.getLayer(layerIdx).size(); neuronIdx++ ) {
 				/* gradient is product between f'(in) * sum ( upperLayerGradient_h*weight_ho + ..) */
-				nodeGradients[layerIdx][neuronIdx] = calculateNodeGradient(layer.getNeuron(neuronIdx).getActivationFunctionType(), 
-						nodeGradients[layerIdx+1], inputs[neuronIdx],layer.getWeights());
+				nodeGradients[layerIdx-1][neuronIdx] = calculateNodeGradient(layer.getNeuron(neuronIdx).getActivationFunctionType(), 
+						nodeGradients[layerIdx], inputs[neuronIdx],layer.getWeights());
 			}
+		}
+	}
+
+	private void initiateNodeGradients() {
+		nodeGradients = new float[mlp.getLayerSizes().length-1][];	
+		for(int layerIdx = 0; layerIdx < nodeGradients.length;layerIdx++) {
+			/* skipping input layer mlp.getLayerSizes()[layerIdx+1] */
+			nodeGradients[layerIdx] = new float[mlp.getLayerSizes()[layerIdx+1]];
 		}
 	}
 
@@ -401,31 +409,32 @@ public class GradientDescent extends Backpropagation {
 		}
 		/* Calculate gradients per weight layer */
 		calculateNetworkNodeGradientsStoredLocaly(costFunctionType, inputRow, targetRow);
-
+		System.out.println("Node Gradients length:"+nodeGradients.length);
+		System.out.println("Node Gains length:"+nodeGains.length);
 		float nodeGradient = 0;
 		float newWeight = 0;
 		float currentWeight ;
+		int weightLayerIdx = 0;
+		int neuronLayerIdx = 0;
 		/* Calculate weights per layer */
-		for(int layerIdx = nodeGradients.length-1; layerIdx > 0 ; layerIdx--) {
-			for(int neuronIdx = 0; neuronIdx < mlp.getLayer(layerIdx).size(); neuronIdx++) {
+		for(int gradientLayerIdx = nodeGradients.length-1; gradientLayerIdx > 0 ; gradientLayerIdx--) {
+			weightLayerIdx = gradientLayerIdx;
+			neuronLayerIdx = gradientLayerIdx+1;
+			for(int neuronIdx = 0; neuronIdx < mlp.getLayer(neuronLayerIdx).size(); neuronIdx++) {
 				/* Gradient must be negative to reach a valley. set Learning rate to negative to 
 				 * make delta negative */
-				nodeGradient = nodeGradients[layerIdx][neuronIdx];
-				if(nodeGradient > 0 && nodeGains[layerIdx][neuronIdx] > 0) {
-					updateNodeGainsDecrease(layerIdx,neuronIdx,-1);
-				}else if(nodeGradient < 0 && nodeGains[layerIdx][neuronIdx] < 0){
-					updateNodeGainsDecrease(layerIdx,neuronIdx,-1);
+				nodeGradient = nodeGradients[gradientLayerIdx][neuronIdx];
+				if(nodeGradient > 0 && nodeGains[gradientLayerIdx][neuronIdx] > 0) {
+					updateNodeGainsDecrease(gradientLayerIdx,neuronIdx,-1);
+				}else if(nodeGradient < 0 && nodeGains[gradientLayerIdx][neuronIdx] < 0){
+					updateNodeGainsDecrease(gradientLayerIdx,neuronIdx,-1);
 				}
-				for(int weightIdx = 0; weightIdx < mlp.getLayer(layerIdx-1).getWeights().length;weightIdx+=mlp.getLayerSizes()[layerIdx] ) {
-					currentWeight = mlp.getLayer(layerIdx-1).getWeights()[weightIdx+neuronIdx];
+				for(int weightIdx = 0; weightIdx < mlp.getWeightLayer(weightLayerIdx).length;weightIdx+=mlp.getLayerSizes()[neuronLayerIdx] ) {
+					currentWeight = mlp.getWeightLayer(weightLayerIdx)[weightIdx+neuronIdx];
 
-					newWeight = calculateWeight(nodeGradient, oldGradient, learningRate, momentum, currentWeight,nodeGains[layerIdx][neuronIdx]);
+					newWeight = calculateWeight(nodeGradient, oldGradient, learningRate, momentum, currentWeight,nodeGains[gradientLayerIdx][neuronIdx]);
 
-					mlp.getLayer(layerIdx-1).setWeight(weightIdx+neuronIdx,newWeight);
-					if(layerIdx == 0 && neuronIdx == 0) {
-						System.out.println("Impl Layer id:"+layerIdx+" Neuron id:"+neuronIdx+" New weight:"+mlp.getLayer(layerIdx-1).getWeights()[weightIdx+neuronIdx]+
-								" Node grad:"+nodeGradient+" Old grad:"+oldGradient+" LearnR:"+learningRate);
-					}
+					mlp.getLayer(gradientLayerIdx-1).setWeight(weightIdx+neuronIdx,newWeight);
 				}				
 
 			}
@@ -444,26 +453,29 @@ public class GradientDescent extends Backpropagation {
 		float newWeight = 0;
 		float currentWeight ;
 		/* Calculate weights per layer */
-		for(int layerIdx = nodeGradients.length-1; layerIdx > 0 ; layerIdx--) {
-			for(int neuronIdx = 0; neuronIdx < mlp.getLayer(layerIdx).size(); neuronIdx++) {
+		for(int gradientLayerIdx = nodeGradients.length-1; gradientLayerIdx >= 0 ; gradientLayerIdx--) {
+			for(int neuronIdx = 0; neuronIdx < nodeGradients[gradientLayerIdx].length; neuronIdx++) {
 				/* Gradient must be negative to reach a valley. set Learning rate to negative to 
 				 * make delta negative */
-				nodeGradient = nodeGradients[layerIdx][neuronIdx];
-				if(nodeGradient > 0 && nodeGains[layerIdx][neuronIdx] > 0) {
-					updateNodeGainsDecrease(layerIdx,neuronIdx,-gainReductionFactor);
-				}else if(nodeGradient < 0 && nodeGains[layerIdx][neuronIdx] < 0){
-					updateNodeGainsDecrease(layerIdx,neuronIdx,-gainReductionFactor);
+				nodeGradient = nodeGradients[gradientLayerIdx][neuronIdx];
+				if(nodeGradient > 0 && nodeGains[gradientLayerIdx][neuronIdx] > 0) {
+			
+					updateNodeGainsDecrease(gradientLayerIdx,neuronIdx,-gainReductionFactor);
+				
+				}else if(nodeGradient < 0 && nodeGains[gradientLayerIdx][neuronIdx] < 0){
+				
+					updateNodeGainsDecrease(gradientLayerIdx,neuronIdx,-gainReductionFactor);
+				
+				}else {
+			
+					updateNodeGainsIncreaseMagnitude(gradientLayerIdx,neuronIdx,gainMagnitudeIncrement );
 				}
-				for(int weightIdx = 0; weightIdx < mlp.getLayer(layerIdx-1).getWeights().length;weightIdx+=mlp.getLayerSizes()[layerIdx] ) {
-					currentWeight = mlp.getLayer(layerIdx-1).getWeights()[weightIdx+neuronIdx];
+				for(int weightIdx = 0; weightIdx < mlp.getLayer(gradientLayerIdx).getWeights().length;weightIdx+=mlp.getLayerSizes()[gradientLayerIdx+1] ) {
+					currentWeight = mlp.getLayer(gradientLayerIdx).getWeights()[weightIdx+neuronIdx];
 
-					newWeight = calculateWeight(nodeGradient, oldGradient, learningRate, momentum, currentWeight,nodeGains[layerIdx][neuronIdx]);
+					newWeight = calculateWeight(nodeGradient, oldGradient, learningRate, momentum, currentWeight,nodeGains[gradientLayerIdx][neuronIdx]);
 
-					mlp.getLayer(layerIdx-1).setWeight(weightIdx+neuronIdx,newWeight);
-					if(layerIdx == 0 && neuronIdx == 0) {
-						System.out.println("Impl Layer id:"+layerIdx+" Neuron id:"+neuronIdx+" New weight:"+mlp.getLayer(layerIdx-1).getWeights()[weightIdx+neuronIdx]+
-								" Node grad:"+nodeGradient+" Old grad:"+oldGradient+" LearnR:"+learningRate);
-					}
+					mlp.getLayer(gradientLayerIdx).setWeight(weightIdx+neuronIdx,newWeight);
 				}				
 
 			}
@@ -471,14 +483,32 @@ public class GradientDescent extends Backpropagation {
 		
 	}
 
+	/**
+	 * 
+	 * @param layerIdx
+	 * @param neuronIdx
+	 * @param gainMagnitudeIncrement - value by which magnitude will be increased. If gain is negative the
+	 * value will be subtracted, if gain is positive the value added
+	 */
+	private void updateNodeGainsIncreaseMagnitude(int layerIdx, int neuronIdx, float gainMagnitudeIncrement) {
+		if(Math.signum(nodeGains[layerIdx][neuronIdx]) > 0 ) {
+			nodeGains[layerIdx][neuronIdx]+=gainMagnitudeIncrement;
+		}else {
+			nodeGains[layerIdx][neuronIdx]-=gainMagnitudeIncrement;
+		}
+	}
+
 	private void updateNodeGainsDecrease(int layerIdx, int neuronIdx, float f) {
 		nodeGains[layerIdx][neuronIdx] = nodeGains[layerIdx][neuronIdx]*f;		
 	}
 
 	public float[][] initiateNodeGains() {
-		nodeGains = new float[mlp.getLayerSizes().length][];		
-		for(int layerId = 0; layerId < mlp.getLayerSizes().length;layerId++) {
-			nodeGains[layerId] = new float[mlp.getLayerSizes()[layerId]];
+		/* one node gain layer per weight layer, Node gains for input layer are omitted*/
+		int nodeGainLayerCount = mlp.getLayerSizes().length-1;
+		nodeGains = new float[nodeGainLayerCount][];		
+		/* input layer does not have nodeGains, starting with second layer mlp.getLayerSizes()[layerId+1]*/
+		for(int layerId = 0; layerId < nodeGainLayerCount;layerId++) {
+			nodeGains[layerId] = new float[mlp.getLayerSizes()[layerId+1]];
 			for(int i = 0; i < nodeGains[layerId].length;i++) {
 				nodeGains[layerId][i] = 1;
 			}

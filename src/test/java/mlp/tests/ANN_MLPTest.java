@@ -288,4 +288,29 @@ public class ANN_MLPTest {
 		Backpropagation actual = sut.getBackpropagationTrainer();
 		assertTrue(actual != null);
 	}
+	
+	/**
+	 * Testing set weight function
+	 */
+	@Test
+	void testSetWeightFunction() {
+		int[] layerSizes = {3,4,3};
+		sut = new ANN_MLP(layerSizes);
+		sut.initiate();
+		float[][] expected = getTestWeights();
+		sut.setWeights(getTestWeights());
+		float[][] actualWeights = sut.getWeights();
+		assertArrayEquals(expected,actualWeights);
+	}
+	
+	private float[][] getTestWeights() {
+		float[][] weights = new float[2][];
+		//Initial LR:0.01
+		weights[0] = new float[] {0.26172805f, -0.023212755f, 0.3237994f, 0.33701196f, -0.027228683f, 0.09190323f, -0.00764591f, 
+				0.2830995f, 0.27917573f, -0.18975836f, -0.3373269f, 0.32033712f, -0.15263462f, 0.17369014f, 0.20265998f, -0.115796775f};
+		weights[1] = new float[]{0.04440312f, 0.09132995f, -0.14755417f, 0.28749457f, -0.26251328f, 0.26934755f, 0.34488472f, 0.025896106f, -0.30336866f,
+				0.04440658f, 0.1995952f, 0.23860021f, -0.019049816f, 0.13698725f, 0.043328285f};
+		//After LR:-0.01
+		return weights;
+	}
 }
