@@ -12,7 +12,7 @@ public class Backpropagation {
 	protected COST_FUNCTION_TYPE costFunctionType = COST_FUNCTION_TYPE.SQUARED_ERROR;
 
 	public enum COST_FUNCTION_TYPE {
-		SQUARED_ERROR
+		SQUARED_ERROR, ERROR
 	}
 
 	public void setMLP(ANN_MLP mlp) {
@@ -86,13 +86,25 @@ public class Backpropagation {
 		return approximateErrorMinimum;
 	}
 
+	/**
+	 * 
+	 * @param costFunctionType
+	 * @param input
+	 * @param target
+	 * @return 
+	 */
 	public float[] calculateErrorPerNeuron(COST_FUNCTION_TYPE costFunctionType, float[] input, float[] target) {
+		float[] result = mlp.predict(input);
+		float[] error = new float[result.length];
 		switch(costFunctionType) {
-		case SQUARED_ERROR:
-			float[] result = mlp.predict(input);
-			float[] error = new float[result.length];
+		case SQUARED_ERROR:			
 			for(int i = 0;i < error.length;i++) {
-				error[i] = (float) Math.pow(result[i] - target[i],2);
+				error[i] = (float) Math.pow(target[i]-result[i],2);
+			}
+			return error;
+		case ERROR:
+			for(int i = 0;i < error.length;i++) {
+				error[i] = target[i]-result[i];
 			}
 			return error;
 		default:

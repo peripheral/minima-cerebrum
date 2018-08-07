@@ -3,6 +3,7 @@ package mlp;
 import java.util.ArrayList;
 import math.utils.StatisticUtils;
 import mlp.trainer.Backpropagation;
+import mlp.trainer.TerminationCriteria;
 import mlp.trainer.TrainingData;
 
 public class ANN_MLP {
@@ -19,6 +20,7 @@ public class ANN_MLP {
 	private TrainingData trainingData;
 	private Backpropagation trainer = new Backpropagation();
 	private boolean applySoftmaxOnOutput = false;
+	private TerminationCriteria trainingTerminationCriteria;
 	public ANN_MLP() {}
 
 	public ANN_MLP(int[] layerSizes) {
@@ -293,6 +295,10 @@ public class ANN_MLP {
 	 */
 	public float[] getWeightLayer(int layerIdx) {
 		return 	layers[layerIdx].getWeights();
+	}
+
+	public void setTrainingTerminationCriteria(TerminationCriteria tc) {
+		trainingTerminationCriteria = tc;		
 	}
 
 }

@@ -6,12 +6,12 @@ public class TerminationCriteria {
 	}
 
 	private TERMINATION_CRITERIA[] terminationCriteria = {TERMINATION_CRITERIA.MAX_ITERATIONS,TERMINATION_CRITERIA.EPSILON};
-	private int iterations = 5;
+	private int maxIterations = 5;
 	private float epsilon  = 0.01f;
 
 	public TerminationCriteria(TERMINATION_CRITERIA[] criteria, int iterations, float epsilon) {
 		terminationCriteria = criteria;
-		this.iterations = iterations;
+		this.maxIterations = iterations;
 		this.epsilon = epsilon;
 	}
 
@@ -21,12 +21,17 @@ public class TerminationCriteria {
 		terminationCriteria = criteria;
 	}
 
+	public TerminationCriteria(TERMINATION_CRITERIA[] criteria, int maxIterations) {
+		terminationCriteria = criteria;
+		maxIterations = maxIterations;
+	}
+
 	public TERMINATION_CRITERIA[] getTerminationCriterias() {
 		return terminationCriteria;
 	}
 
 	public int getIterations() {
-		return iterations;
+		return maxIterations;
 	}
 
 	public float getEpsilon() {
@@ -38,7 +43,7 @@ public class TerminationCriteria {
 	}
 
 	public void setIterations(int it) {
-		iterations = it;
+		maxIterations = it;
 	}
 
 	public void setEpsilon(float eps) {

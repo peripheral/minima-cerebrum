@@ -20,7 +20,7 @@ public class GradientDescent extends Backpropagation {
 	private float[][] nodeGradients = null;
 	private float[][] nodeGains = null;
 	private float gainReductionFactor = 0.5f;
-	private float gainMagnitudeIncrement = 0.005f;
+	private float gainMagnitudeIncrement = 0.001f;
 
 
 	public void getDeltasForLayer(int layerId) {
@@ -36,7 +36,7 @@ public class GradientDescent extends Backpropagation {
 	 * @param io - net input of the output neuron
 	 * @param a
 	 * @param b
-	 * 2E * fo'(Io) = gradient
+	 * 2E * (- fo'(Io)) = gradient
 	 * @return
 	 */
 	public float calculateNodeGradient(COST_FUNCTION_TYPE costFType, ACTIVATION_FUNCTION activationFType,
@@ -50,7 +50,7 @@ public class GradientDescent extends Backpropagation {
 			System.err.println("Derivative of "+activationFType+" not implemented");
 			break;
 		}
-		float result = 2 * error * partialDerivative;
+		float result = 2 * error * -partialDerivative;
 		return result;
 	}
 
@@ -61,6 +61,7 @@ public class GradientDescent extends Backpropagation {
 	 * @param activationFType - type of fo(.)
 	 * @param error - (predicted - required )
 	 * @param io - net input of the output neurons
+	 * @param neuronIdx - index of the neuron for which the gradient is calculated, used for softmax 
 	 * 2E * fo'(Io) = gradient
 	 * @return
 	 */
@@ -74,7 +75,18 @@ public class GradientDescent extends Backpropagation {
 			switch(activationFType) {
 			case SOFTMAX:
 				partialDerivative = StatisticUtils.calculateSoftmaxPartialDerivative(io, neuronIdx);
-				result = 2 * error * partialDerivative;
+				result = 2 * error * -partialDerivative;
+				break;
+			default:
+				System.err.println("Derivative of "+activationFType+" not implemented");
+				break;
+			}
+			break;
+		case ERROR:
+			switch(activationFType) {
+			case SOFTMAX:
+				partialDerivative = StatisticUtils.calculateSoftmaxPartialDerivative(io, neuronIdx);
+				result = 2 * error * -partialDerivative;
 				break;
 			default:
 				System.err.println("Derivative of "+activationFType+" not implemented");
@@ -207,7 +219,7 @@ public class GradientDescent extends Backpropagation {
 			float currentWeight) {
 		return currentWeight + learningRate * nodeGradient + (momentum * oldNodeGRadient);
 	}
-	
+
 	/**
 	 * Calculates new weight
 	 * @param nodeGradient -  ∂(E)^2/∂Who
@@ -277,7 +289,23 @@ public class GradientDescent extends Backpropagation {
 		return null;
 	}
 
-	public float calculateNodeGradient(ACTIVATION_FUNCTION activationFunctionType, float[] outputNodeGradients, float ih,
+	/** Io - neuron input, E = (Required - Predicted)
+	 * ∂(E)^2/∂Io = ∂(E)^2/∂Io * ∂(E)/∂Io * ∂fo(Io)/∂Io = gradient
+	 * (∂E^2/∂Io) => 2E  - first step of derivation
+	 * ∂(Required - Predicted)/∂Io => -Oo => -fo(.)
+	 * (∂f(Io)/∂Io) => f'(Io), f(.) - softmax
+	 * 2E * -fo'(Io) = gradient
+	 * hidden node gradient = f'(Ih)*(Whi* Gradrient_i + Whi+1* Gradrient_i+1 .. + )
+	 * Ih - input to node, Whi - weight from node h to node i, Gradient_i - gradient for neuron 
+	 * for node i 
+	 * 
+	 * @param activationFunctionType - node activation method
+	 * @param outputNodeGradients - gradients from upper layer
+	 * @param Ih - input for the node
+	 * @param who - outgoing weights from the node
+	 * @return
+	 */
+	public float calculateNodeGradient(ACTIVATION_FUNCTION activationFunctionType, float[] outputNodeGradients, float Ih,
 			float[] who) {
 		float a = 1;
 		float b = 1;
@@ -288,7 +316,7 @@ public class GradientDescent extends Backpropagation {
 			System.err.println("Error SOFTMAX is not implemented");
 			break;
 		case SIGMOID:
-			gradient =  NeuronFunctionModels.derivativeOf(activationFunctionType, a, b,ih);
+			gradient =  NeuronFunctionModels.derivativeOf(activationFunctionType, a, b,Ih);
 			break;
 		default:
 			System.err.println("Activation function not implemented:"+activationFunctionType);
@@ -296,9 +324,9 @@ public class GradientDescent extends Backpropagation {
 		}
 
 		float result = 0;
-		int counter = 0;
-		for(float outNodGrad:outputNodeGradients) {
-			result = result + gradient * outNodGrad * who[counter++];
+
+		for(int neuronId = 0; neuronId <who.length;neuronId++ ) {
+			result = result + gradient * outputNodeGradients[neuronId] * who[neuronId];
 		}
 		return result;
 	}
@@ -331,12 +359,12 @@ public class GradientDescent extends Backpropagation {
 			for(int neuronIdx = 0; neuronIdx < mlp.getLayer(layerIdx).size(); neuronIdx++ ) {
 				/* gradient is product between f'(in) * sum ( upperLayerGradient_h*weight_ho + ..) */
 				nodeGradient = calculateNodeGradient(layer.getNeuron(neuronIdx).getActivationFunctionType(), 
-						mlp.getLayer(layerIdx+1).getNodeGradients(), inputs[neuronIdx],layer.getWeights());
+						mlp.getLayer(layerIdx+1).getNodeGradients(), inputs[neuronIdx],layer.getNeuron(neuronIdx).getWeightsAsArray());
 				layer.getNeuron(neuronIdx).setNodeGradient(	nodeGradient);
 			}
 		}
 	}
-	
+
 	public void calculateNetworkNodeGradientsStoredLocaly(COST_FUNCTION_TYPE costFType, float[] input,
 			float[] target) {
 		if(nodeGradients == null) {
@@ -346,29 +374,32 @@ public class GradientDescent extends Backpropagation {
 		int outputGradienLayertId = mlp.getLayerSizes().length - 2;
 		int outputLayerId = mlp.getLayerSizes().length-1;
 		float[] inputs;
-		float[] io = mlp.getLayer(outputLayerId).getNetInputs();
-		float[] errorVector = calculateErrorPerNeuron(costFType, input, target);
+		float[] Io = mlp.getLayer(outputLayerId).getNetInputs();
+		/* Error per neuron (target - output) */
+		float[] errorVector = calculateErrorPerNeuron(input, target);
+		/* Gradients for output layers calculated in simple fashion, derivative of Error with respect to input */ 
 		if(mlp.isSoftmaxAppliedOnOutput()) {
 			for(int neuronId = 0; neuronId < errorVector.length;neuronId++) {
 				nodeGradients[outputGradienLayertId][neuronId] = 
-				calculateNodeGradient(costFType, ACTIVATION_FUNCTION.SOFTMAX, errorVector[neuronId], io, neuronId);
+						calculateNodeGradient(costFType, ACTIVATION_FUNCTION.SOFTMAX, errorVector[neuronId], Io, neuronId);
 			}
 		}else {
 			for(int neuronId = 0; neuronId < errorVector.length;neuronId++) {
-				nodeGradients[outputGradienLayertId][neuronId] = calculateNodeGradient(costFType, ACTIVATION_FUNCTION.SIGMOID, errorVector[neuronId], io, neuronId);
+				nodeGradients[outputGradienLayertId][neuronId] = 
+						calculateNodeGradient(costFType, ACTIVATION_FUNCTION.SIGMOID, errorVector[neuronId], Io, neuronId);
 			}
 		}
 		NeuronLayer layer = null;
 		/* iterate top down gradient computation */
-		for(int layerIdx = mlp.getLayerSizes().length - 2; layerIdx > 0 ;layerIdx--) {
+		for(int nodeGradientsLayerIdx = mlp.getLayerSizes().length - 2; nodeGradientsLayerIdx > 0 ;nodeGradientsLayerIdx--) {
 			/* Retrieve inputs for the layer */
-			inputs = mlp.getLayer(layerIdx).getNetInputs();
-			layer = mlp.getLayer(layerIdx);
+			inputs = mlp.getLayer(nodeGradientsLayerIdx).getNetInputs();
+			layer = mlp.getLayer(nodeGradientsLayerIdx);
 			/* calculate gradients per neuron of current neuron layer */
-			for(int neuronIdx = 0; neuronIdx < mlp.getLayer(layerIdx).size(); neuronIdx++ ) {
+			for(int neuronIdx = 0; neuronIdx < mlp.getLayer(nodeGradientsLayerIdx).size(); neuronIdx++ ) {
 				/* gradient is product between f'(in) * sum ( upperLayerGradient_h*weight_ho + ..) */
-				nodeGradients[layerIdx-1][neuronIdx] = calculateNodeGradient(layer.getNeuron(neuronIdx).getActivationFunctionType(), 
-						nodeGradients[layerIdx], inputs[neuronIdx],layer.getWeights());
+				nodeGradients[nodeGradientsLayerIdx-1][neuronIdx] = calculateNodeGradient(layer.getNeuron(neuronIdx).getActivationFunctionType(), 
+						nodeGradients[nodeGradientsLayerIdx], inputs[neuronIdx],layer.getNeuron(neuronIdx).getWeightsAsArray());
 			}
 		}
 	}
@@ -383,13 +414,13 @@ public class GradientDescent extends Backpropagation {
 
 	public void train() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	public void setTerminationCriteria(TerminationCriteria tc) {
+	public void setTrainingTerminationCriteria(TerminationCriteria tc) {
 		terminationCriteria = tc;
 	}
-	
+
 
 	public TerminationCriteria getTerminationCriteria() {
 		return terminationCriteria;
@@ -398,26 +429,24 @@ public class GradientDescent extends Backpropagation {
 	public float[][] getLocallyStoredNetworkNodeGradients() {
 		return nodeGradients;
 	}
-	
+
 	public void setLocallyStoredNodeGradients(float[][] nodeGradients) {
 		this.nodeGradients = nodeGradients;
 	}
 
-	public void trainOnSampleWithGainParameterWithoutGainReduction(float[] inputRow, float[] targetRow) {
+	public void trainOnSampleWithGainParameterWithoutGainMagnitudeModification(float[] inputRow, float[] targetRow) {
 		if(nodeGains == null) {
 			initiateNodeGains();
 		}
 		/* Calculate gradients per weight layer */
 		calculateNetworkNodeGradientsStoredLocaly(costFunctionType, inputRow, targetRow);
-		System.out.println("Node Gradients length:"+nodeGradients.length);
-		System.out.println("Node Gains length:"+nodeGains.length);
 		float nodeGradient = 0;
 		float newWeight = 0;
 		float currentWeight ;
 		int weightLayerIdx = 0;
 		int neuronLayerIdx = 0;
 		/* Calculate weights per layer */
-		for(int gradientLayerIdx = nodeGradients.length-1; gradientLayerIdx > 0 ; gradientLayerIdx--) {
+		for(int gradientLayerIdx = nodeGradients.length-1; gradientLayerIdx >= 0 ; gradientLayerIdx--) {
 			weightLayerIdx = gradientLayerIdx;
 			neuronLayerIdx = gradientLayerIdx+1;
 			for(int neuronIdx = 0; neuronIdx < mlp.getLayer(neuronLayerIdx).size(); neuronIdx++) {
@@ -425,23 +454,25 @@ public class GradientDescent extends Backpropagation {
 				 * make delta negative */
 				nodeGradient = nodeGradients[gradientLayerIdx][neuronIdx];
 				if(nodeGradient > 0 && nodeGains[gradientLayerIdx][neuronIdx] > 0) {
-					updateNodeGainsDecrease(gradientLayerIdx,neuronIdx,-1);
+					updateNodeGainsDecreaseMagnitude(nodeGains,gradientLayerIdx,neuronIdx,-1);
 				}else if(nodeGradient < 0 && nodeGains[gradientLayerIdx][neuronIdx] < 0){
-					updateNodeGainsDecrease(gradientLayerIdx,neuronIdx,-1);
+					updateNodeGainsDecreaseMagnitude(nodeGains,gradientLayerIdx,neuronIdx,-1);
 				}
 				for(int weightIdx = 0; weightIdx < mlp.getWeightLayer(weightLayerIdx).length;weightIdx+=mlp.getLayerSizes()[neuronLayerIdx] ) {
 					currentWeight = mlp.getWeightLayer(weightLayerIdx)[weightIdx+neuronIdx];
 
 					newWeight = calculateWeight(nodeGradient, oldGradient, learningRate, momentum, currentWeight,nodeGains[gradientLayerIdx][neuronIdx]);
-
-					mlp.getLayer(gradientLayerIdx-1).setWeight(weightIdx+neuronIdx,newWeight);
-				}				
-
+					//					System.out.println("WeightLayerIdx:"+(weightLayerIdx)+" Size of weights:"+
+					//							mlp.getWeightLayer(weightLayerIdx).length+" Weight idx:"+(weightIdx+neuronIdx));
+					//					System.out.println("LayerIdx:"+(gradientLayerIdx)+" Size of weights:"+
+					//							mlp.getLayer(gradientLayerIdx).getWeights().length+" Weight idx:"+(weightIdx+neuronIdx));
+					mlp.getLayer(gradientLayerIdx).setWeight(weightIdx+neuronIdx,newWeight);
+				}
 			}
 		}
-		
+
 	}
-	
+
 	public void trainOnSampleWithGainParameter(float[] inputRow, float[] targetRow) {
 		if(nodeGains == null) {
 			initiateNodeGains();
@@ -452,54 +483,81 @@ public class GradientDescent extends Backpropagation {
 		float nodeGradient = 0;
 		float newWeight = 0;
 		float currentWeight ;
+		int weightLayerIdx = 0,neuronLayerIdx = 0;
 		/* Calculate weights per layer */
 		for(int gradientLayerIdx = nodeGradients.length-1; gradientLayerIdx >= 0 ; gradientLayerIdx--) {
+			weightLayerIdx = gradientLayerIdx;
+			neuronLayerIdx = gradientLayerIdx+1;
 			for(int neuronIdx = 0; neuronIdx < nodeGradients[gradientLayerIdx].length; neuronIdx++) {
 				/* Gradient must be negative to reach a valley. set Learning rate to negative to 
 				 * make delta negative */
 				nodeGradient = nodeGradients[gradientLayerIdx][neuronIdx];
-				if(nodeGradient > 0 && nodeGains[gradientLayerIdx][neuronIdx] > 0) {
-			
-					updateNodeGainsDecrease(gradientLayerIdx,neuronIdx,-gainReductionFactor);
-				
-				}else if(nodeGradient < 0 && nodeGains[gradientLayerIdx][neuronIdx] < 0){
-				
-					updateNodeGainsDecrease(gradientLayerIdx,neuronIdx,-gainReductionFactor);
-				
-				}else {
-			
-					updateNodeGainsIncreaseMagnitude(gradientLayerIdx,neuronIdx,gainMagnitudeIncrement );
+				/* If sign changed divide the gain by 2 */
+				if(signChanged(nodeGradient,gradientLayerIdx,neuronIdx)) {
+					updateNodeGainsDecreaseMagnitude(nodeGains,gradientLayerIdx,neuronIdx,gainReductionFactor);
 				}
-				for(int weightIdx = 0; weightIdx < mlp.getLayer(gradientLayerIdx).getWeights().length;weightIdx+=mlp.getLayerSizes()[gradientLayerIdx+1] ) {
-					currentWeight = mlp.getLayer(gradientLayerIdx).getWeights()[weightIdx+neuronIdx];
-
+				/* If repeated increase by small value*/
+				else {	
+					updateNodeGainsIncreaseMagnitude(nodeGains,gradientLayerIdx,neuronIdx,gainMagnitudeIncrement );
+				}
+				for(int weightIdx = 0; weightIdx < mlp.getWeightLayer(weightLayerIdx).length;weightIdx+=mlp.getLayerSizes()[neuronLayerIdx] ) {
+					currentWeight = mlp.getWeightLayer(weightLayerIdx)[weightIdx+neuronIdx];
+					/* nodeGains has double function, stores the sign and the factor for the learningRate,
+					 * if nodeGain negative, multiply by -1 to make multiplier positive*/
+					if(nodeGains[gradientLayerIdx][neuronIdx]<0) {
+						newWeight = calculateWeight(nodeGradient, oldGradient, learningRate, momentum
+								, currentWeight,nodeGains[gradientLayerIdx][neuronIdx]*-1);
+					}else {
+						newWeight = calculateWeight(nodeGradient, oldGradient, learningRate, momentum
+								, currentWeight,nodeGains[gradientLayerIdx][neuronIdx]);
+					}
 					newWeight = calculateWeight(nodeGradient, oldGradient, learningRate, momentum, currentWeight,nodeGains[gradientLayerIdx][neuronIdx]);
-
+					//					System.out.println("WeightLayerIdx:"+(weightLayerIdx)+" Size of weights:"+
+					//							mlp.getWeightLayer(weightLayerIdx).length+" Weight idx:"+(weightIdx+neuronIdx));
+					//					System.out.println("LayerIdx:"+(gradientLayerIdx)+" Size of weights:"+
+					//							mlp.getLayer(gradientLayerIdx).getWeights().length+" Weight idx:"+(weightIdx+neuronIdx));
 					mlp.getLayer(gradientLayerIdx).setWeight(weightIdx+neuronIdx,newWeight);
 				}				
 
 			}
 		}
-		
+
+	}
+
+	private boolean signChanged(float nodeGradient, int gradientLayerIdx, int neuronIdx) {
+		if(nodeGains[gradientLayerIdx][neuronIdx] > 0 && nodeGradient > 0 || nodeGains[gradientLayerIdx][neuronIdx] < 0 && 
+				nodeGradient < 0) {
+			return false;
+		}else {
+			nodeGains[gradientLayerIdx][neuronIdx] = nodeGains[gradientLayerIdx][neuronIdx] *  -1;
+			return true;
+		}
 	}
 
 	/**
 	 * 
+	 * @param values 
 	 * @param layerIdx
 	 * @param neuronIdx
 	 * @param gainMagnitudeIncrement - value by which magnitude will be increased. If gain is negative the
 	 * value will be subtracted, if gain is positive the value added
 	 */
-	private void updateNodeGainsIncreaseMagnitude(int layerIdx, int neuronIdx, float gainMagnitudeIncrement) {
-		if(Math.signum(nodeGains[layerIdx][neuronIdx]) > 0 ) {
-			nodeGains[layerIdx][neuronIdx]+=gainMagnitudeIncrement;
+	public void updateNodeGainsIncreaseMagnitude(float[][] values, int layerIdx, int neuronIdx, float gainMagnitudeIncrement) {
+		if(Math.signum(values[layerIdx][neuronIdx]) > 0 ) {
+			values[layerIdx][neuronIdx]+=gainMagnitudeIncrement;
 		}else {
-			nodeGains[layerIdx][neuronIdx]-=gainMagnitudeIncrement;
+			values[layerIdx][neuronIdx]-=gainMagnitudeIncrement;
 		}
 	}
 
-	private void updateNodeGainsDecrease(int layerIdx, int neuronIdx, float f) {
-		nodeGains[layerIdx][neuronIdx] = nodeGains[layerIdx][neuronIdx]*f;		
+	/** 
+	 * @param values
+	 * @param layerIdx
+	 * @param neuronIdx
+	 * @param f
+	 */
+	public void updateNodeGainsDecreaseMagnitude(float[][] values, int layerIdx, int neuronIdx, float f) {
+		values[layerIdx][neuronIdx] = values[layerIdx][neuronIdx]*f;		
 	}
 
 	public float[][] initiateNodeGains() {
@@ -515,8 +573,23 @@ public class GradientDescent extends Backpropagation {
 		}
 		return nodeGains;
 	}
-	
+
 	public float[][] getNodeGains() {
 		return nodeGains;
+	}
+
+	/**
+	 * Error = (tareget - observed)
+	 * @param inputRow
+	 * @param targetRow
+	 * @return
+	 */
+	public float[] calculateErrorPerNeuron(float[] inputRow, float[] targetRow) {
+		float[] result = mlp.predict(inputRow);
+		float[] error = new float[result.length];
+		for(int i = 0;i < error.length;i++) {
+			error[i] = targetRow[i]-result[i];
+		}
+		return error;		
 	}
 }

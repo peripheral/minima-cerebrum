@@ -145,5 +145,14 @@ public class Neuron {
 	public float getNodeGradient() {
 		return nodeGradient;
 	}
+
+
+	public float[] getWeightsAsArray() {
+		float[] arrWeights = new float[weights.size()];
+		for (int i = 0; i < arrWeights.length; i++) {
+			arrWeights[i] = weights.get(i);
+		}
+		return arrWeights;
+	}
 	
 }
