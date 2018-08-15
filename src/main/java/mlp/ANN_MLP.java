@@ -58,8 +58,8 @@ public class ANN_MLP {
 		return layers[0];
 	}
 
-	public NeuronLayer getLayer(int i) {
-		return layers[i];
+	public NeuronLayer getLayer(int index) {
+		return layers[index];
 	}
 
 	public NeuronLayer getOutputLayer() {

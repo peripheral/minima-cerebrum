@@ -180,19 +180,24 @@ public class StatisticUtils {
 	
 	/**
 	 * The function implement traditional softmax partial derivative
-	 * Sj = e^(Aj)/(e^(A1) + e^(A2) ..e^(An)) , partial derivative - ((e^A1)(e^(A1) + e^(A2) ..e^(An)) - 
-	 * (e^A1)(e^(A1))/(e^(A1) + e^(A2) ..e^(An)^2
-	 * @param data
+	 * Sj = e^(Aj)/(e^(A1) + e^(A2) ..e^(An)) , 
+	 * partial derivative - 
+	 * ((e^Aidx)(e^(Aidx) + e^(A2) ..e^(An)) - (e^Aidx)(e^(Aidx))/(e^(A1) + e^(A2) ..e^(An)^2
+	 * @param inputs
 	 * @return
 	 */
-	public static float calculateSoftmaxPartialDerivative(float[] data,int idx) {
-		double sum = 0;
-		double ePowIdx = (float) Math.pow(Math.E, data[idx]);
+	public static float calculateSoftmaxPartialDerivative(float[] inputs,int idx) {
+		double denominator = 0;
+		double ePowIdx = (float) Math.pow(Math.E, inputs[idx]);
 		float result ;
-		for(int i = 0 ;i < data.length;i++) {	
-			sum = sum + Math.pow(Math.E,data[i]);
+		for(int i = 0 ;i < inputs.length;i++) {	
+			denominator = denominator + Math.pow(Math.E,inputs[i]);
 		}
-		result = (float) ((sum*ePowIdx - ePowIdx*ePowIdx)/(sum*sum));
+		if(Double.isNaN(denominator)) {
+			System.err.println("NaN for denominator");
+			throw new RuntimeException("NaN");
+		}
+		result = (float) ((ePowIdx*denominator - ePowIdx*ePowIdx)/(denominator*denominator));
 		return result;
 	}
 }

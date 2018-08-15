@@ -36,4 +36,20 @@ public class NeuronFunctionModels {
 		}
 	}
 
+	/**
+	 * params a = 1 and b = 1
+	 * @param type
+	 * @param x
+	 * @return
+	 */
+	public static float derivativeOf(ACTIVATION_FUNCTION type, float x) {
+		float a = 1,b = 1;
+		switch(type) {
+		case SIGMOID:
+			return (float) (b*a*2*(Math.pow(Math.E,-a*x))/Math.pow(1+Math.pow(Math.E,-a*x),2));
+		default:
+			System.err.println("Unimplemented activation function type:"+type);
+			return -1;
+		}
+	}
 }

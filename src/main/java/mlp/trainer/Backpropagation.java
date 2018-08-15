@@ -12,7 +12,7 @@ public class Backpropagation {
 	protected COST_FUNCTION_TYPE costFunctionType = COST_FUNCTION_TYPE.SQUARED_ERROR;
 
 	public enum COST_FUNCTION_TYPE {
-		SQUARED_ERROR, ERROR
+		SQUARED_ERROR
 	}
 
 	public void setMLP(ANN_MLP mlp) {
@@ -100,11 +100,6 @@ public class Backpropagation {
 		case SQUARED_ERROR:			
 			for(int i = 0;i < error.length;i++) {
 				error[i] = (float) Math.pow(target[i]-result[i],2);
-			}
-			return error;
-		case ERROR:
-			for(int i = 0;i < error.length;i++) {
-				error[i] = target[i]-result[i];
 			}
 			return error;
 		default:
