@@ -368,7 +368,6 @@ public class GradientDescentTest{
 		
 		float[][] actualNodeGains = sut.getNodeGains();
 		for(int layerId = 0; layerId < expectedNodeGains.length;layerId++ ) {
-			System.out.println(Arrays.toString(actualNodeGains[layerId]));
 			assertArrayEquals(expectedNodeGains[layerId],actualNodeGains[layerId]);
 		}
 	}
@@ -427,7 +426,6 @@ public class GradientDescentTest{
 		/*repeatition increase gain by 0.005*/
 		float[][] actualNodeGains = sut.getNodeGains();
 		for(int layerId = 0; layerId < expectedNodeGains.length;layerId++ ) {
-			System.out.println(Arrays.toString(actualNodeGains[layerId]));
 			assertArrayEquals(expectedNodeGains[layerId],actualNodeGains[layerId]);
 		}
 	}
@@ -821,47 +819,43 @@ public class GradientDescentTest{
 		int inputTargetDemarcation = 3;
 		TrainingData td = new TrainingData(getTrainingDataGD(), inputTargetDemarcation);
 		int[] layerSizes = new int[] {3,30,3};
-		int maxIterations = 10000;
+		int maxIterations = 1000;
 		TERMINATION_CRITERIA[] criteria = {TERMINATION_CRITERIA.MAX_ITERATIONS};
 		boolean useSoftmax = true;
 		WEIGHT_INITIATION_METHOD weightInitiationMethod = WEIGHT_INITIATION_METHOD.RANDOM;
 		TerminationCriteria tc = new TerminationCriteria(criteria,maxIterations);
+		/* Auxiliary GradientDescent  */ 
+		GradientDescent gd = new GradientDescent();
 		ANN_MLP mlp = new ANN_MLP(weightInitiationMethod, useSoftmax, layerSizes);
 		mlp.setTrainingTerminationCriteria(tc);
 		mlp.initiate();
+		
+		ANN_MLP mlpA = new ANN_MLP(weightInitiationMethod, useSoftmax, layerSizes);
+		mlpA.setTrainingTerminationCriteria(tc);
+		mlpA.initiate();
+		mlpA.setWeights(mlp.getWeights());
+		
+		gd.setTrainingData(td);
+		gd.setMLP(mlp);
+		gd.setTrainingTerminationCriteria(tc);
 		sut.setTrainingData(td);
-		sut.setMLP(mlp);	
+		sut.setMLP(mlpA);	
 		sut.setTrainingTerminationCriteria(tc);
+		
 		sut.train();
-		System.out.println("MSE:"+Arrays.toString(sut.calCulateMeanSquaredErrorPerNeuron()));
-		System.out.println("MSE:"+sut.calculateTotalMSE());
-		for(float[] weight:mlp.getWeights()) {
-			System.out.println("Weights:"+Arrays.toString(weight));
-		}
-		Random rm = new Random();
+
 		int rowId = 0;
 		for(int iteration = 0; iteration < maxIterations;iteration++) {
-			rowId = rm.nextInt(8);
-			sut.trainOnSampleWithGainParameterWithoutGainMagnitudeModificationWithDelta(td.getInputRow(rowId),td.getTargetRow(rowId));
+			gd.trainOnSampleWithGainParameterWithoutGainMagnitudeModificationWithDelta(td.getInputRow(rowId),td.getTargetRow(rowId));
 			for(int row = 0;row < td.size(); row++) {
-				sut.trainOnSampleWithGainParameterWithDeltaRule(td.getInputRow(row),td.getTargetRow(row));
-			}
-			if(iteration%100 == 0) {
-				System.out.println("MSE:"+sut.calculateTotalMSE());
-				for(float[] weight:mlp.getWeights()) {
-					System.out.println("Weights:"+Arrays.toString(weight));
-				}
-				for(float[] weight:sut.getNodeGains()) {
-					System.out.println("Gains:"+Arrays.toString(weight));
-				}
+				gd.trainOnSampleWithGainParameterWithDeltaRule(td.getInputRow(row),td.getTargetRow(row));
 			}
 		}
-		for(int row = 0;row < td.size(); row++) {			
-			System.out.println(Arrays.toString(mlp.predict(td.getInputRow(row)))+" "+Arrays.toString(td.getTargetRow(row)));
-		}
-		System.out.println("MSE:"+Arrays.toString(sut.calCulateMeanSquaredErrorPerNeuron()));
-		System.out.println("MSE:"+sut.calculateTotalMSE());
-
+		float[][] expectedWeights = mlp.getWeights();
+		float[][] actualWeights = mlpA.getWeights();
+		for (int i = 0; i < actualWeights.length; i++) {
+			assertArrayEquals(expectedWeights[i],actualWeights[i]);
+		}		
 	}
 
 	//	void excuteNetwork(float[][] netInputs,float[][] outputs,float[][] weights,float[] input, ACTIVATION_FUNCTION[][] activatiTypes) {
