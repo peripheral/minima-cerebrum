@@ -1,6 +1,8 @@
 package mlp.trainer.gradient_descent;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import math.utils.StatisticUtils;
 import mlp.ANN_MLP.ACTIVATION_FUNCTION;
@@ -8,6 +10,7 @@ import mlp.NeuronFunctionModels;
 import mlp.NeuronLayer;
 import mlp.trainer.Backpropagation;
 import mlp.trainer.TerminationCriteria;
+import mlp.trainer.TerminationCriteria.TERMINATION_CRITERIA;
 
 public class GradientDescent extends Backpropagation {
 
@@ -23,11 +26,6 @@ public class GradientDescent extends Backpropagation {
 	private float gainMagnitudeIncrement = 0.001f;
 	private float[][] weightDeltas = null;
 
-
-	public void getDeltasForLayer(int layerId) {
-		// TODO Auto-generated method stub
-
-	}
 
 	/**
 	 * Function calculates gradient from error and given input and activation of layer function parameters
@@ -403,7 +401,20 @@ public class GradientDescent extends Backpropagation {
 	}
 
 	public void train() {
-		// TODO Auto-generated method stub
+		HashSet<TERMINATION_CRITERIA> set = new HashSet<TERMINATION_CRITERIA>();
+		for(TERMINATION_CRITERIA tc:terminationCriteria.getTerminationCriterias()) {
+			set.add(tc);
+		}
+		if(set.contains(TERMINATION_CRITERIA.MAX_ITERATIONS)) {		
+			int rowId = 0;
+			int maxIterations = terminationCriteria.getIterations();
+			for(int iteration = 0; iteration < maxIterations;iteration++) {
+				trainOnSampleWithGainParameterWithoutGainMagnitudeModificationWithDelta(trainingData.getInputRow(rowId),trainingData.getTargetRow(rowId));
+				for(int row = 0;row < trainingData.size(); row++) {
+					trainOnSampleWithGainParameterWithDeltaRule(trainingData.getInputRow(row),trainingData.getTargetRow(row));
+				}
+			}
+		}
 
 	}
 

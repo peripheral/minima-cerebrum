@@ -819,7 +819,7 @@ public class GradientDescentTest{
 		int inputTargetDemarcation = 3;
 		TrainingData td = new TrainingData(getTrainingDataGD(), inputTargetDemarcation);
 		int[] layerSizes = new int[] {3,30,3};
-		int maxIterations = 1000;
+		int maxIterations = 100;
 		TERMINATION_CRITERIA[] criteria = {TERMINATION_CRITERIA.MAX_ITERATIONS};
 		boolean useSoftmax = true;
 		WEIGHT_INITIATION_METHOD weightInitiationMethod = WEIGHT_INITIATION_METHOD.RANDOM;

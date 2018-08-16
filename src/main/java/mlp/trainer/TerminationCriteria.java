@@ -23,7 +23,7 @@ public class TerminationCriteria {
 
 	public TerminationCriteria(TERMINATION_CRITERIA[] criteria, int maxIterations) {
 		terminationCriteria = criteria;
-		maxIterations = maxIterations;
+		this.maxIterations = maxIterations;
 	}
 
 	public TERMINATION_CRITERIA[] getTerminationCriterias() {
