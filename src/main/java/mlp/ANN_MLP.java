@@ -20,7 +20,7 @@ public class ANN_MLP {
 	private TrainingData trainingData;
 	private Backpropagation trainer = new Backpropagation();
 	private boolean applySoftmaxOnOutput = false;
-	private TerminationCriteria trainingTerminationCriteria;
+	private TerminationCriteria trainingTerminationCriteria = new TerminationCriteria();
 	public ANN_MLP() {}
 
 	public ANN_MLP(int[] layerSizes) {

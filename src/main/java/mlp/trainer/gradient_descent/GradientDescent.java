@@ -1,7 +1,5 @@
 package mlp.trainer.gradient_descent;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 
 import math.utils.StatisticUtils;
@@ -548,7 +546,6 @@ public class GradientDescent extends Backpropagation {
 		float nodeGradient = 0;
 		float newWeight = 0;
 		float currentWeight ;
-		float deltaWeight = 0;
 		int weightLayerIdx = 0,neuronLayerIdx = 0;
 		/* Calculate weights per layer */
 		for(int gradientLayerIdx = nodeGradients.length-1; gradientLayerIdx >= 0 ; gradientLayerIdx--) {
@@ -558,7 +555,6 @@ public class GradientDescent extends Backpropagation {
 				/* Gradient must be negative to reach a valley. set Learning rate to negative to 
 				 * make delta negative */
 				nodeGradient = nodeGradients[gradientLayerIdx][neuronIdx];
-				deltaWeight = calculateDeltaWeight(nodeGradient, 0.5f);
 				for(int weightIdx = 0; weightIdx < mlp.getWeightLayer(weightLayerIdx).length;weightIdx+=mlp.getLayerSizes()[neuronLayerIdx] ) {
 					/* If sign changed divide the gain by 2 */
 					if(haSsignChanged(nodeGradient,gradientLayerIdx,neuronIdx)) {

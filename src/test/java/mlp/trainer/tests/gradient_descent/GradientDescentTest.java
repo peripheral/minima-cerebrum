@@ -3,15 +3,9 @@ package mlp.trainer.tests.gradient_descent;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Arrays;
-import java.util.Random;
-
-import javax.management.RuntimeErrorException;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import math.utils.StatisticUtils;
 import mlp.ANN_MLP;
 import mlp.ANN_MLP.ACTIVATION_FUNCTION;
 import mlp.ANN_MLP.WEIGHT_INITIATION_METHOD;
@@ -815,7 +809,7 @@ public class GradientDescentTest{
 	 * Test train() function with MAX iterations as stopping criteria. Number of iterations 2
 	 */ 
 	@Test
-	void testLearnWithStoppingCriteriaMaxIterations() {
+	void testTrainWithStoppingCriteriaMaxIterations() {
 		int inputTargetDemarcation = 3;
 		TrainingData td = new TrainingData(getTrainingDataGD(), inputTargetDemarcation);
 		int[] layerSizes = new int[] {3,30,3};
@@ -857,51 +851,4 @@ public class GradientDescentTest{
 			assertArrayEquals(expectedWeights[i],actualWeights[i]);
 		}		
 	}
-
-	//	void excuteNetwork(float[][] netInputs,float[][] outputs,float[][] weights,float[] input, ACTIVATION_FUNCTION[][] activatiTypes) {
-	//		int firstLayerId = 0;
-	//		/* set input*/
-	//		for(int i = 0; i<input.length;i++) {
-	//			netInputs[firstLayerId][i] = input[i];
-	//			outputs[firstLayerId][i] = input[i];
-	//		}
-	//		/* execute network */
-	//		for(int layerId = 1; layerId < netInputs.length;layerId++) {
-	//			for(int neuronId = 0; neuronId < netInputs[layerId].length;neuronId++) {
-	//				netInputs[layerId][neuronId] = 0;
-	//				for(int lowerNeuronId = 0; lowerNeuronId < netInputs[layerId-1].length;lowerNeuronId++) {
-	//					netInputs[layerId][neuronId] = netInputs[layerId][neuronId] + 
-	//							netInputs[layerId-1][lowerNeuronId]*weights[layerId-1][lowerNeuronId*netInputs[layerId-1].length + neuronId];
-	//
-	//				}
-	//				for(int lowerNeuronId = 0; lowerNeuronId < netInputs[layerId-1].length;lowerNeuronId++) {
-	//					outputs[layerId][neuronId] = activate(activatiTypes[layerId][neuronId], 
-	//							netInputs[layerId][neuronId],neuronId,netInputs[layerId]);
-	//				}
-	//			}
-	//		}
-	//	}
-	//
-	//	private float activate(ACTIVATION_FUNCTION activatTypes, float value,int neuronId,float[] netInputs) {
-	//		float a = 1f,b = 1f;;
-	//		switch(activatTypes) {
-	//		case SIGMOID:
-	//			return NeuronFunctionModels.activate(activatTypes, a, b, value);
-	//		case SOFTMAX:
-	//			return StatisticUtils.calculateSoftmaxPartialDerivative(netInputs, neuronId);
-	//		default:
-	//			throw new RuntimeException(" not implemented activation function");
-	//		}
-	//	}
-	//
-	//	void calculateError(COST_FUNCTION_TYPE fType,float[][] netInputs,float[][] weights,float[] input,float[] target) {
-	//		int firstLayerId = 0;
-	//		/* set input*/
-	//		for(int i = 0; i<input.length;i++) {
-	//			netInputs[firstLayerId][i] = input[i];
-	//		}
-	//		/* execute network */
-	//
-	//	}
-
 }
