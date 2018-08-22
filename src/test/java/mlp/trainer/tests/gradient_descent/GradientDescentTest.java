@@ -2,6 +2,7 @@ package mlp.trainer.tests.gradient_descent;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -664,6 +665,28 @@ public class GradientDescentTest{
 	}
 
 	/**
+	 * test of set get learning momentum
+	 */
+	@Test
+	void testSetGetMomentumDecayFactor() {
+		float momentum = 0.90f;
+		sut.setMomentumDecayFactor(momentum);
+		float actual = sut.getMomentumDecayFactor();
+		float expected = 0.90f;
+		assertEquals(expected, actual);
+	}
+
+	/**
+	 * test of get default learning momentum 
+	 */
+	@Test
+	void testGetDefaultMomentumDecayFactor() {
+		float actual = sut.getMomentumDecayFactor();
+		float expected = 095f;
+		assertEquals(expected, actual);
+	}
+
+	/**
 	 * test of set get learning rate
 	 */
 	@Test
@@ -851,4 +874,6 @@ public class GradientDescentTest{
 			assertArrayEquals(expectedWeights[i],actualWeights[i]);
 		}		
 	}
+	
+	
 }

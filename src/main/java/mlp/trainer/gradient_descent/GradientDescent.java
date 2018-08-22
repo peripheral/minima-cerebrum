@@ -843,4 +843,14 @@ public class GradientDescent extends Backpropagation {
 		}
 		return difference;		
 	}
+
+	public void setMomentumDecayFactor(float momentum2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public float getMomentumDecayFactor() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
