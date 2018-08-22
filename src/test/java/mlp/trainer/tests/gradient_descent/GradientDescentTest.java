@@ -685,6 +685,19 @@ public class GradientDescentTest{
 		float expected = 0.95f;
 		assertEquals(expected, actual);
 	}
+	
+	/**
+	 * test of calculate delta weight with momentum
+	 */
+	@Test
+	void testCalculateDeltaWeightWithMomentum() {
+		float decay = 0.95f;
+		float oldDeltaWeight = 0.04f;
+		float newDeltaWeight = 0.01f;
+		float actual = sut.calculateDeltaWeightWithMomentum(decay,oldDeltaWeight,newDeltaWeight);
+		float expected = decay * oldDeltaWeight -1f ;
+		assertEquals(expected, actual);
+	}
 
 	/**
 	 * test of set get learning rate

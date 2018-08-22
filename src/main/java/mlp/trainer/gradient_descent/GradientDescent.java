@@ -852,4 +852,9 @@ public class GradientDescent extends Backpropagation {
 	public float getMomentumDecayFactor() {
 		return momentDecayFactor;
 	}
+
+	public float calculateDeltaWeightWithMomentum(float decay, float oldDeltaWeight, float newDeltaWeight) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
