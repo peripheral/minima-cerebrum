@@ -23,6 +23,7 @@ public class GradientDescent extends Backpropagation {
 	private float gainReductionFactor = 0.5f;
 	private float gainMagnitudeIncrement = 0.001f;
 	private float[][] weightDeltas = null;
+	private float momentDecayFactor = 0.95f;
 
 
 	/**
@@ -844,13 +845,11 @@ public class GradientDescent extends Backpropagation {
 		return difference;		
 	}
 
-	public void setMomentumDecayFactor(float momentum2) {
-		// TODO Auto-generated method stub
-		
+	public void setMomentumDecayFactor(float decayFactor) {
+		this.momentDecayFactor = decayFactor;		
 	}
 
 	public float getMomentumDecayFactor() {
-		// TODO Auto-generated method stub
-		return 0;
+		return momentDecayFactor;
 	}
 }

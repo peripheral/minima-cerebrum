@@ -682,7 +682,7 @@ public class GradientDescentTest{
 	@Test
 	void testGetDefaultMomentumDecayFactor() {
 		float actual = sut.getMomentumDecayFactor();
-		float expected = 095f;
+		float expected = 0.95f;
 		assertEquals(expected, actual);
 	}
 
