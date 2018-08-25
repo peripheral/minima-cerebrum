@@ -271,6 +271,10 @@ public class ANN_MLP {
 		return layers[layerIdx].getNeuron(neuronId).getNodeGradient();
 	}
 
+	/**
+	 * Returns network gradients for all layers, input included
+	 * @return
+	 */
 	public float[][] getNetworkNodeGradients() {
 		float[][] gradients = new float[layers.length][];
 		for(int layerId = 0; layerId < gradients.length;layerId++) {

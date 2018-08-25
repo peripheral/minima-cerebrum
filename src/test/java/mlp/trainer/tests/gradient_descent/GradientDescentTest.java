@@ -198,25 +198,21 @@ public class GradientDescentTest{
 		float oldDelta = 0.004f;
 		float softmaxDerivative = 0.10115465582f;
 		float currentWeight = 0.03f;
-		float momentum = 0;
+		float momentumDecayFactor = 0;
 		/* Gradient = 2* 0.5 * 0.10115465582f */
 		float gradient = 2 * error * softmaxDerivative;
 		float learningRate = 0.001f;
 		/* Delta weight = 0.10115465582f * 4f ~ 0.4044  */
-		float deltaWeight = sut.calculateDeltaWeight(gradient, Oh[neuronIdx]);
-		if(deltaWeight > 0 && learningRate > 0) {
-			learningRate = learningRate * -1;
-		}else if(deltaWeight < 0 && learningRate < 0) {
-			learningRate = learningRate * -1;
-		}
+		float calculatedDeltaWeight = sut.calculateDeltaWeight(gradient, Oh[neuronIdx]);
+		
 		/* Oh[neuronIdx] - output of sending neuron 
 		 * case: deltaWeight < 0
 		 * new_weight = dletaWeightOld*momentum + learningRate*deltaWeight 
 		 * case:deltaWeight > 0
 		 * new_weight = dletaWeightOld*momentum + learningRate*deltaWeight * -1
 		 */
-		float actual =  sut.calculateWeight(deltaWeight,oldDelta, learningRate,momentum,currentWeight);
-		float expected = currentWeight + learningRate * deltaWeight + (momentum * oldDelta);
+		float actual =  sut.calculateWeight(calculatedDeltaWeight,oldDelta, learningRate,momentumDecayFactor,currentWeight);
+		float expected = currentWeight + (momentumDecayFactor * oldDelta) - learningRate * calculatedDeltaWeight;
 		assertEquals(expected,actual);
 	}	
 
@@ -246,36 +242,41 @@ public class GradientDescentTest{
 
 		float[][] expectedWeights = new float[weights.length][];
 
-		float momentum = sut.getMomentum();
+		float momentumDecayFactor = sut.getMomentumDecayFactor();
 
-		float oldNodeGradient = 0;
+		float previousDeltaWeight = 0;
 		int neuronId = 0;
-
+		int lowerNeuronId = 0;
+		float calculatedDedeltaWeight = 0;
+		float[] outputs;
 		float nodeGradient; 
-		/* Calculate node gradients for each hidden layers*/
-		int layerIdx = mlp.getLayerSizes().length-1;
+	
 		/* For each layer, top down*/
 		for(int weightLayerIdx = weights.length-1; weightLayerIdx >= 0 ; weightLayerIdx--) {
 			/* initiate array for expected weights in layer weightLayerIdx */
 			expectedWeights[weightLayerIdx] = new float[weights[weightLayerIdx].length];
+			/* get outputs from layer lower */
+			outputs = mlp.getLayer(weightLayerIdx).getOutputs();
 			/* for each weight in layer */
 			for(int weightIdx = 0; weightIdx < weights[weightLayerIdx].length; weightIdx++) {
-
-				/*  */
-				neuronId = weightIdx%mlp.getLayerSizes()[layerIdx];
-
-				/* Gradient must be negative to reach a valley. set Learning rate to negative to 
-				 * make delta negative */
-				nodeGradient  = gradients[layerIdx][neuronId];
-				if(nodeGradient  > 0 && learningRate > 0) {
-					learningRate = learningRate * -1;
-				}else if(nodeGradient  < 0 && learningRate < 0){
-					learningRate = learningRate * -1;
+				
+				/* idx of node gradient for upper layer, weightLayerIdx+1*/
+				neuronId = weightIdx%mlp.getLayerSizes()[weightLayerIdx+1];
+				/* get node gradient from neuron of upper layer */
+				nodeGradient  = gradients[weightLayerIdx+1][neuronId];
+				/* get index of neuron of connecting layer with current weightIdx, weightIdx/upperLayerSize */
+				lowerNeuronId = weightIdx/mlp.getLayerSizes()[weightLayerIdx+1];
+				/* currently biases are not included, must check for outofbound exception */
+				if(lowerNeuronId <outputs.length ) {
+					calculatedDedeltaWeight = sut.calculateDeltaWeight(nodeGradient, outputs[lowerNeuronId]);
+				}else {
+					/* Bias */
+					calculatedDedeltaWeight = sut.calculateDeltaWeight(nodeGradient, 1);
 				}
-				expectedWeights[weightLayerIdx][weightIdx] = sut.calculateWeight(nodeGradient, 
-						oldNodeGradient, learningRate, momentum, weights[weightLayerIdx][weightIdx]);				
+			
+				expectedWeights[weightLayerIdx][weightIdx] = sut.calculateWeight(calculatedDedeltaWeight, 
+						previousDeltaWeight, learningRate, momentumDecayFactor, weights[weightLayerIdx][weightIdx]);				
 			}
-			layerIdx--;
 		}
 		weights = mlp.getWeights();
 		for(int layerId = 0; layerId < expectedWeights.length;layerId++ ) {
@@ -646,28 +647,6 @@ public class GradientDescentTest{
 	 * test of set get learning momentum
 	 */
 	@Test
-	void testSetGetMomentum() {
-		float momentum = 0.001f;
-		sut.setMomentum(momentum);
-		float actual = sut.getMomentum();
-		float expected = 0.001f;
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * test of get default learning momentum 
-	 */
-	@Test
-	void testGetDefaultMomentum() {
-		float actual = sut.getMomentum();
-		float expected = 0.00001f;
-		assertEquals(expected, actual);
-	}
-
-	/**
-	 * test of set get learning momentum
-	 */
-	@Test
 	void testSetGetMomentumDecayFactor() {
 		float momentum = 0.90f;
 		sut.setMomentumDecayFactor(momentum);
@@ -686,20 +665,6 @@ public class GradientDescentTest{
 		assertEquals(expected, actual);
 	}
 	
-	/**
-	 * test of calculate delta weight with momentum
-	 * expected = decay * oldDeltaWeight - newDeltaWeight
-	 */
-	@Test
-	void testCalculateDeltaWeightWithMomentum() {
-		float decay = 0.95f;
-		float oldDeltaWeight = 0.04f;
-		float newDeltaWeight = 0.01f;
-		float actual = sut.calculateDeltaWeightWithMomentum(decay,oldDeltaWeight,newDeltaWeight);
-		float expected = decay * oldDeltaWeight - newDeltaWeight ;
-		assertEquals(expected, actual);
-	}
-
 	/**
 	 * test of set get learning rate
 	 */
