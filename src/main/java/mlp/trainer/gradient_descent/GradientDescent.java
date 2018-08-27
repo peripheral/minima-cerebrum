@@ -197,7 +197,7 @@ public class GradientDescent extends Backpropagation {
 	 * Calculates new weight
 	 * currentWeight + (momentum * oldNodeGRadient) - learningRate * nodeGradient
 	 * @param calculatedDeltaWeight -  ∂(E)^2/∂Who
-	 * @param oldDeltaWeight - gradient previously used weight to calc
+	 * @param oldDeltaWeight - delta weight previously used weight to calc new weight
 	 * @param learningRate - learning rate, factor decreases
 	 * @param momentumDecayFactor - momentum decay factor
 	 * @param currentWeight - initial weight of incoming connection to the node with nodeGradient
@@ -266,13 +266,9 @@ public class GradientDescent extends Backpropagation {
 
 	}
 
-	public float[] calculateNodeGradient(ACTIVATION_FUNCTION activationFunction, float[] outputNodeGradients, float ih,
-			float[] who, float a, float b) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	/** Io - neuron input, E = (Required - Predicted)
+	/** 
+	 * Io - neuron input, E = (Required - Predicted)
 	 * ∂(E)^2/∂Io = ∂(E)^2/∂Io * ∂(E)/∂Io * ∂fo(Io)/∂Io = gradient
 	 * (∂E^2/∂Io) => 2E  - first step of derivation
 	 * ∂(Required - Predicted)/∂Io => -Oo => -fo(.)
@@ -851,7 +847,16 @@ public class GradientDescent extends Backpropagation {
 		this.momentDecayFactor = decayFactor;		
 	}
 
+	/**
+	 * Default 0.95
+	 * @return
+	 */
 	public float getMomentumDecayFactor() {
 		return momentDecayFactor;
+	}
+
+	public void trainOnSampleWithMomentum(float[] inputRow, float[] targetRow) {
+		// TODO Auto-generated method stub
+		
 	}
 }
