@@ -19,7 +19,6 @@ public class Neuron {
 	private float a = 1;
 	private float b = 1;
 	private float activationResult;
-	private float nodeGradient;
 
 	public Neuron() {}
 	
@@ -135,17 +134,6 @@ public class Neuron {
 	public void transferNoActivation() {
 		output = NeuronFunctionModels.transfer(transferFunction,netInput);		
 	}
-
-
-	public void setNodeGradient(float nodeGradient) {
-		this.nodeGradient = nodeGradient;	
-	}
-
-
-	public float getNodeGradient() {
-		return nodeGradient;
-	}
-
 
 	public float[] getWeightsAsArray() {
 		float[] arrWeights = new float[weights.size()];

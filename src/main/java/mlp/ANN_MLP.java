@@ -249,15 +249,6 @@ public class ANN_MLP {
 		return applySoftmaxOnOutput;
 	}
 
-	public void setNodeGradient(int layerIdx, int neuronIdx, float nodeGradient) {
-		layers[layerIdx].setNeuronGradient(neuronIdx,nodeGradient);
-		
-	}
-
-	public float[] getLayerNodeGradients(int i) {
-		return 	layers[i].getNodeGradients();
-	}
-
 	/**
 	 * Returns weight for the layer
 	 * @param layerIdx - index of the layer. input layer is first layer
@@ -265,22 +256,6 @@ public class ANN_MLP {
 	 */
 	public float[] getLayerWeights(int layerIdx) {
 		return layers[layerIdx].getWeights();
-	}
-
-	public float getNodeGradient(int layerIdx, int neuronId) {
-		return layers[layerIdx].getNeuron(neuronId).getNodeGradient();
-	}
-
-	/**
-	 * Returns network gradients for all layers, input included
-	 * @return
-	 */
-	public float[][] getNetworkNodeGradients() {
-		float[][] gradients = new float[layers.length][];
-		for(int layerId = 0; layerId < gradients.length;layerId++) {
-			gradients[layerId] = getLayerNodeGradients(layerId);
-		}
-		return gradients;
 	}
 
 	public void setWeights(float[][] weights) {

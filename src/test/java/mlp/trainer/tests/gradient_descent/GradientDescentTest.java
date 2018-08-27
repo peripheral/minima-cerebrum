@@ -259,7 +259,7 @@ public class GradientDescentTest{
 		float[][] weights = mlp.getWeights();
 		sut.trainOnSample(td.getInputRow(trainingRowId),td.getTargetRow(trainingRowId));
 		/* Produce error gradient for each output neuron */
-		float[][] gradients = mlp.getNetworkNodeGradients(); 
+		float[][] gradients = sut.getNetworkNodeGradients(); 
 
 		float[][] expectedWeights = new float[weights.length][];
 
@@ -284,9 +284,9 @@ public class GradientDescentTest{
 				/* idx of node gradient for upper layer, weightLayerIdx+1*/
 				neuronId = weightIdx%mlp.getLayerSizes()[weightLayerIdx+1];
 				/* get node gradient from neuron of upper layer */
-				nodeGradient  = gradients[weightLayerIdx+1][neuronId];
+				nodeGradient  = gradients[weightLayerIdx][neuronId];
 				/* get index of neuron of connecting layer with current weightIdx, weightIdx/upperLayerSize */
-				lowerNeuronId = weightIdx/mlp.getLayerSizes()[weightLayerIdx+1];
+				lowerNeuronId = weightIdx/gradients[weightLayerIdx].length;
 				/* currently biases are not included, must check for outofbound exception */
 				if(lowerNeuronId <outputs.length ) {
 					calculatedDedeltaWeight = sut.calculateWeightDelta(nodeGradient, outputs[lowerNeuronId]);
@@ -407,45 +407,45 @@ public class GradientDescentTest{
 		return weights;
 	}
 
-	/**
-	 * Test learning with adaptive learningRate, halve the gain once the neuron gain changes signum
-	 * test MLP consists of input layer size 3, hidden layer 4 neurons, 3 output neurons
-	 * hidden layer activation function sigmoid, output activation softmax
-	 */
-	@Test
-	void testIncreaseNodeLearningGainAtStepRepetion() {
-		TERMINATION_CRITERIA[] criteria = {TERMINATION_CRITERIA.MAX_ITERATIONS};
-		int[] layerSizes = new int[] {3,4,3};
-		boolean useSoftmax = true;
-		float learningRate = 0.01f;
-		int iterations = 10;
-		float[][] data = getTrainingDataGD();
-		TrainingData td = new TrainingData(data, 3);	
-		TerminationCriteria tc = new TerminationCriteria(criteria);	
-		tc.setIterations(iterations);
-		ANN_MLP mlp = new ANN_MLP(WEIGHT_INITIATION_METHOD.RANDOM, useSoftmax, layerSizes);
-		mlp.initiate();
-		mlp.setWeights(getTestWeights());
-		sut.setMLP(mlp);	
-		sut.setTrainingData(td);	
-		sut.setCostFunctionType(COST_FUNCTION_TYPE.SQUARED_ERROR);
-		sut.setLearningRate(learningRate);
-		sut.setTrainingTerminationCriteria(tc);
-		/* Initial weights */
-		float[][] expectedNodeGains = getExpectedIncreasedGains();
-
-		sut.initiateNodeGains();
-		sut.trainOnSampleWithGainParameterWithoutGainMagnitudeModification(td.getInputRow(td.size()-5), td.getTargetRow(td.size()-5));
-		/* sign change of some gains */
-		sut.trainOnSampleWithGainParameter(td.getInputRow(1), td.getTargetRow(1));
-
-
-		/*repeatition increase gain by 0.005*/
-		float[][] actualNodeGains = sut.getNodeGains();
-		for(int layerId = 0; layerId < expectedNodeGains.length;layerId++ ) {
-			assertArrayEquals(expectedNodeGains[layerId],actualNodeGains[layerId]);
-		}
-	}
+//	/**
+//	 * Test learning with adaptive learningRate, halve the gain once the neuron gain changes signum
+//	 * test MLP consists of input layer size 3, hidden layer 4 neurons, 3 output neurons
+//	 * hidden layer activation function sigmoid, output activation softmax
+//	 */
+//	@Test
+//	void testIncreaseNodeLearningGainAtStepRepetion() {
+//		TERMINATION_CRITERIA[] criteria = {TERMINATION_CRITERIA.MAX_ITERATIONS};
+//		int[] layerSizes = new int[] {3,4,3};
+//		boolean useSoftmax = true;
+//		float learningRate = 0.01f;
+//		int iterations = 10;
+//		float[][] data = getTrainingDataGD();
+//		TrainingData td = new TrainingData(data, 3);	
+//		TerminationCriteria tc = new TerminationCriteria(criteria);	
+//		tc.setIterations(iterations);
+//		ANN_MLP mlp = new ANN_MLP(WEIGHT_INITIATION_METHOD.RANDOM, useSoftmax, layerSizes);
+//		mlp.initiate();
+//		mlp.setWeights(getTestWeights());
+//		sut.setMLP(mlp);	
+//		sut.setTrainingData(td);	
+//		sut.setCostFunctionType(COST_FUNCTION_TYPE.SQUARED_ERROR);
+//		sut.setLearningRate(learningRate);
+//		sut.setTrainingTerminationCriteria(tc);
+//		/* Initial weights */
+//		float[][] expectedNodeGains = getExpectedIncreasedGains();
+//
+//		sut.initiateNodeGains();
+//		sut.trainOnSampleWithGainParameterWithoutGainMagnitudeModification(td.getInputRow(td.size()-5), td.getTargetRow(td.size()-5));
+//		/* sign change of some gains */
+//		sut.trainOnSampleWithGainParameter(td.getInputRow(1), td.getTargetRow(1));
+//
+//
+//		/*repeatition increase gain by 0.005*/
+//		float[][] actualNodeGains = sut.getNodeGains();
+//		for(int layerId = 0; layerId < expectedNodeGains.length;layerId++ ) {
+//			assertArrayEquals(expectedNodeGains[layerId],actualNodeGains[layerId]);
+//		}
+//	}
 
 	private float[][] getExpectedIncreasedGains() {
 		float[][] nodeGains = {
@@ -466,125 +466,12 @@ public class GradientDescentTest{
 		return weights;
 	}
 
-	/**
-	 * Test for calculating of node gradients within network
-	 */
-	@Test
-	void testCalculateNodeGradientsWithinNetwork() {
-		int[] layerSizes = new int[] {3,4,3};
-		float[][] data = getTrainingDataGD();
-		TrainingData td = new TrainingData(data, 3);
-		boolean useSoftmax = true;
-		int trainingRowId = 0;
-		float learningRate = 0.01f;
-		COST_FUNCTION_TYPE costFType = COST_FUNCTION_TYPE.SQUARED_ERROR;
-		ANN_MLP mlp = new ANN_MLP(WEIGHT_INITIATION_METHOD.RANDOM, useSoftmax, layerSizes);
-		mlp.initiate();
-		sut.setMLP(mlp);	
-		sut.setTrainingData(td);	
-		sut.setCostFunctionType(COST_FUNCTION_TYPE.SQUARED_ERROR);
-		sut.setLearningRate(learningRate);
-
-		float[] errorVector = sut.calculateErrorPerNeuron(costFType, td.getInputRow(trainingRowId),td.getTargetRow(trainingRowId));
-		sut.calculateNetworkNodeGradients(costFType, td.getInputRow(trainingRowId),td.getTargetRow(trainingRowId));
-
-		float[][] actualGradients = mlp.getNetworkNodeGradients(); 
-		int outputLayerIdx = mlp.getLayerSizes().length -1;
-		float[] io = mlp.getLayer(outputLayerIdx).getNetInputs();
-		float[][] expectedGradients = new float[actualGradients.length][];
-		float[] inputs;
-
-		ACTIVATION_FUNCTION activationFType = ACTIVATION_FUNCTION.SOFTMAX;
-		/* Produce error gradient for each output neuron */
-		expectedGradients[outputLayerIdx] = new float[errorVector.length];
-		for(int errIdx = 0; errIdx < errorVector.length; errIdx++ ) {
-			expectedGradients[outputLayerIdx][errIdx] = sut.calculateNodeGradient(costFType, activationFType, errorVector[errIdx], io, errIdx);
-		}
-		activationFType = ACTIVATION_FUNCTION.SIGMOID;
-		/* Calculate node gradients for each hidden layers*/
-		for(int layerIdx = mlp.getLayerSizes().length-2; layerIdx > 0 ; layerIdx--) {
-			/* Retrieve inputs for the layer */
-			inputs = mlp.getLayer(layerIdx).getNetInputs();
-			/* initiate gradient array for layerIdx */
-			expectedGradients[layerIdx] = new float[inputs.length];
-			/* calculate gradients per neuron of current neuron layer */
-			for(int neuronIdx = 0; neuronIdx < expectedGradients[layerIdx].length; neuronIdx++ ) {
-				/* gradient is product between f'(in) * sum ( upperLayerGradient_h*weight_ho + ..) */
-				expectedGradients[layerIdx][neuronIdx] = sut.calculateNodeGradient(activationFType,
-						expectedGradients[layerIdx+1], mlp.getLayer(layerIdx).getNeuron(neuronIdx).getWeightsAsArray(), inputs[neuronIdx]);
-			}
-		}
-		/* Gradients are not computed for input nodes */
-		expectedGradients[0] = new float[mlp.getLayerSizes()[0]];
-		for(int layerIdx = 0;layerIdx < expectedGradients.length;layerIdx++) {
-			assertArrayEquals(expectedGradients[layerIdx], actualGradients[layerIdx]);
-		}
-
-	}
-
-	/**
-	 * Test for calculating of node gradients within network
-	 */
-	@Test
-	void testCalculateNodeGradientsWithinNetworkLocallyStored() {
-		int[] layerSizes = new int[] {3,4,3};
-		float[][] data = getTrainingDataGD();
-		TrainingData td = new TrainingData(data, 3);
-		boolean useSoftmax = true;
-		int trainingRowId = 0;
-		float learningRate = 0.01f;
-		COST_FUNCTION_TYPE costFType = COST_FUNCTION_TYPE.SQUARED_ERROR;
-		ANN_MLP mlp = new ANN_MLP(WEIGHT_INITIATION_METHOD.RANDOM, useSoftmax, layerSizes);
-		mlp.initiate();
-		sut.setMLP(mlp);	
-		sut.setTrainingData(td);	
-		sut.setCostFunctionType(costFType);
-		sut.setLearningRate(learningRate);
-
-		float[] errorVector = sut.calculateErrorPerNeuron(td.getInputRow(trainingRowId),td.getTargetRow(trainingRowId));
-		sut.calculateNetworkNodeGradientsStoredLocaly(costFType, td.getInputRow(trainingRowId),td.getTargetRow(trainingRowId));
-
-		float[][] actualGradients = sut.getLocallyStoredNetworkNodeGradients(); 
-		/* index of node gradients for output layer, starts with zero because input layer omited */
-		int outputLayerGradientsIdx = mlp.getLayerSizes().length -2;
-		int outputNeuronLayerIdx = mlp.getLayerSizes().length -1;
-		float[] io = mlp.getLayer(outputNeuronLayerIdx).getNetInputs();
-		/* expectedGradients is one layer less than the size of mlp because the input layer is omitted */
-		float[][] expectedGradients = new float[mlp.getLayerSizes().length-1][];
-		float[] inputs;
-
-		ACTIVATION_FUNCTION activationFType = ACTIVATION_FUNCTION.SOFTMAX;
-		/* Produce error gradient for each output neuron */
-		expectedGradients[outputLayerGradientsIdx] = new float[errorVector.length];
-		for(int errIdx = 0; errIdx < errorVector.length; errIdx++ ) {
-			/* Using default method which is previously implemented and tested */
-			expectedGradients[outputLayerGradientsIdx][errIdx] = sut.calculateNodeGradient(costFType, activationFType, errorVector[errIdx], io, errIdx);
-		}
-		activationFType = ACTIVATION_FUNCTION.SIGMOID;
-		/* Calculate node gradients for each hidden layers*/
-		for(int gradientLayerIdx = expectedGradients.length-2; gradientLayerIdx >= 0 ; gradientLayerIdx--) {
-			/* Retrieve inputs for the layer */
-			inputs = mlp.getLayer(gradientLayerIdx+1).getNetInputs();
-			/* initiate gradient array for layerIdx */
-			expectedGradients[gradientLayerIdx] = new float[inputs.length];
-			/* calculate gradients per neuron of current neuron layer */
-			for(int neuronIdx = 0; neuronIdx < expectedGradients[gradientLayerIdx].length; neuronIdx++ ) {
-				/* gradient is product between f'(in) * sum ( upperLayerGradient_h*weight_ho + ..) */
-				expectedGradients[gradientLayerIdx][neuronIdx] = sut.calculateNodeGradient(activationFType, expectedGradients[gradientLayerIdx+1],
-						mlp.getLayer(gradientLayerIdx+1).getNeuron(neuronIdx).getWeightsAsArray(), inputs[neuronIdx]);
-			}
-		}
-		for(int layerIdx = 0;layerIdx < expectedGradients.length;layerIdx++) {
-			assertArrayEquals(expectedGradients[layerIdx], actualGradients[layerIdx]);
-		}
-
-	}
-
+	
 	/**
 	 * Test for calculating of node gradients within network, with delta rule
 	 */
 	@Test
-	void testCalculateNodeGradientsWithinNetworkLocallyStoredWithDeltaRule() {
+	void testCalculateNodeGradientsWithinNetwork() {
 		int[] layerSizes = new int[] {3,4,3};
 		float[][] data = getTrainingDataGD();
 		TrainingData td = new TrainingData(data, 3);
@@ -601,9 +488,9 @@ public class GradientDescentTest{
 
 		/* (Target - Predicted) per neuron */
 		float[] differenceTarPred = sut.calculateDifferenceTargetSubPredicted(td.getInputRow(trainingRowId),td.getTargetRow(trainingRowId));
-		sut.calculateNetworkNodeGradientsStoredLocalyWithDeltaRule(costFType, td.getInputRow(trainingRowId),td.getTargetRow(trainingRowId));
+		sut.calculateNetworkNodeGradientsWithDeltaRule(costFType, td.getInputRow(trainingRowId),td.getTargetRow(trainingRowId));
 
-		float[][] actualGradients = sut.getLocallyStoredNetworkNodeGradients(); 
+		float[][] actualGradients = sut.getNetworkNodeGradients(); 
 		/* index of node gradients for output layer, starts with zero because input layer omited */
 		int outputLayerGradientsIdx = mlp.getLayerSizes().length -2;
 		int outputNeuronLayerIdx = mlp.getLayerSizes().length -1;
@@ -909,7 +796,7 @@ public class GradientDescentTest{
 		}
 
 		sut.trainOnSampleWithMomentum(td.getInputRow(rowId), td.getTargetRow(rowId));
-		float[][] gradients = sut.getLocallyStoredNetworkNodeGradients(); 		
+		float[][] gradients = sut.getNetworkNodeGradients(); 		
 
 		/* For each layer, top down*/
 		for(int weightLayerIdx = expectedWeights.length-1; weightLayerIdx >= 0 ; weightLayerIdx--) {
@@ -939,7 +826,7 @@ public class GradientDescentTest{
 
 		sut.trainOnSampleWithMomentum(td.getInputRow(rowId), td.getTargetRow(rowId));
 
-		gradients = sut.getLocallyStoredNetworkNodeGradients();  
+		gradients = sut.getNetworkNodeGradients();  
 
 		/* For each layer, top down*/
 		for(int weightLayerIdx = expectedWeights.length-1; weightLayerIdx >= 0 ; weightLayerIdx--) {
@@ -966,7 +853,6 @@ public class GradientDescentTest{
 			}
 
 		}
-
 
 		float[][] actualWeights = mlp.getWeights();
 		for (int i = 0; i < actualWeights.length; i++) {

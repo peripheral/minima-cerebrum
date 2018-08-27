@@ -135,22 +135,6 @@ public class NeuronLayer {
 		return useSoftmaxFuction;		
 	}
 
-	public void setNeuronGradient(int neuronIdx, float nodeGradient) {
-		neurons.get(neuronIdx).setNodeGradient(nodeGradient);
-	}
-
-	/** 
-	 * Node gradients, bias excluded
-	 * @return
-	 */
-	public float[] getNodeGradients() {
-		float[] gradients = new float[neurons.size()];	
-		for(int i = 0; i < gradients.length;i++) {
-			gradients[i] = neurons.get(i).getNodeGradient(); 
-		}
-		return gradients;
-	}
-
 	/**
 	 * set weight under index in layer
 	 * @param weightIdx - global index, index of weight in layer
