@@ -151,6 +151,11 @@ public class NeuronLayer {
 		return gradients;
 	}
 
+	/**
+	 * set weight under index in layer
+	 * @param weightIdx - global index, index of weight in layer
+	 * @param weight
+	 */
 	public void setWeight(int weightIdx, float weight) {
 		int neuronIdx = weightIdx/neurons.get(0).getWeights().size();
 		int offset = weightIdx%neurons.get(0).getWeights().size();
