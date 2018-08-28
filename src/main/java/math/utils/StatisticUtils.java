@@ -195,7 +195,16 @@ public class StatisticUtils {
 		}
 		if(Double.isNaN(denominator)) {
 			System.err.println("NaN for denominator");
-			throw new RuntimeException("NaN");
+			ePowIdx = Math.abs(inputs[idx]);
+			denominator = 0;
+			for(int i = 0 ;i < inputs.length;i++) {	
+				denominator = denominator + Math.abs(inputs[i]);
+			}
+			result = (float) ((ePowIdx*denominator - ePowIdx*ePowIdx)/(denominator*denominator));
+			if(Float.isNaN(result)){
+				System.out.println("Second operation yelded NaN");
+			}
+			return result;
 		}
 		result = (float) ((ePowIdx*denominator - ePowIdx*ePowIdx)/(denominator*denominator));
 		return result;

@@ -120,8 +120,6 @@ public class ANN_MLP {
 			layers[layerIdx].getBiasNeuron().setNetInput(1);
 			/*Get neurons from layer */
 			neurons = layers[layerIdx].getNeurons();
-			/* Layer is not input and not output layer*/
-			//if(layerIdx >0 && layerIdx < layers.length - 1) {
 			/* For each neuron in layer make a weight for each neuron it is connected to */
 			for(int neuronIdx = 0; neuronIdx < neurons.size();neuronIdx++ ) {
 				neuron = neurons.get(neuronIdx);
@@ -134,21 +132,6 @@ public class ANN_MLP {
 							(layerIdx < layers.length ? layers[layerIdx+1].size():0)));
 				}
 			}
-			//}
-
-			/*If layer is input layer set weight to one */
-			/*	else if(layerIdx == 0){
-				for(int neuronIdx = 0; neuronIdx < neurons.size();neuronIdx++ ) {
-					neuron = neurons.get(neuronIdx);
-					for(int i = 0;i < layers[layerIdx+1].size();i++) {
-						neuron.setWeight(i,1);
-					}
-				}
-				neuron = layers[layerIdx].getBiasNeuron();
-				for(int i = 0;i < layers[layerIdx+1].size();i++) {
-					neuron.setWeight(i, 0);
-				}				
-			}*/
 		}
 
 	}

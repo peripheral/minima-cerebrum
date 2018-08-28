@@ -56,7 +56,7 @@ public class GradientDescentTest{
 
 	/**
 	 * Test for function that calculates gradient of input to error in output layer
-	 * of the output neuron
+	 * of the output neuron. with attributes a and b
 	 * Io - neuron input, E = (Predicted - Required)
 	 * ∂(E)^2/∂Io = gradient
 	 * (∂E^2/∂Io) => 2E  - first step of derivation
@@ -64,7 +64,7 @@ public class GradientDescentTest{
 	 * 2E * fo'(Io) = gradient
 	 */
 	@Test
-	void testCalculateNodeGradientOutputNeurons() {
+	void testCalculateNodeGradientOutputNeuronWithAtrAB() {
 		COST_FUNCTION_TYPE costFType = COST_FUNCTION_TYPE.SQUARED_ERROR;
 		ACTIVATION_FUNCTION outputActivationFunction = ACTIVATION_FUNCTION.SOFTMAX;
 		float a = 1;
@@ -92,7 +92,7 @@ public class GradientDescentTest{
 	 * 2(target - observed) * -fo'(Io) = gradient
 	 */
 	@Test
-	void testCalculationNodeGradientOutputNeuronDeltaRule() {
+	void testCalculateNodeGradientOutputNeuron() {
 		ACTIVATION_FUNCTION activationFunction = ACTIVATION_FUNCTION.SOFTMAX;
 		COST_FUNCTION_TYPE costF = COST_FUNCTION_TYPE.SQUARED_ERROR;
 		/* (target - observed) */
@@ -103,30 +103,7 @@ public class GradientDescentTest{
 		float softmaxDerivative = 0.10115465582f;
 		/* 2(target - observed) * -fo'(Io) = gradient */
 		float expected = 2 * diffTarPred * -1 * softmaxDerivative;
-		float actual = sut.calculateNodeGradientDeltaRule(costF, activationFunction,  diffTarPred,IoAll,neuronId);
-		assertEquals(expected,actual);
-	}
-
-	/**
-	 * Test for function that calculates gradient of input to error in hidden neurons according to delta rule
-	 * Io - neuron input, E = (Required - Predicted)^2
-	 * Oo - output of output neuron, 
-	 * Io - input of output neuron
-	 * ∂(E)^2/∂Ih = ∂(target - observed)^2/∂Oo * -fo'(Io)/∂Io * ∂Io/∂Oh * ∂Oh/∂Ih  = outputGradient
-	 * ∂(target - observed)^2/∂Oo * -fo'(Io)/∂Io => 2(target - observed) * -fo'(Io) 
-	 * ∂Io/∂Oh => ∂(OiWoi+ Oi+1Woi+1 +OhWoh+..)/∂Oh => Woh
-	 * ∂Oh/∂Ih => f'(Ih), f(.) - sigmoid
-	 * outputGradient * Woh * f'(Ih) = gradient
-	 */
-	@Test
-	void testCalculationNodeGradientHiddenNeuronDeltaRule() {
-		ACTIVATION_FUNCTION activationFunction = ACTIVATION_FUNCTION.SIGMOID;
-		float Woh = 0.03f;
-		float Ih = 6f;
-		float outputGradient = -0.10115465582f;
-		/* 2(target - observed) * -fo'(Io) = gradient */
-		float expected =  outputGradient * Woh * NeuronFunctionModels.derivativeOf(activationFunction, Ih);
-		float actual = sut.calculateNodeGradientDeltaRule(activationFunction,  outputGradient,Woh,Ih);
+		float actual = sut.calculateOutputNodeGradient(costF, activationFunction,  diffTarPred,IoAll,neuronId);
 		assertEquals(expected,actual);
 	}
 
@@ -144,7 +121,7 @@ public class GradientDescentTest{
 	 * for node i 
 	 */
 	@Test
-	void testCalculationNodeGradientHiddenDeltaRule() {
+	void testCalculationNodeGradientHidden() {
 		ACTIVATION_FUNCTION activationFunction = ACTIVATION_FUNCTION.SIGMOID;
 		float Ih = 6f;
 		float error = 0.5f;
@@ -176,7 +153,7 @@ public class GradientDescentTest{
 	 *  delta = gradient * Oh
 	 */
 	@Test
-	void testCalculateDeltaWeight() {
+	void testCalculateWeightDelta() {
 		float[] Oh = {3f,4f,6f};
 		int neuronIdx = 1;
 		float error = 0.5f;
@@ -407,45 +384,45 @@ public class GradientDescentTest{
 		return weights;
 	}
 
-//	/**
-//	 * Test learning with adaptive learningRate, halve the gain once the neuron gain changes signum
-//	 * test MLP consists of input layer size 3, hidden layer 4 neurons, 3 output neurons
-//	 * hidden layer activation function sigmoid, output activation softmax
-//	 */
-//	@Test
-//	void testIncreaseNodeLearningGainAtStepRepetion() {
-//		TERMINATION_CRITERIA[] criteria = {TERMINATION_CRITERIA.MAX_ITERATIONS};
-//		int[] layerSizes = new int[] {3,4,3};
-//		boolean useSoftmax = true;
-//		float learningRate = 0.01f;
-//		int iterations = 10;
-//		float[][] data = getTrainingDataGD();
-//		TrainingData td = new TrainingData(data, 3);	
-//		TerminationCriteria tc = new TerminationCriteria(criteria);	
-//		tc.setIterations(iterations);
-//		ANN_MLP mlp = new ANN_MLP(WEIGHT_INITIATION_METHOD.RANDOM, useSoftmax, layerSizes);
-//		mlp.initiate();
-//		mlp.setWeights(getTestWeights());
-//		sut.setMLP(mlp);	
-//		sut.setTrainingData(td);	
-//		sut.setCostFunctionType(COST_FUNCTION_TYPE.SQUARED_ERROR);
-//		sut.setLearningRate(learningRate);
-//		sut.setTrainingTerminationCriteria(tc);
-//		/* Initial weights */
-//		float[][] expectedNodeGains = getExpectedIncreasedGains();
-//
-//		sut.initiateNodeGains();
-//		sut.trainOnSampleWithGainParameterWithoutGainMagnitudeModification(td.getInputRow(td.size()-5), td.getTargetRow(td.size()-5));
-//		/* sign change of some gains */
-//		sut.trainOnSampleWithGainParameter(td.getInputRow(1), td.getTargetRow(1));
-//
-//
-//		/*repeatition increase gain by 0.005*/
-//		float[][] actualNodeGains = sut.getNodeGains();
-//		for(int layerId = 0; layerId < expectedNodeGains.length;layerId++ ) {
-//			assertArrayEquals(expectedNodeGains[layerId],actualNodeGains[layerId]);
-//		}
-//	}
+	//	/**
+	//	 * Test learning with adaptive learningRate, halve the gain once the neuron gain changes signum
+	//	 * test MLP consists of input layer size 3, hidden layer 4 neurons, 3 output neurons
+	//	 * hidden layer activation function sigmoid, output activation softmax
+	//	 */
+	//	@Test
+	//	void testIncreaseNodeLearningGainAtStepRepetion() {
+	//		TERMINATION_CRITERIA[] criteria = {TERMINATION_CRITERIA.MAX_ITERATIONS};
+	//		int[] layerSizes = new int[] {3,4,3};
+	//		boolean useSoftmax = true;
+	//		float learningRate = 0.01f;
+	//		int iterations = 10;
+	//		float[][] data = getTrainingDataGD();
+	//		TrainingData td = new TrainingData(data, 3);	
+	//		TerminationCriteria tc = new TerminationCriteria(criteria);	
+	//		tc.setIterations(iterations);
+	//		ANN_MLP mlp = new ANN_MLP(WEIGHT_INITIATION_METHOD.RANDOM, useSoftmax, layerSizes);
+	//		mlp.initiate();
+	//		mlp.setWeights(getTestWeights());
+	//		sut.setMLP(mlp);	
+	//		sut.setTrainingData(td);	
+	//		sut.setCostFunctionType(COST_FUNCTION_TYPE.SQUARED_ERROR);
+	//		sut.setLearningRate(learningRate);
+	//		sut.setTrainingTerminationCriteria(tc);
+	//		/* Initial weights */
+	//		float[][] expectedNodeGains = getExpectedIncreasedGains();
+	//
+	//		sut.initiateNodeGains();
+	//		sut.trainOnSampleWithGainParameterWithoutGainMagnitudeModification(td.getInputRow(td.size()-5), td.getTargetRow(td.size()-5));
+	//		/* sign change of some gains */
+	//		sut.trainOnSampleWithGainParameter(td.getInputRow(1), td.getTargetRow(1));
+	//
+	//
+	//		/*repeatition increase gain by 0.005*/
+	//		float[][] actualNodeGains = sut.getNodeGains();
+	//		for(int layerId = 0; layerId < expectedNodeGains.length;layerId++ ) {
+	//			assertArrayEquals(expectedNodeGains[layerId],actualNodeGains[layerId]);
+	//		}
+	//	}
 
 	private float[][] getExpectedIncreasedGains() {
 		float[][] nodeGains = {
@@ -466,12 +443,12 @@ public class GradientDescentTest{
 		return weights;
 	}
 
-	
+
 	/**
 	 * Test for calculating of node gradients within network, with delta rule
 	 */
 	@Test
-	void testCalculateNodeGradientsWithinNetwork() {
+	void testCalculateNetworkGradients() {
 		int[] layerSizes = new int[] {3,4,3};
 		float[][] data = getTrainingDataGD();
 		TrainingData td = new TrainingData(data, 3);
@@ -488,7 +465,7 @@ public class GradientDescentTest{
 
 		/* (Target - Predicted) per neuron */
 		float[] differenceTarPred = sut.calculateDifferenceTargetSubPredicted(td.getInputRow(trainingRowId),td.getTargetRow(trainingRowId));
-		sut.calculateNetworkNodeGradientsWithDeltaRule(costFType, td.getInputRow(trainingRowId),td.getTargetRow(trainingRowId));
+		sut.calculateNetworkNodeGradients(costFType, td.getInputRow(trainingRowId),td.getTargetRow(trainingRowId));
 
 		float[][] actualGradients = sut.getNetworkNodeGradients(); 
 		/* index of node gradients for output layer, starts with zero because input layer omited */
@@ -504,7 +481,7 @@ public class GradientDescentTest{
 		expectedGradients[outputLayerGradientsIdx] = new float[differenceTarPred.length];
 		for(int neuronIdx = 0; neuronIdx < differenceTarPred.length; neuronIdx++ ) {
 			/* Using default method which is previously implemented and tested */
-			expectedGradients[outputLayerGradientsIdx][neuronIdx] = sut.calculateNodeGradientDeltaRule(costFType, activationFType, differenceTarPred[neuronIdx], io, neuronIdx);
+			expectedGradients[outputLayerGradientsIdx][neuronIdx] = sut.calculateOutputNodeGradient(costFType, activationFType, differenceTarPred[neuronIdx], io, neuronIdx);
 		}
 		activationFType = ACTIVATION_FUNCTION.SIGMOID;
 		/* Calculate node gradients for each hidden layers*/
@@ -596,34 +573,6 @@ public class GradientDescentTest{
 		assertEquals(expected, actual);
 	}
 
-	float[][] calculateNodeGradients(COST_FUNCTION_TYPE costFType,float[][] weights,int[] layerSizes, float[] io,float[][] netInputs,float[] errorVector) {
-
-		int outputLayerIdx = layerSizes.length -1;
-
-		float[][] nodeGradients = new float[layerSizes.length][];
-		float[] inputs;
-
-		ACTIVATION_FUNCTION activationFType = ACTIVATION_FUNCTION.SOFTMAX;
-		/* Produce error gradient for each output neuron */
-		nodeGradients[outputLayerIdx] = new float[errorVector.length];
-		for(int errIdx = 0; errIdx < errorVector.length; errIdx++ ) {
-			nodeGradients[outputLayerIdx][errIdx] = sut.calculateNodeGradient(costFType, activationFType, errorVector[errIdx], io, errIdx);
-		}
-		activationFType = ACTIVATION_FUNCTION.SIGMOID;
-		/* Calculate node gradients for each hidden layers*/
-		for(int layerIdx = layerSizes.length-2; layerIdx > 0 ; layerIdx--) {
-			/* Retrieve inputs for the layer */
-			inputs =netInputs[layerIdx];
-			/* initiate gradient array for layerIdx */
-			nodeGradients[layerIdx] = new float[inputs.length];
-			/* calculate gradients per neuron of current neuron layer */
-			for(int neuronIdx = 0; neuronIdx < nodeGradients[layerIdx].length; neuronIdx++ ) {
-				/* gradient is product between f'(in) * sum ( upperLayerGradient_h*weight_ho + ..) */
-				nodeGradients[layerIdx][neuronIdx] = sut.calculateNodeGradient(activationFType, nodeGradients[layerIdx+1], weights[layerIdx],  inputs[neuronIdx]);
-			}
-		}
-		return nodeGradients;		
-	}
 
 	/**
 	 * Should return two dimensional array, one entity per neuron with 1th as initial value
@@ -755,6 +704,53 @@ public class GradientDescentTest{
 				gd.trainOnSampleWithGainParameterWithDeltaRule(td.getInputRow(row),td.getTargetRow(row));
 			}
 		}
+		float[][] expectedWeights = mlp.getWeights();
+		float[][] actualWeights = mlpA.getWeights();
+		for (int i = 0; i < actualWeights.length; i++) {
+			assertArrayEquals(expectedWeights[i],actualWeights[i]);
+		}		
+	}
+	
+	/**
+	 * Test train() function with MAX iterations as stopping criteria. Number of iterations 2
+	 */ 
+	@Test
+	void testTrainWithStoppingCriteriaMaxIterationsWithMomentum() {
+		int inputTargetDemarcation = 3;
+		TrainingData td = new TrainingData(getTrainingDataGD(), inputTargetDemarcation);
+		TrainingData td1 = new TrainingData(getTrainingDataGD(), inputTargetDemarcation);
+		int[] layerSizes = new int[] {3,30,3};
+		int maxIterations = 100;
+		TERMINATION_CRITERIA[] criteria = {TERMINATION_CRITERIA.MAX_ITERATIONS};
+		boolean useSoftmax = true;
+		WEIGHT_INITIATION_METHOD weightInitiationMethod = WEIGHT_INITIATION_METHOD.RANDOM;
+		TerminationCriteria tc = new TerminationCriteria(criteria,maxIterations);
+		/* Auxiliary GradientDescent  */ 
+		GradientDescent gd = new GradientDescent();
+		ANN_MLP mlp = new ANN_MLP(weightInitiationMethod, useSoftmax, layerSizes);
+		mlp.setTrainingTerminationCriteria(tc);
+		mlp.initiate();
+
+		ANN_MLP mlpA = new ANN_MLP(weightInitiationMethod, useSoftmax, layerSizes);
+		mlpA.setTrainingTerminationCriteria(tc);
+		mlpA.initiate();
+		mlpA.setWeights(mlp.getWeights());
+
+		gd.setTrainingData(td);
+		gd.setMLP(mlp);
+		gd.setTrainingTerminationCriteria(tc);
+		sut.setTrainingData(td1);
+		sut.setMLP(mlpA);	
+		sut.setTrainingTerminationCriteria(tc);
+		
+		sut.trainWithMomentum();
+	
+		for(int iteration = 0; iteration < maxIterations;iteration++) {
+			for(int row = 0;row < td.size(); row++) {
+				gd.trainOnSampleWithMomentum(td.getInputRow(row),td.getTargetRow(row));
+			}			
+		}
+		
 		float[][] expectedWeights = mlp.getWeights();
 		float[][] actualWeights = mlpA.getWeights();
 		for (int i = 0; i < actualWeights.length; i++) {
