@@ -211,7 +211,6 @@ public class StatisticUtils {
 	}
 
 	public static float calculateMeanSqured(float oldMeanSquared, float decayFactor, float value) {
-		// TODO Auto-generated method stub
-		return 0;
+		return (float) (decayFactor * oldMeanSquared +(1 - decayFactor)*Math.pow(value,2));
 	}
 }
