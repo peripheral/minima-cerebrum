@@ -209,4 +209,9 @@ public class StatisticUtils {
 		result = (float) ((ePowIdx*denominator - ePowIdx*ePowIdx)/(denominator*denominator));
 		return result;
 	}
+
+	public static float calculateMeanSqured(float oldMeanSquared, float decayFactor, float value) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

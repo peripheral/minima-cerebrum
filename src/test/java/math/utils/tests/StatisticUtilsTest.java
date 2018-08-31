@@ -190,4 +190,18 @@ private StatisticUtils sut;
 		assertEquals(expected,actual,0.00001f);		
 	}
 	
+	/**
+	 * Test for Mean squared function with decay factor
+	 * mean = decay_factor * mean_(v^2)t-1 + (1-decay_factor)*v^2
+	 */
+	@Test
+	void testOfMeanSquaredFunction() {
+		float oldMeanSquared = 0.2f;
+		float decayFactor = 0.95f;
+		float value = 0.023f;
+		float actual = StatisticUtils.calculateMeanSqured(oldMeanSquared,decayFactor,value);
+		float expected = (float) (decayFactor * oldMeanSquared +(1 - decayFactor)*Math.pow(value,2));
+		assertEquals(expected,actual);
+	}
+	
 }
