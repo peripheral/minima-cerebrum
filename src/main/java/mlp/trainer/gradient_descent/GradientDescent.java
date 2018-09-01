@@ -832,9 +832,14 @@ public class GradientDescent extends Backpropagation {
 		adaptiveLearningRate = b;
 	}
 
-	public float calculateLearningRateADADELTA(float oldDeltaWeight, float newDelta) {
-		// TODO Auto-generated method stub
-		return 0;
+	/**
+	 * Learning rate = Root_Mean_Squared_Delta_weight/Root_Mean_Squared_gradient;
+	 * @param mSDeltaWeight
+	 * @param mSGradient
+	 * @return
+	 */
+	public float calculateLearningRateADADELTA(float mSDeltaWeight, float mSGradient) {
+		return (float) (Math.sqrt(mSDeltaWeight/mSGradient));
 	}
 
 }
