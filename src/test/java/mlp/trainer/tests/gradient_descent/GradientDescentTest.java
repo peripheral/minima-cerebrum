@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -573,6 +574,25 @@ public class GradientDescentTest{
 		assertEquals(expected, actual);
 	}
 
+	/**
+	 * Produce learning rate according to ADADELTA
+	 * 
+	 */
+	@Test
+	void testCalculateLearningRateADADELTA() {
+		boolean useAdaptiveLEarningRate = true;
+		float mSDeltaWeight = 0.004f;
+		float mSGradient = 0.004f;
+		int[] layerSizes = new int[] {3,4,3};
+		ANN_MLP mlp = new ANN_MLP( layerSizes);
+		mlp.initiate();
+		sut.setMLP(mlp);
+		sut.setUseAdaptiveLearningRate(useAdaptiveLEarningRate);
+		
+		float actual = sut.calculateLearningRateADADELTA(mSDeltaWeight,mSGradient);
+		float expected = (float) (Math.sqrt(mSDeltaWeight)/Math.sqrt(mSGradient));
+		assertEquals(expected, actual);
+	}
 
 	/**
 	 * Should return two dimensional array, one entity per neuron with 1th as initial value
@@ -847,7 +867,6 @@ public class GradientDescentTest{
 				weightDeltas[weightLayerIdx][weightIdx] = momentumDecayFactor*weightDeltas[weightLayerIdx][weightIdx] - learningRate* calculatedWeightDelta;
 				expectedWeights[weightLayerIdx][weightIdx] = expectedWeights[weightLayerIdx][weightIdx] + weightDeltas[weightLayerIdx][weightIdx];	
 			}
-
 		}
 
 		float[][] actualWeights = mlp.getWeights();

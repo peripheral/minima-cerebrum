@@ -26,6 +26,7 @@ public class GradientDescent extends Backpropagation {
 	private float[][] weightDelta = null;
 	/** decays momentum, weight delta contains momentum */
 	private float decayFactor = 0.95f;
+	private boolean adaptiveLearningRate;
 
 	/**
 	 * Function calculates gradient from error and given input and activation of layer function parameters
@@ -825,6 +826,15 @@ public class GradientDescent extends Backpropagation {
 			}
 		}
 
+	}
+
+	public void setUseAdaptiveLearningRate(boolean b) {
+		adaptiveLearningRate = b;
+	}
+
+	public float calculateLearningRateADADELTA(float oldDeltaWeight, float newDelta) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }
