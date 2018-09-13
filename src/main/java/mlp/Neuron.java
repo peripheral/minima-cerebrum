@@ -28,7 +28,7 @@ public class Neuron {
 	}
 	
 	public Neuron(ACTIVATION_FUNCTION f,int upperLayerSize) {
-
+		throw new RuntimeException("NOT IMPLEMENTED");
 	}
 
 	

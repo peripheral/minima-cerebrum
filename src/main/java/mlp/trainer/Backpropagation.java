@@ -9,6 +9,7 @@ public class Backpropagation {
 	private float defaultErrorMinimimg = 0.1f;
 	private float approximateErrorMinimum = defaultErrorMinimimg;
 	protected float learningRate = 0.001f;
+	/* costFunctionType - specifies which object function is used, default SQUARED_ERRO */
 	protected COST_FUNCTION_TYPE costFunctionType = COST_FUNCTION_TYPE.SQUARED_ERROR;
 
 	public enum COST_FUNCTION_TYPE {
@@ -109,6 +110,10 @@ public class Backpropagation {
 		return null;
 	}
 	
+	/**
+	 * Cost/Loss/Object function used to calculate back propagation of error
+	 * @param costFunctionType
+	 */
 	public void setCostFunctionType(COST_FUNCTION_TYPE costFunctionType) {
 		this.costFunctionType = costFunctionType;		
 	}

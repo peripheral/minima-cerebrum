@@ -41,6 +41,12 @@ public class ANN_MLP {
 		initiationMethod = weightInitiationMethod;
 	}
 
+	/**
+	 * Instantiates MLP object, weights are instantiated separately
+	 * @param weightInitiationMethod
+	 * @param useSoftmax
+	 * @param layerSizes
+	 */
 	public ANN_MLP(WEIGHT_INITIATION_METHOD weightInitiationMethod, boolean useSoftmax, int[] layerSizes) {
 		this(weightInitiationMethod,layerSizes);
 		setUseSoftmaxOnOutput(useSoftmax);

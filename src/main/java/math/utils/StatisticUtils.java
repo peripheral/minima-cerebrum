@@ -210,6 +210,15 @@ public class StatisticUtils {
 		return result;
 	}
 
+	/**
+	 * Method used from Mathew D.Zeiler ,"ADADELTA: AN ADAPTIVE LEARNING RATE METHOD",2012
+	 * E[v^2] = decayFactor * E[v^2]_t-1 + (1 - decayFactor) v_t^2
+	 *  
+	 * @param oldMeanSquared - E[v^2]_t-1
+	 * @param decayFactor
+	 * @param value - v_t
+	 * @return
+	 */
 	public static float calculateMeanSqured(float oldMeanSquared, float decayFactor, float value) {
 		return (float) (decayFactor * oldMeanSquared +(1 - decayFactor)*Math.pow(value,2));
 	}
