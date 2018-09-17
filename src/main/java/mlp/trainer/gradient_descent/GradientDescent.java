@@ -24,6 +24,8 @@ public class GradientDescent extends Backpropagation {
 	/** decays momentum, weight delta contains momentum */
 	private float decayFactor = 0.95f;
 	private boolean adaptiveLearningRate;
+	private float[][] meanSquaredWeightDeltas;
+	private float[][] meanSquaredGradients;
 
 	/**
 	 * Function calculates gradient from error and given input and activation of layer function parameters
@@ -845,9 +847,89 @@ public class GradientDescent extends Backpropagation {
 	 * @param inputRow
 	 * @param target
 	 */
-	public void trainOnSampleWithADADELTA(float[] inputRow, float[] target) {
-		// TODO Auto-generated method stub
+	public void trainOnSampleWithADADELTA(float[] inputRow, float[] targetRow) {
+		if(weightDelta == null) {
+			initiateWeightDeltas();
+		}
+		if(meanSquaredWeightDeltas == null) {
+			initiateMeanSquaredWeightDeltas();
+		}
+		if(meanSquaredGradients == null) {
+			initiateMeanSquaredGradient();
+		}
+		/* Calculate gradients per weight layer */
+		calculateNetworkNodeGradients(costFunctionType, inputRow, targetRow);
+		float nodeGradient = 0;
+		float newWeight = 0;
+		float[] currentWeight ;
+		int weightLayerIdx = 0;
+		int neuronLayerIdx = 0;
+		int lowerNeuronIdx = 0;
+		float[] outputs ; 
+		float calculatedWeightDelta = 0;
+		/* Calculate weights per layer */
+		for(int gradientLayerIdx = nodeGradients.length-1; gradientLayerIdx >= 0 ; gradientLayerIdx--) {
+			weightLayerIdx = gradientLayerIdx;
+			/* neuronLayer starts with top index */
+			neuronLayerIdx = gradientLayerIdx+1;			
+			/* outputs for layer-1 */
+			outputs = mlp.getLayer(neuronLayerIdx-1).getOutputs();
+			/* get weights */
+			currentWeight = mlp.getLayer(neuronLayerIdx-1).getWeights();
+			
+			float tmp;
+			for(int neuronIdx = 0; neuronIdx < nodeGradients[gradientLayerIdx].length; neuronIdx++) {
+				/* Get node gradient */
+				nodeGradient = nodeGradients[gradientLayerIdx][neuronIdx];
+				/* update meanSquared gradient */
+				meanSquaredGradients[weightLayerIdx][neuronIdx] = 
+						StatisticUtils.calculateMeanSqured(meanSquaredGradients[weightLayerIdx][neuronIdx], decayFactor, nodeGradient);
+				/* for each weight in neuron, in lower layer 
+				 weightOffset specifies the begging of weights for neuron of layerIdx-1 */
+
+				for(int offset = 0; offset < currentWeight.length;offset+=mlp.getLayerSizes()[gradientLayerIdx+1] ) {			
+
+					/* calculate idx of neuron from lower layer, globalWeightIdx/ */
+					lowerNeuronIdx = (offset+neuronIdx)/mlp.getLayerSizes()[weightLayerIdx+1]; 
+					/* calculate delta weight */
+					if(lowerNeuronIdx <outputs.length) {
+						calculatedWeightDelta = calculateWeightDelta(nodeGradient, outputs[lowerNeuronIdx]);
+					}else {
+						/* for bias */
+						calculatedWeightDelta = calculateWeightDelta(nodeGradient, 1);
+					}
+					tmp = calculateWeightDeltaWithMomentum(decayFactor
+							,calculateLearningRateADADELTA(meanSquaredWeightDeltas[weightLayerIdx][offset+neuronIdx], meanSquaredGradients[weightLayerIdx][neuronIdx])
+							,weightDelta[weightLayerIdx][offset+neuronIdx]
+									,calculatedWeightDelta);
+					meanSquaredWeightDeltas[weightLayerIdx][offset+neuronIdx] =
+							StatisticUtils.calculateMeanSqured(meanSquaredWeightDeltas[weightLayerIdx][offset+neuronIdx], decayFactor, calculatedWeightDelta);
+					if(!Float.isNaN(tmp)) {
+						weightDelta[weightLayerIdx][offset+neuronIdx] = tmp;
+					}else {
+						System.out.println("Is NaN :"+ weightDelta[weightLayerIdx][offset+neuronIdx]);
+					}
+					newWeight = currentWeight[offset+neuronIdx] + weightDelta[weightLayerIdx][offset+neuronIdx];
+					mlp.getLayer(neuronLayerIdx-1).setWeight(offset+neuronIdx,newWeight);
+				}
+			}
+		}		
 		
+	}
+
+	private void initiateMeanSquaredGradient() {
+		meanSquaredGradients = new float[mlp.getLayerSizes().length-1][];
+		for (int i = 0; i < meanSquaredGradients.length; i++) {
+			meanSquaredGradients[i] = new float[mlp.getLayerSizes()[i+1]];
+		}
+		
+	}
+
+	private void initiateMeanSquaredWeightDeltas() {
+		meanSquaredWeightDeltas = new float[mlp.getWeights().length][];
+		for (int i = 0; i < meanSquaredWeightDeltas.length; i++) {
+			meanSquaredWeightDeltas[i] = new float[mlp.getWeights()[i].length];
+		}
 	}
 
 }
