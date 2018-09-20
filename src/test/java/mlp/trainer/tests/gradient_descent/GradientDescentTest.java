@@ -608,6 +608,7 @@ public class GradientDescentTest{
 	void testCalculateWeightDeltaWithADADELTA() {
 		int rowId = 1;
 		int rowId2 = 2;
+		float learningRateCorrector = 0.3f;
 		WEIGHT_INITIATION_METHOD weightInitiationMethod = WEIGHT_INITIATION_METHOD.RANDOM;
 		boolean useAdaptiveLEarningRate = true;
 		boolean useSoftMaxTrue = true;
@@ -640,6 +641,7 @@ public class GradientDescentTest{
 		float nodeGradient = 0;
 		float calculatedWeightDelta = 0;
 		sut.setUseAdaptiveLearningRate(useAdaptiveLEarningRate);
+		sut.setLearningRateCorrector(learningRateCorrector);
 		sut.trainOnSampleWithADADELTA(td.getInputRow(rowId), td.getTargetRow(rowId));
 
 
@@ -680,7 +682,7 @@ public class GradientDescentTest{
 				/* is zero in the beginning */
 				weightDeltas[weightLayerIdx][weightIdx] = decayFactor*weightDeltas[weightLayerIdx][weightIdx] - 
 						sut.calculateLearningRateADADELTA(meanSquaredDeltaWeight[weightLayerIdx][weightIdx]
-								, meanSquaredGradient[weightLayerIdx][neuronId]) * calculatedWeightDelta;
+								, meanSquaredGradient[weightLayerIdx][neuronId])*learningRateCorrector * calculatedWeightDelta;
 				expectedWeights[weightLayerIdx][weightIdx] = expectedWeights[weightLayerIdx][weightIdx] + weightDeltas[weightLayerIdx][weightIdx];	
 				meanSquaredDeltaWeight[weightLayerIdx][weightIdx] =
 						StatisticUtils.calculateMeanSqured(meanSquaredDeltaWeight[weightLayerIdx][weightIdx], decayFactor, calculatedWeightDelta);
@@ -724,7 +726,7 @@ public class GradientDescentTest{
 				/* is zero in the beginning */
 				weightDeltas[weightLayerIdx][weightIdx] = decayFactor*weightDeltas[weightLayerIdx][weightIdx] - 
 						sut.calculateLearningRateADADELTA(meanSquaredDeltaWeight[weightLayerIdx][weightIdx]
-								, meanSquaredGradient[weightLayerIdx][neuronId]) * calculatedWeightDelta;
+								, meanSquaredGradient[weightLayerIdx][neuronId])*learningRateCorrector * calculatedWeightDelta;
 				expectedWeights[weightLayerIdx][weightIdx] = expectedWeights[weightLayerIdx][weightIdx] + weightDeltas[weightLayerIdx][weightIdx];	
 				meanSquaredDeltaWeight[weightLayerIdx][weightIdx] =
 						StatisticUtils.calculateMeanSqured(meanSquaredDeltaWeight[weightLayerIdx][weightIdx], decayFactor, calculatedWeightDelta);
@@ -1018,5 +1020,55 @@ public class GradientDescentTest{
 		}		
 	}
 
+	/**
+	 * Test implementation of learning on an example with ADADELTA learning rate adaptation. making
+	 * 
+	 */
+	@Test
+	void testCalculateWeightDeltaWithADADELTAWithStoppingCriteria() {
+		int inputTargetDemarcation = 3;
+		TrainingData td = new TrainingData(getTrainingDataGD(), inputTargetDemarcation);
+		int[] layerSizes = new int[] {3,30,3};
+		int maxIterations = 30;
+		float learningRateCorrector = 0.3f;
+		TERMINATION_CRITERIA[] criteria = {TERMINATION_CRITERIA.MAX_ITERATIONS};
+		boolean useSoftmax = true;
+		WEIGHT_INITIATION_METHOD weightInitiationMethod = WEIGHT_INITIATION_METHOD.RANDOM;
+		TerminationCriteria tc = new TerminationCriteria(criteria,maxIterations);
+		/* Auxiliary GradientDescent  */ 
+		GradientDescent gd = new GradientDescent();
+		ANN_MLP mlp = new ANN_MLP(weightInitiationMethod, useSoftmax, layerSizes);
+		mlp.setTrainingTerminationCriteria(tc);
+		mlp.initiate();
+
+		ANN_MLP mlpA = new ANN_MLP(weightInitiationMethod, useSoftmax, layerSizes);
+		mlpA.setTrainingTerminationCriteria(tc);
+		mlpA.initiate();
+		mlpA.setWeights(mlp.getWeights());
+
+		gd.setTrainingData(td);
+		gd.setMLP(mlp);
+		gd.setTrainingTerminationCriteria(tc);
+		gd.setLearningRateCorrector(learningRateCorrector);
+		
+		sut.setTrainingData(td);
+		sut.setMLP(mlpA);	
+		sut.setTrainingTerminationCriteria(tc);
+		
+		sut.setLearningRateCorrector(learningRateCorrector);
+		sut.trainADADELTA();
+
+		for(int iteration = 0; iteration < maxIterations;iteration++) {
+			for(int row = 0;row < td.size(); row++) {
+				gd.trainOnSampleWithADADELTA(td.getInputRow(row),td.getTargetRow(row));
+			}
+		}
+
+		float[][] expectedWeights = mlp.getWeights();
+		float[][] actualWeights = mlpA.getWeights();
+		for (int i = 0; i < actualWeights.length; i++) {
+			assertArrayEquals(expectedWeights[i],actualWeights[i]);
+		}	
+	}
 
 }

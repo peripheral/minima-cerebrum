@@ -26,6 +26,7 @@ public class GradientDescent extends Backpropagation {
 	private boolean adaptiveLearningRate;
 	private float[][] meanSquaredWeightDeltas;
 	private float[][] meanSquaredGradients;
+	private float learningRateCorrector = 0.3f;
 
 	/**
 	 * Function calculates gradient from error and given input and activation of layer function parameters
@@ -297,6 +298,22 @@ public class GradientDescent extends Backpropagation {
 				trainOnSampleWithGainParameterWithoutGainMagnitudeModificationWithDelta(trainingData.getInputRow(rowId),trainingData.getTargetRow(rowId));
 				for(int row = 0;row < trainingData.size(); row++) {
 					trainOnSampleWithGainParameterWithDeltaRule(trainingData.getInputRow(row),trainingData.getTargetRow(row));
+				}
+			}
+		}
+
+	}
+
+	public void trainADADELTA() {
+		HashSet<TERMINATION_CRITERIA> set = new HashSet<TERMINATION_CRITERIA>();
+		for(TERMINATION_CRITERIA tc:terminationCriteria.getTerminationCriterias()) {
+			set.add(tc);
+		}
+		if(set.contains(TERMINATION_CRITERIA.MAX_ITERATIONS)) {		
+			int maxIterations = terminationCriteria.getIterations();
+			for(int iteration = 0; iteration < maxIterations;iteration++) {
+				for(int row = 0;row < trainingData.size(); row++) {
+					trainOnSampleWithADADELTA(trainingData.getInputRow(row),trainingData.getTargetRow(row));
 				}
 			}
 		}
@@ -672,6 +689,48 @@ public class GradientDescent extends Backpropagation {
 		float[] diffTarPred = calculateDifferenceTargetSubPredicted(inputRow, targetRow);
 		/* Gradients for output layers calculated in simple fashion, derivative of Error with respect to input */ 
 		if(mlp.isSoftmaxAppliedOnOutput()) {
+			for(int neuronIdx = 0; neuronIdx < diffTarPred.length;neuronIdx++) {
+				nodeGradient = calculateOutputNodeGradient(costFType, ACTIVATION_FUNCTION.SOFTMAX, diffTarPred[neuronIdx],Io, neuronIdx);
+				nodeGradients[outputGradienLayertId][neuronIdx] = nodeGradient;						
+			}
+		}else {
+			for(int neuronIdx = 0; neuronIdx < diffTarPred.length;neuronIdx++) {
+				nodeGradient = calculateOutputNodeGradient(costFType, ACTIVATION_FUNCTION.SIGMOID, diffTarPred[neuronIdx],Io, neuronIdx);
+				nodeGradients[outputGradienLayertId][neuronIdx] = nodeGradient;
+			}
+		}
+		NeuronLayer layer = null;
+		/* iterate top down gradient computation */
+		for(int nodeGradientsLayerIdx = nodeGradients.length -2; nodeGradientsLayerIdx >= 0 ;nodeGradientsLayerIdx--) {
+			/* Retrieve inputs for the 2nd layer */
+			layer = mlp.getLayer(nodeGradientsLayerIdx+1);
+			inputs =layer.getNetInputs();
+			/* calculate gradients per neuron of current neuron layer */
+			for(int neuronIdx = 0; neuronIdx < layer.size(); neuronIdx++ ) {
+				nodeGradient = calculateNodeGradient(layer.getNeuron(neuronIdx).getActivationFunctionType(),
+						nodeGradients[nodeGradientsLayerIdx+1], layer.getNeuron(neuronIdx).getWeightsAsArray(), inputs[neuronIdx]);
+				/* gradient is product between f'(in) * sum ( upperLayerGradient_h*weight_ho + ..) */
+				nodeGradients[nodeGradientsLayerIdx][neuronIdx] = nodeGradient;
+			}
+		}
+
+	}
+
+	public void calculateNetworkNodeGradientsWithGain(COST_FUNCTION_TYPE costFType, float[] inputRow,
+			float[] targetRow) {
+		if(nodeGradients == null) {
+			initiateNodeGradients();
+		}
+		/* The outputlayer is one index lower since input layer ommited */
+		int outputGradienLayertId = nodeGradients.length-1;
+		int outputLayerId = mlp.getLayerSizes().length-1;
+		float[] inputs;
+		float[] Io = mlp.getLayer(outputLayerId).getNetInputs();
+		float nodeGradient = 0;
+		/* Error per neuron (target - output) */
+		float[] diffTarPred = calculateDifferenceTargetSubPredicted(inputRow, targetRow);
+		/* Gradients for output layers calculated in simple fashion, derivative of Error with respect to input */ 
+		if(mlp.isSoftmaxAppliedOnOutput()) {
 
 			for(int neuronIdx = 0; neuronIdx < diffTarPred.length;neuronIdx++) {
 				nodeGradient = calculateOutputNodeGradient(costFType, ACTIVATION_FUNCTION.SOFTMAX, diffTarPred[neuronIdx],Io, neuronIdx);
@@ -857,6 +916,7 @@ public class GradientDescent extends Backpropagation {
 		if(meanSquaredGradients == null) {
 			initiateMeanSquaredGradient();
 		}
+		
 		/* Calculate gradients per weight layer */
 		calculateNetworkNodeGradients(costFunctionType, inputRow, targetRow);
 		float nodeGradient = 0;
@@ -876,7 +936,6 @@ public class GradientDescent extends Backpropagation {
 			outputs = mlp.getLayer(neuronLayerIdx-1).getOutputs();
 			/* get weights */
 			currentWeight = mlp.getLayer(neuronLayerIdx-1).getWeights();
-			
 			float tmp;
 			for(int neuronIdx = 0; neuronIdx < nodeGradients[gradientLayerIdx].length; neuronIdx++) {
 				/* Get node gradient */
@@ -898,8 +957,9 @@ public class GradientDescent extends Backpropagation {
 						/* for bias */
 						calculatedWeightDelta = calculateWeightDelta(nodeGradient, 1);
 					}
+					learningRate = calculateLearningRateADADELTA(meanSquaredWeightDeltas[weightLayerIdx][offset+neuronIdx], meanSquaredGradients[weightLayerIdx][neuronIdx]);
 					tmp = calculateWeightDeltaWithMomentum(decayFactor
-							,calculateLearningRateADADELTA(meanSquaredWeightDeltas[weightLayerIdx][offset+neuronIdx], meanSquaredGradients[weightLayerIdx][neuronIdx])
+							,learningRate*learningRateCorrector
 							,weightDelta[weightLayerIdx][offset+neuronIdx]
 									,calculatedWeightDelta);
 					meanSquaredWeightDeltas[weightLayerIdx][offset+neuronIdx] =
@@ -914,7 +974,6 @@ public class GradientDescent extends Backpropagation {
 				}
 			}
 		}		
-		
 	}
 
 	private void initiateMeanSquaredGradient() {
@@ -922,7 +981,7 @@ public class GradientDescent extends Backpropagation {
 		for (int i = 0; i < meanSquaredGradients.length; i++) {
 			meanSquaredGradients[i] = new float[mlp.getLayerSizes()[i+1]];
 		}
-		
+
 	}
 
 	private void initiateMeanSquaredWeightDeltas() {
@@ -930,6 +989,10 @@ public class GradientDescent extends Backpropagation {
 		for (int i = 0; i < meanSquaredWeightDeltas.length; i++) {
 			meanSquaredWeightDeltas[i] = new float[mlp.getWeights()[i].length];
 		}
+	}
+
+	public void setLearningRateCorrector(float learningRateCorrector) {
+		this.learningRateCorrector = learningRateCorrector;		
 	}
 
 }
