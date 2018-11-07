@@ -1,6 +1,8 @@
 package mlp.trainer.gradient_descent;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
 import math.utils.StatisticUtils;
 import mlp.ANN_MLP.ACTIVATION_FUNCTION;
@@ -27,6 +29,11 @@ public class GradientDescent extends Backpropagation {
 	private float[][] meanSquaredWeightDeltas;
 	private float[][] meanSquaredGradients;
 	private float learningRateCorrector = 0.3f;
+	/**
+	 * stores cross validation results, currently uses MSE over training set
+	 */
+	private List<Float> crossValidation = new LinkedList<>();
+	
 
 	/**
 	 * Function calculates gradient from error and given input and activation of layer function parameters
@@ -287,7 +294,7 @@ public class GradientDescent extends Backpropagation {
 	}
 
 	public void train() {
-		HashSet<TERMINATION_CRITERIA> set = new HashSet<TERMINATION_CRITERIA>();
+		HashSet<TERMINATION_CRITERIA> set = new HashSet<>();
 		for(TERMINATION_CRITERIA tc:terminationCriteria.getTerminationCriterias()) {
 			set.add(tc);
 		}
@@ -305,7 +312,7 @@ public class GradientDescent extends Backpropagation {
 	}
 
 	public void trainADADELTA() {
-		HashSet<TERMINATION_CRITERIA> set = new HashSet<TERMINATION_CRITERIA>();
+		HashSet<TERMINATION_CRITERIA> set = new HashSet<>();
 		for(TERMINATION_CRITERIA tc:terminationCriteria.getTerminationCriterias()) {
 			set.add(tc);
 		}
@@ -317,7 +324,15 @@ public class GradientDescent extends Backpropagation {
 				}
 			}
 		}
-
+		if(crossValidation.size() == 0) {
+			crossValidation.add(calculateTotalMSE());
+		}else if(crossValidation.size() == 1) {
+			crossValidation.add(calculateTotalMSE());
+		}else if(crossValidation.size() > 1) {
+			crossValidation.remove(0);
+			crossValidation.add(calculateTotalMSE());
+		}
+		
 	}
 
 	public void setTrainingTerminationCriteria(TerminationCriteria tc) {
@@ -981,7 +996,6 @@ public class GradientDescent extends Backpropagation {
 		for (int i = 0; i < meanSquaredGradients.length; i++) {
 			meanSquaredGradients[i] = new float[mlp.getLayerSizes()[i+1]];
 		}
-
 	}
 
 	private void initiateMeanSquaredWeightDeltas() {
@@ -993,6 +1007,13 @@ public class GradientDescent extends Backpropagation {
 
 	public void setLearningRateCorrector(float learningRateCorrector) {
 		this.learningRateCorrector = learningRateCorrector;		
+	}
+
+	public float calculateEpochRSSDelta() {
+		if(crossValidation.size() >1) {
+			return  Math.abs(crossValidation.get(1) - crossValidation.get(0));
+		}
+		return Float.MAX_VALUE;
 	}
 
 }

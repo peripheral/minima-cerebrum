@@ -1098,8 +1098,7 @@ public class GradientDescentTest{
 		
 		sut.setTrainingData(td);
 		sut.setMLP(mlp);	
-		sut.setTrainingTerminationCriteria(tc);
-		
+		sut.setTrainingTerminationCriteria(tc);		
 		sut.setLearningRateCorrector(learningRateCorrector);
 		sut.trainADADELTA();
 		float expected = sut.calculateTotalMSE();
