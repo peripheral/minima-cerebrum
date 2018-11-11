@@ -1,29 +1,30 @@
 package mlp;
 
-import java.util.ArrayList;
+import java.util.List;
+
 import math.utils.StatisticUtils;
 import mlp.trainer.Backpropagation;
 import mlp.trainer.TerminationCriteria;
 import mlp.trainer.TrainingData;
 
-public class ANN_MLP {
+public class ANNMLP {
 
 	public enum WEIGHT_INITIATION_METHOD{CONSTANT, RANDOM};
 	public enum ACTIVATION_FUNCTION{SIGMOID, GAUSSIAN, IDENTITY, SOFTMAX};
 	public enum LAYER_TYPE{INPUT,HIDDEN,OUTPUT}
 	private NeuronLayer[] layers = null;
-	public WEIGHT_INITIATION_METHOD DEFAULT_WEIGHT_INITIATION_METHOD = WEIGHT_INITIATION_METHOD.CONSTANT;
-	public float DEFAULT_WEIGHT_CONSTANT = 0.5f;
-	private float WEIGHT_CONSTANT = DEFAULT_WEIGHT_CONSTANT;
+	public static final WEIGHT_INITIATION_METHOD DEFAULT_WEIGHT_INITIATION_METHOD = WEIGHT_INITIATION_METHOD.CONSTANT;
+	public static final float DEFAULT_WEIGHT_CONSTANT = 0.5f;
+	private float weightConstant = DEFAULT_WEIGHT_CONSTANT;
 	private WEIGHT_INITIATION_METHOD initiationMethod = WEIGHT_INITIATION_METHOD.CONSTANT;
 	private ACTIVATION_FUNCTION activationFunction = ACTIVATION_FUNCTION.SIGMOID;
 	private TrainingData trainingData;
 	private Backpropagation trainer = new Backpropagation();
 	private boolean applySoftmaxOnOutput = false;
 	private TerminationCriteria trainingTerminationCriteria = new TerminationCriteria();
-	public ANN_MLP() {}
+	public ANNMLP() {}
 
-	public ANN_MLP(int[] layerSizes) {
+	public ANNMLP(int[] layerSizes) {
 		layers = new NeuronLayer[layerSizes.length];
 		layers[0] = new NeuronLayer(layerSizes[0]);
 		for(int i = 1;i < layerSizes.length-1;i++) {
@@ -36,7 +37,7 @@ public class ANN_MLP {
 
 
 
-	public ANN_MLP(WEIGHT_INITIATION_METHOD weightInitiationMethod, int[] layerSizes) {
+	public ANNMLP(WEIGHT_INITIATION_METHOD weightInitiationMethod, int[] layerSizes) {
 		this(layerSizes);
 		initiationMethod = weightInitiationMethod;
 	}
@@ -47,7 +48,7 @@ public class ANN_MLP {
 	 * @param useSoftmax
 	 * @param layerSizes
 	 */
-	public ANN_MLP(WEIGHT_INITIATION_METHOD weightInitiationMethod, boolean useSoftmax, int[] layerSizes) {
+	public ANNMLP(WEIGHT_INITIATION_METHOD weightInitiationMethod, boolean useSoftmax, int[] layerSizes) {
 		this(weightInitiationMethod,layerSizes);
 		setUseSoftmaxOnOutput(useSoftmax);
 	}
@@ -98,7 +99,7 @@ public class ANN_MLP {
 			}
 			return weights;
 		}else {
-			return null;
+			return new float[0][0];
 		}
 	}
 
@@ -119,7 +120,7 @@ public class ANN_MLP {
 	}
 
 	private void initiateMethodRandom() {
-		ArrayList<Neuron> neurons;
+		List<Neuron> neurons;
 		Neuron neuron;
 		/* For every layer */
 		for(int layerIdx = 0;layerIdx < layers.length-1;layerIdx++ ) {
@@ -133,10 +134,10 @@ public class ANN_MLP {
 					neuron.setWeight(i,StatisticUtils.getXavierRandomWeight(layers[layerIdx].size(),
 							(layerIdx < layers.length ? layers[layerIdx+1].size():0)));
 				}
-				for(int i = 0;i < layers[layerIdx+1].size();i++) {
-					layers[layerIdx].getBiasNeuron().setWeight(i,StatisticUtils.getXavierRandomWeight(layers[layerIdx].size(),
-							(layerIdx < layers.length ? layers[layerIdx+1].size():0)));
-				}
+			}
+			for(int i = 0;i < layers[layerIdx+1].size();i++) {
+				layers[layerIdx].getBiasNeuron().setWeight(i,StatisticUtils.getXavierRandomWeight(layers[layerIdx].size(),
+						(layerIdx < layers.length ? layers[layerIdx+1].size():0)));
 			}
 		}
 
@@ -146,7 +147,7 @@ public class ANN_MLP {
 	 * 
 	 */
 	private void initiateMethodConstant() {
-		ArrayList<Neuron> neurons;
+		List<Neuron> neurons;
 		Neuron neuron;
 		/* For every layer */
 		for(int layerIdx = 0;layerIdx < layers.length-1;layerIdx++ ) {
@@ -157,7 +158,7 @@ public class ANN_MLP {
 			for(int neuronIdx = 0; neuronIdx < neurons.size();neuronIdx++ ) {
 				neuron = neurons.get(neuronIdx);
 				for(int i = 0;i < layers[layerIdx+1].size();i++) {
-					neuron.setWeight(i,WEIGHT_CONSTANT);
+					neuron.setWeight(i,weightConstant);
 				}
 			}
 			for(int i = 0;i < layers[layerIdx+1].size();i++) {
@@ -172,7 +173,7 @@ public class ANN_MLP {
 	 * @param f - value used as weight 
 	 */
 	public void setWeightInititiationConstant(float f) {
-		WEIGHT_CONSTANT = f;		
+		weightConstant = f;		
 	}
 
 	/**
@@ -180,7 +181,7 @@ public class ANN_MLP {
 	 * @return
 	 */
 	public float getWeightInitiationConstant() {
-		return WEIGHT_CONSTANT;		
+		return weightConstant;		
 	}
 
 	public void setActivationFunction(ACTIVATION_FUNCTION type) {
@@ -192,10 +193,10 @@ public class ANN_MLP {
 	}
 
 	public float[] predict(float[] input) {
-		ArrayList<Neuron> neuronList = layers[0].getNeurons();
+		List<Neuron> neuronList = layers[0].getNeurons();
 		if(input.length !=neuronList.size()) {
 			System.err.println("Incorrect number of inputs! Expected:"+neuronList.size());
-			return null;
+			return new float[0];
 		}
 		for(int i = 0;i < input.length;i++) {
 			neuronList.get(i).setNetInput(input[i]);
@@ -267,6 +268,10 @@ public class ANN_MLP {
 
 	public void setTrainingTerminationCriteria(TerminationCriteria tc) {
 		trainingTerminationCriteria = tc;		
+	}
+	
+	public TerminationCriteria getTrainingTerminationCriteria() {
+		return trainingTerminationCriteria;		
 	}
 
 }

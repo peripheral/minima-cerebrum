@@ -1,10 +1,10 @@
 package mlp.trainer;
 
-import mlp.ANN_MLP;
+import mlp.ANNMLP;
 
 public class Backpropagation {
 
-	protected ANN_MLP mlp;
+	protected ANNMLP mlp;
 	protected TrainingData trainingData;
 	private float defaultErrorMinimimg = 0.1f;
 	private float approximateErrorMinimum = defaultErrorMinimimg;
@@ -16,7 +16,7 @@ public class Backpropagation {
 		SQUARED_ERROR
 	}
 
-	public void setMLP(ANN_MLP mlp) {
+	public void setMLP(ANNMLP mlp) {
 		this.mlp = mlp;
 	}
 
@@ -29,20 +29,20 @@ public class Backpropagation {
 	 * @return
 	 */
 	public float[] calCulateMeanSquaredErrorPerNeuron() {
-		double[] MSE = new double[mlp.getOutputLayer().size()];
+		double[] mSE = new double[mlp.getOutputLayer().size()];
 		float[][] inputs = trainingData.getInputs();
-		float[] result = null;
+		float[] result = new float[0];
 		float[] target;
 
 		for(int i = 0; i < inputs.length;i++) {
 			result = mlp.predict(inputs[i]);
 			target =  trainingData.getTargetRow(i);
 			for(int ii = 0; ii < result.length;ii++) {
-				MSE[ii] =  MSE[ii]+ Math.pow(result[ii] - target[ii],2)/inputs.length;
+				mSE[ii] =  mSE[ii]+ Math.pow(result[ii] - target[ii],2)/inputs.length;
 			}
 		}
 		for(int i = 0; i < result.length;i++) {
-			result[i] = (float) MSE[i];
+			result[i] = (float) mSE[i];
 		}
 
 		return result;
@@ -53,20 +53,20 @@ public class Backpropagation {
 	 * @return
 	 */
 	public float calculateTotalMSE() {
-		double[] MSE = new double[mlp.getOutputLayer().size()];
+		double[] mSE = new double[mlp.getOutputLayer().size()];
 		float[][] inputs = trainingData.getInputs();
-		float[] result = null;
+		float[] result = new float[0];
 		float[] target;
 
 		for(int i = 0; i < inputs.length;i++) {
 			result = mlp.predict(inputs[i]);
 			target =  trainingData.getTargetRow(i);
 			for(int ii = 0; ii < result.length;ii++) {
-				MSE[ii] =  MSE[ii]+ Math.pow(result[ii] - target[ii],2)/inputs.length;
+				mSE[ii] =  mSE[ii]+ Math.pow(result[ii] - target[ii],2)/inputs.length;
 			}
 		}
 		for(int i = 0; i < result.length;i++) {
-			result[i] = (float) MSE[i];
+			result[i] = (float) mSE[i];
 		}
 		float sum = 0;
 		for(float f:result) {
@@ -107,7 +107,7 @@ public class Backpropagation {
 			System.err.println("Not implemented cost function:"+costFunctionType);
 			break;
 		}
-		return null;
+		return new float[0];
 	}
 	
 	/**

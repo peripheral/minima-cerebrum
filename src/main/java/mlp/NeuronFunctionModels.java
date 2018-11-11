@@ -1,6 +1,8 @@
 package mlp;
 
-import mlp.ANN_MLP.ACTIVATION_FUNCTION;
+import com.sun.corba.se.impl.orbutil.closure.Constant;
+
+import mlp.ANNMLP.ACTIVATION_FUNCTION;
 import mlp.Neuron.TRANSFER_FUNCTION;
 
 public class NeuronFunctionModels {
@@ -16,6 +18,14 @@ public class NeuronFunctionModels {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param type - function type
+	 * @param a constant
+	 * @param b constant
+	 * @param x input
+	 * @return
+	 */
 	public static float derivativeOf(ACTIVATION_FUNCTION type,float a,float b,float x) {
 		switch(type) {
 		case SIGMOID:

@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import mlp.ANN_MLP.ACTIVATION_FUNCTION;
+import mlp.ANNMLP.ACTIVATION_FUNCTION;
 import mlp.NeuronFunctionModels;
 
 public class ActivationFunctionModelTest {

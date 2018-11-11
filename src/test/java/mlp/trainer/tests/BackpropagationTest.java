@@ -8,9 +8,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 
-import mlp.ANN_MLP;
-import mlp.ANN_MLP.ACTIVATION_FUNCTION;
-import mlp.ANN_MLP.WEIGHT_INITIATION_METHOD;
+import mlp.ANNMLP;
+import mlp.ANNMLP.ACTIVATION_FUNCTION;
+import mlp.ANNMLP.WEIGHT_INITIATION_METHOD;
 import mlp.NeuronFunctionModels;
 import mlp.trainer.Backpropagation;
 import mlp.trainer.TrainingData;
@@ -34,7 +34,7 @@ public class BackpropagationTest {
 				{30,30,30,0,0,1}};
 		TrainingData td = new TrainingData(data,inputSize);
 		int[] mlp_topology = {inputSize,hiddenLayerSize,outputSize};
-		ANN_MLP mlp = new ANN_MLP(mlp_topology);
+		ANNMLP mlp = new ANNMLP(mlp_topology);
 		mlp.setActivationFunction(ACTIVATION_FUNCTION.SIGMOID);
 		mlp.setWeightInitiationMethod(WEIGHT_INITIATION_METHOD.RANDOM);
 		mlp.initiate();

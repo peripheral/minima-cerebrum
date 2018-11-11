@@ -30,45 +30,98 @@ public class StatisticUtils {
 	 * @return array with booleans in order A1,A2
 	 */
 	public boolean[] areInputsCorrelated(float[][] data, float threshold) {
-		if(data.length == 0) {
-			return null;
+		if(isDataEmpty(data)) {
+			return new boolean[]{false,false};
 		}
-		int resultSize = 0;
-		for(int i = 0;i<data[0].length;i++) {
-			resultSize = resultSize + i;
-		}
+		
+		int resultSize = getPermuations(data[0].length);
 		boolean[] result = new boolean[resultSize];
+		
+		double[] mean = calculateMeans(data);
+		double[] covariance = calculateCovariance(data,mean);
+		
+		
+		for(int covIdx = 0;covIdx < covariance.length;covIdx++) {
+			for (int col1 = 0; col1 < mean.length-1; col1++) {
+				for (int col2 = col1+1; col2 < mean.length; col2++) {
+					if(threshold < Math.abs(covariance[covIdx]/(mean[col1]*mean[col2]))) {
+						result[covIdx] = true;
+					}else {
+						result[covIdx] = false;
+					}
+				}
+			}
+
+		}		
+		return result;
+	}
+	
+	/**
+	 * Returns possible permutations, for given array size
+	 * @param n number of elements
+	 * @return - number of possible permutations among n elements
+	 */
+	private int getPermuations(int n) {
+		int permuations = 0;
+		for (int i = 0; i < n; i++) {
+			for (int j = i+1; j < n; j++) {
+				permuations++;
+			}
+		}
+		return permuations;
+	}
+
+	/**
+	 * Calculates covariance between columns
+	 * @param data miltidimiension array containing rows with data
+	 * @param mean mean per column
+	 * @return 
+	 */
+	private double[] calculateCovariance(float[][] data,double[] mean) {
+		int permutations = getPermuations(data[0].length);
+		int rowLength = data[0].length;
+		double[] covariance = new double[permutations];
+		int idx = 0;
+		for(int col1 = 0; col1 < rowLength-1; col1++) {
+			for (int col2 = col1+1; col2 < rowLength; col2++) {
+				covariance[idx] = calculateCovarianceFor(col1,col2,mean,data);	
+				idx++;
+			}					
+		}
+		return covariance;
+	}
+
+	private double calculateCovarianceFor(int col1,int col2, double[] mean, float[][] data) {
+		double covariance = 0;
+		for(int row = 0;row < data.length;row++) {
+			for(int row1 = 0;row1 < data.length;row1++) {
+				covariance  = (float) (covariance +
+						(data[row][col1]-mean[col1])*(data[row1][col2]-mean[col2])/(2*data.length));
+			}
+		}	
+		return covariance;
+	}
+
+	/**
+	 * Calculate mean per column 
+	 * @param data
+	 * @return - returns means per row 
+	 */
+	private double[] calculateMeans(float[][] data) {
 		double[] mean = new double[data[0].length];
-		double[] covariance = new double[data[0].length];
 		for(int col = 0; col < data[0].length; col++) {			
 			mean[col] = 0;
 			for(int row = 0;row < data.length;row++) {
 				mean[col]  = mean[col] + data[row][col]/data.length;
 			}
 		}
-		for(int col = 0; col < data[0].length-1; col++) {
-			covariance[col] = 0;
-			for(int row = 0;row < data.length;row++) {
-				for(int row1 = 0;row1 < data.length;row1++) {
-					covariance[col]  = (float) (covariance[col] +
-							(data[row][col]-mean[col])*(data[row1][col+1]-mean[col+1])/(2*data.length));
-				}
-			}
-		}
-
-		for(int i = 0;i < covariance.length;i++) {
-			for(int ii = 0;ii< mean.length-1;ii++) {
-				if(threshold < Math.abs(covariance[i]/(mean[ii]*mean[ii+1]))) {
-					result[i] = true;
-				}else {
-					result[i] = false;
-				}
-				i++;
-			}
-		}		
-		return result;
+		return mean;
 	}
-	
+
+	private boolean isDataEmpty(float[][] data) {
+		return data.length == 0;
+	}
+
 	/**
 	 * Calculate variances per attribute, all values under same column belongs to same
 	 * attributes 
@@ -77,7 +130,7 @@ public class StatisticUtils {
 	 */
 	public boolean[] isLargeVariance(float[][] data, float threshold) {
 		if(data.length == 0) {
-			return null;
+			return new boolean[0];
 		}
 		boolean[] result = new boolean[data[0].length];
 		double[] mean = new double[data[0].length];
@@ -109,7 +162,7 @@ public class StatisticUtils {
 	 */
 	public boolean[] isNoneZeroMean(float[][] data) {
 		if(data.length == 0) {
-			return null;
+			return new boolean[0];
 		}
 		boolean[] result = new boolean[data[0].length];
 		float mean = 0;
@@ -152,6 +205,9 @@ public class StatisticUtils {
 		for(float f:data) {
 			sum = sum +f;
 		}
+		if(sum == 0) {
+			return new float[0];
+		}
 		for(int i = 0;i < data.length; i++) {
 			result[i] = data[i]/sum;
 		}
@@ -171,6 +227,9 @@ public class StatisticUtils {
 		for(int i = 0 ;i < data.length;i++) {
 			ePowsAj[i] = (float) Math.pow(Math.E,data[i]);
 			sum = sum + ePowsAj[i];
+		}
+		if(sum == 0) {
+			return new float[0];
 		}
 		for(int i = 0;i < data.length; i++) {
 			result[i] = (float) (ePowsAj[i]/sum);
@@ -200,11 +259,17 @@ public class StatisticUtils {
 			for(int i = 0 ;i < inputs.length;i++) {	
 				denominator = denominator + Math.abs(inputs[i]);
 			}
+			if(denominator == 0) {
+				return Float.NaN;
+			}
 			result = (float) ((ePowIdx*denominator - ePowIdx*ePowIdx)/(denominator*denominator));
 			if(Float.isNaN(result)){
-				System.out.println("Second operation yelded NaN");
+				System.err.println("Second operation yelded NaN");
 			}
 			return result;
+		}
+		if(denominator == 0) {
+			return Float.NaN;
 		}
 		result = (float) ((ePowIdx*denominator - ePowIdx*ePowIdx)/(denominator*denominator));
 		return result;

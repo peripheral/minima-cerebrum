@@ -6,18 +6,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import math.utils.StatisticUtils;
-import mlp.ANN_MLP;
-import mlp.ANN_MLP.ACTIVATION_FUNCTION;
-import mlp.ANN_MLP.WEIGHT_INITIATION_METHOD;
+import mlp.ANNMLP;
+import mlp.ANNMLP.ACTIVATION_FUNCTION;
+import mlp.ANNMLP.WEIGHT_INITIATION_METHOD;
 import mlp.trainer.Backpropagation;
 import mlp.trainer.TrainingData;
 
 public class ANN_MLPTest {
-	private ANN_MLP sut;
+	private ANNMLP sut;
 	
 	@BeforeEach
 	void init() {
-		sut = new ANN_MLP();
+		sut = new ANNMLP();
 	}
 	
 	/**
@@ -31,7 +31,7 @@ public class ANN_MLPTest {
 	@Test
 	void testConstructANNMLPFromArrayOFLayerSizesAsArgument() {
 		int[] actualLayerSizes = {2,3,3};
-		sut = new ANN_MLP(actualLayerSizes);
+		sut = new ANNMLP(actualLayerSizes);
 		actualLayerSizes = sut.getLayerSizes();
 		int[] expectedLayerSizes = {2,3,3};
 		assertArrayEquals(expectedLayerSizes,actualLayerSizes);
@@ -51,7 +51,7 @@ public class ANN_MLPTest {
 	@Test
 	void testOfPredictFunction1() {
 		int[] layerSizes = {3,4,3};
-		sut = new ANN_MLP(layerSizes);
+		sut = new ANNMLP(layerSizes);
 		sut.setWeightInitiationMethod(WEIGHT_INITIATION_METHOD.CONSTANT);
 		sut.initiate();
 
@@ -75,7 +75,7 @@ public class ANN_MLPTest {
 	@Test
 	void testOfPredictFunction2() {
 		int[] layerSizes = {3,4,3};
-		sut = new ANN_MLP(layerSizes);
+		sut = new ANNMLP(layerSizes);
 		sut.setWeightInitiationMethod(WEIGHT_INITIATION_METHOD.CONSTANT);
 		sut.initiate();
 
@@ -100,7 +100,7 @@ public class ANN_MLPTest {
 	@Test
 	void testOfPredictFunctionWithSoftmax() {
 		int[] layerSizes = {3,4,3};
-		sut = new ANN_MLP(WEIGHT_INITIATION_METHOD.CONSTANT,layerSizes);
+		sut = new ANNMLP(WEIGHT_INITIATION_METHOD.CONSTANT,layerSizes);
 		boolean b = true;
 		sut.setUseSoftmaxOnOutput(b);
 		sut.initiate();
@@ -126,7 +126,7 @@ public class ANN_MLPTest {
 	@Test
 	void testOfPredictFunctionWithSoftmax2() {
 		int[] layerSizes = {3,4,3};
-		sut = new ANN_MLP(WEIGHT_INITIATION_METHOD.CONSTANT,layerSizes);
+		sut = new ANNMLP(WEIGHT_INITIATION_METHOD.CONSTANT,layerSizes);
 		boolean b = true;
 		sut.setUseSoftmaxOnOutput(b);
 		sut.initiate();
@@ -145,7 +145,7 @@ public class ANN_MLPTest {
 	@Test
 	void getInputOutputLayerShouldReturnExpectedLayerSizes() {
 		int[] layerSizes = {2,3,1};
-		sut = new ANN_MLP(layerSizes);
+		sut = new ANNMLP(layerSizes);
 		int[] actualInputLayerSizes = new int[3];
 		actualInputLayerSizes[0] = sut.getInputLayer().size();
 		actualInputLayerSizes[1] = sut.getLayer(1).size();
@@ -160,8 +160,8 @@ public class ANN_MLPTest {
 	@Test
 	void weightsMustBeInitiatedAccordingToConstantMethod() {
 		int[] layerSizes = {2,3,2};
-		sut = new ANN_MLP(layerSizes);
-		sut.setWeightInitiationMethod(ANN_MLP.WEIGHT_INITIATION_METHOD.CONSTANT);
+		sut = new ANNMLP(layerSizes);
+		sut.setWeightInitiationMethod(ANNMLP.WEIGHT_INITIATION_METHOD.CONSTANT);
 		sut.initiate();
 		float[] expectedLayerWeights1 = new float[(layerSizes[0]+1)*layerSizes[1]];
 		for(int i = 0;i < expectedLayerWeights1.length - layerSizes[1];i++) {
@@ -185,10 +185,10 @@ public class ANN_MLPTest {
 	@Test
 	void setGetInitiationMethod() {
 		int[] layerSizes = {2,3,1};
-		sut = new ANN_MLP(layerSizes);
-		ANN_MLP.WEIGHT_INITIATION_METHOD expected = ANN_MLP.WEIGHT_INITIATION_METHOD.CONSTANT;
-		sut.setWeightInitiationMethod(ANN_MLP.WEIGHT_INITIATION_METHOD.CONSTANT);
-		ANN_MLP.WEIGHT_INITIATION_METHOD actual = sut.getWeightInitiationMethod();
+		sut = new ANNMLP(layerSizes);
+		ANNMLP.WEIGHT_INITIATION_METHOD expected = ANNMLP.WEIGHT_INITIATION_METHOD.CONSTANT;
+		sut.setWeightInitiationMethod(ANNMLP.WEIGHT_INITIATION_METHOD.CONSTANT);
+		ANNMLP.WEIGHT_INITIATION_METHOD actual = sut.getWeightInitiationMethod();
 		assertEquals(expected,actual);
 	}
 	
@@ -196,7 +196,7 @@ public class ANN_MLPTest {
 	@Test
 	void setterAndGetterOfWeightConstant() {
 		int[] layerSizes = {2,3,1};
-		sut = new ANN_MLP(layerSizes);
+		sut = new ANNMLP(layerSizes);
 		float expected = 0.7f;
 		sut.setWeightInititiationConstant(0.7f);
 		float actual = sut.getWeightInitiationConstant();
@@ -209,7 +209,7 @@ public class ANN_MLPTest {
 	@Test
 	void testGetDefaultWeightConstant() {
 		int[] layerSizes = {2,3,1};
-		sut = new ANN_MLP(layerSizes);
+		sut = new ANNMLP(layerSizes);
 		float expected = 0.5f;
 		float actual = sut.getWeightInitiationConstant();
 		assertEquals(expected,actual,0.0f);
@@ -221,7 +221,7 @@ public class ANN_MLPTest {
 	@Test
 	void testSetGetActivationFunction(){
 		int[] layerSizes = {2,3,1};
-		sut = new ANN_MLP(layerSizes);
+		sut = new ANNMLP(layerSizes);
 		ACTIVATION_FUNCTION expected = ACTIVATION_FUNCTION.IDENTITY;
 		sut.setActivationFunction(ACTIVATION_FUNCTION.IDENTITY);
 		ACTIVATION_FUNCTION actual = sut.getActivationFunctionType();
@@ -234,7 +234,7 @@ public class ANN_MLPTest {
 	@Test
 	void testRandomWeightInitiation(){
 		int[] layerSizes = {2,3,1};
-		sut = new ANN_MLP(layerSizes);
+		sut = new ANNMLP(layerSizes);
 		sut.setWeightInitiationMethod(WEIGHT_INITIATION_METHOD.RANDOM);
 		sut.initiate();
 		/* size -Number of all Weights in the network */
@@ -295,7 +295,7 @@ public class ANN_MLPTest {
 	@Test
 	void testSetWeightFunction() {
 		int[] layerSizes = {3,4,3};
-		sut = new ANN_MLP(layerSizes);
+		sut = new ANNMLP(layerSizes);
 		sut.initiate();
 		float[][] expected = getTestWeights();
 		sut.setWeights(getTestWeights());

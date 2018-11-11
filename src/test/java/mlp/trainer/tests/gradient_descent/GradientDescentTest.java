@@ -15,9 +15,9 @@ import org.junit.jupiter.api.Test;
 
 import junit.framework.Assert;
 import math.utils.StatisticUtils;
-import mlp.ANN_MLP;
-import mlp.ANN_MLP.ACTIVATION_FUNCTION;
-import mlp.ANN_MLP.WEIGHT_INITIATION_METHOD;
+import mlp.ANNMLP;
+import mlp.ANNMLP.ACTIVATION_FUNCTION;
+import mlp.ANNMLP.WEIGHT_INITIATION_METHOD;
 import mlp.NeuronFunctionModels;
 import mlp.trainer.Backpropagation.COST_FUNCTION_TYPE;
 import mlp.trainer.TerminationCriteria;
@@ -46,7 +46,7 @@ public class GradientDescentTest{
 	void testCalculateErrorPerNeuron() {
 		int[] layerSizes = {3,4,3};
 		WEIGHT_INITIATION_METHOD weightInitiationMethod = WEIGHT_INITIATION_METHOD.RANDOM;
-		ANN_MLP mlp = new ANN_MLP(weightInitiationMethod, layerSizes);
+		ANNMLP mlp = new ANNMLP(weightInitiationMethod, layerSizes);
 		mlp.initiate();
 		sut.setMLP(mlp);
 		TrainingData td = new TrainingData(getTrainingDataGD(), 3);
@@ -233,7 +233,7 @@ public class GradientDescentTest{
 		boolean useSoftmax = true;
 		int trainingRowId = 0;
 		float learningRate = 0.01f;
-		ANN_MLP mlp = new ANN_MLP(WEIGHT_INITIATION_METHOD.RANDOM, useSoftmax, layerSizes);
+		ANNMLP mlp = new ANNMLP(WEIGHT_INITIATION_METHOD.RANDOM, useSoftmax, layerSizes);
 		mlp.initiate();
 		sut.setMLP(mlp);	
 		sut.setTrainingData(td);	
@@ -304,7 +304,7 @@ public class GradientDescentTest{
 		TrainingData td = new TrainingData(data, 3);	
 		TerminationCriteria tc = new TerminationCriteria(criteria);	
 		tc.setIterations(iterations);
-		ANN_MLP mlp = new ANN_MLP(WEIGHT_INITIATION_METHOD.RANDOM, useSoftmax, layerSizes);
+		ANNMLP mlp = new ANNMLP(WEIGHT_INITIATION_METHOD.RANDOM, useSoftmax, layerSizes);
 		mlp.initiate();
 		mlp.setWeights(getTestWeights2());
 		sut.setMLP(mlp);	
@@ -353,7 +353,7 @@ public class GradientDescentTest{
 		TrainingData td = new TrainingData(data, 3);	
 		TerminationCriteria tc = new TerminationCriteria(criteria);	
 		tc.setIterations(iterations);
-		ANN_MLP mlp = new ANN_MLP(WEIGHT_INITIATION_METHOD.RANDOM, useSoftmax, layerSizes);
+		ANNMLP mlp = new ANNMLP(WEIGHT_INITIATION_METHOD.RANDOM, useSoftmax, layerSizes);
 		mlp.initiate();
 		mlp.setWeights(getTestWeights2());
 		sut.setMLP(mlp);	
@@ -463,7 +463,7 @@ public class GradientDescentTest{
 		int trainingRowId = 0;
 		float learningRate = 0.01f;
 		COST_FUNCTION_TYPE costFType = COST_FUNCTION_TYPE.SQUARED_ERROR;
-		ANN_MLP mlp = new ANN_MLP(WEIGHT_INITIATION_METHOD.RANDOM, useSoftmax, layerSizes);
+		ANNMLP mlp = new ANNMLP(WEIGHT_INITIATION_METHOD.RANDOM, useSoftmax, layerSizes);
 		mlp.initiate();
 		sut.setMLP(mlp);	
 		sut.setTrainingData(td);	
@@ -590,7 +590,7 @@ public class GradientDescentTest{
 		float mSDeltaWeight = 0.004f;
 		float mSGradient = 0.004f;
 		int[] layerSizes = new int[] {3,4,3};
-		ANN_MLP mlp = new ANN_MLP( layerSizes);
+		ANNMLP mlp = new ANNMLP( layerSizes);
 		mlp.initiate();
 		sut.setMLP(mlp);
 		sut.setUseAdaptiveLearningRate(useAdaptiveLEarningRate);
@@ -615,7 +615,7 @@ public class GradientDescentTest{
 		float decayFactor = 0;
 		int[] layerSizes = new int[] {3,4,3};
 		TrainingData td = new TrainingData(getTrainingDataGD(),3);
-		ANN_MLP mlp = new ANN_MLP(weightInitiationMethod, useSoftMaxTrue,layerSizes);
+		ANNMLP mlp = new ANNMLP(weightInitiationMethod, useSoftMaxTrue,layerSizes);
 		mlp.initiate();
 		sut.setMLP(mlp);
 		sut.initiateWeightDeltas();
@@ -746,7 +746,7 @@ public class GradientDescentTest{
 	@Test
 	void testInitiationNodeGains() {
 		int[] layerSizes = new int[] {3,4,3};
-		ANN_MLP mlp = new ANN_MLP( layerSizes);
+		ANNMLP mlp = new ANNMLP( layerSizes);
 		mlp.initiate();
 		sut.setMLP(mlp);		
 		float[][] nodeGains = sut.initiateNodeGains();
@@ -845,11 +845,11 @@ public class GradientDescentTest{
 		TerminationCriteria tc = new TerminationCriteria(criteria,maxIterations);
 		/* Auxiliary GradientDescent  */ 
 		GradientDescent gd = new GradientDescent();
-		ANN_MLP mlp = new ANN_MLP(weightInitiationMethod, useSoftmax, layerSizes);
+		ANNMLP mlp = new ANNMLP(weightInitiationMethod, useSoftmax, layerSizes);
 		mlp.setTrainingTerminationCriteria(tc);
 		mlp.initiate();
 
-		ANN_MLP mlpA = new ANN_MLP(weightInitiationMethod, useSoftmax, layerSizes);
+		ANNMLP mlpA = new ANNMLP(weightInitiationMethod, useSoftmax, layerSizes);
 		mlpA.setTrainingTerminationCriteria(tc);
 		mlpA.initiate();
 		mlpA.setWeights(mlp.getWeights());
@@ -893,11 +893,11 @@ public class GradientDescentTest{
 		TerminationCriteria tc = new TerminationCriteria(criteria,maxIterations);
 		/* Auxiliary GradientDescent  */ 
 		GradientDescent gd = new GradientDescent();
-		ANN_MLP mlp = new ANN_MLP(weightInitiationMethod, useSoftmax, layerSizes);
+		ANNMLP mlp = new ANNMLP(weightInitiationMethod, useSoftmax, layerSizes);
 		mlp.setTrainingTerminationCriteria(tc);
 		mlp.initiate();
 
-		ANN_MLP mlpA = new ANN_MLP(weightInitiationMethod, useSoftmax, layerSizes);
+		ANNMLP mlpA = new ANNMLP(weightInitiationMethod, useSoftmax, layerSizes);
 		mlpA.setTrainingTerminationCriteria(tc);
 		mlpA.initiate();
 		mlpA.setWeights(mlp.getWeights());
@@ -935,7 +935,7 @@ public class GradientDescentTest{
 		boolean useSoftmax = true;
 
 		float learningRate = 0.01f;
-		ANN_MLP mlp = new ANN_MLP(WEIGHT_INITIATION_METHOD.RANDOM, useSoftmax, layerSizes);
+		ANNMLP mlp = new ANNMLP(WEIGHT_INITIATION_METHOD.RANDOM, useSoftmax, layerSizes);
 		mlp.initiate();
 		sut.setMLP(mlp);	
 		sut.setTrainingData(td);	
@@ -1037,11 +1037,11 @@ public class GradientDescentTest{
 		TerminationCriteria tc = new TerminationCriteria(criteria,maxIterations);
 		/* Auxiliary GradientDescent  */ 
 		GradientDescent gd = new GradientDescent();
-		ANN_MLP mlp = new ANN_MLP(weightInitiationMethod, useSoftmax, layerSizes);
+		ANNMLP mlp = new ANNMLP(weightInitiationMethod, useSoftmax, layerSizes);
 		mlp.setTrainingTerminationCriteria(tc);
 		mlp.initiate();
 
-		ANN_MLP mlpA = new ANN_MLP(weightInitiationMethod, useSoftmax, layerSizes);
+		ANNMLP mlpA = new ANNMLP(weightInitiationMethod, useSoftmax, layerSizes);
 		mlpA.setTrainingTerminationCriteria(tc);
 		mlpA.initiate();
 		mlpA.setWeights(mlp.getWeights());
@@ -1092,7 +1092,7 @@ public class GradientDescentTest{
 		
 		TerminationCriteria tc = new TerminationCriteria(criteria,maxIterations);
 		/* Auxiliary GradientDescent  */ 
-		ANN_MLP mlp = new ANN_MLP(weightInitiationMethod, useSoftmax, layerSizes);
+		ANNMLP mlp = new ANNMLP(weightInitiationMethod, useSoftmax, layerSizes);
 		mlp.setTrainingTerminationCriteria(tc);
 		mlp.initiate();
 		

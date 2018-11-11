@@ -1,8 +1,9 @@
 package mlp;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import mlp.ANN_MLP.ACTIVATION_FUNCTION;
+import mlp.ANNMLP.ACTIVATION_FUNCTION;
 
 public class Neuron {
 	
@@ -13,7 +14,7 @@ public class Neuron {
 	private float activationThreshold = 0;
 	private int id = -1;
 	private float output;
-	private ArrayList<Float> weights = new ArrayList<Float>();
+	private ArrayList<Float> weights = new ArrayList<>();
 	private ACTIVATION_FUNCTION aFunction = ACTIVATION_FUNCTION.SIGMOID;
 	private TRANSFER_FUNCTION transferFunction = TRANSFER_FUNCTION.IDENTITY;
 	private float a = 1;
@@ -102,7 +103,7 @@ public class Neuron {
 	}
 
 
-	public ArrayList<Float> getWeights() {
+	public List<Float> getWeights() {
 		return weights;
 	}
 

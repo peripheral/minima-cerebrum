@@ -5,9 +5,9 @@ import static org.junit.Assert.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import mlp.ANN_MLP;
+import mlp.ANNMLP;
 import mlp.Neuron;
-import mlp.ANN_MLP.ACTIVATION_FUNCTION;
+import mlp.ANNMLP.ACTIVATION_FUNCTION;
 import mlp.Neuron.TRANSFER_FUNCTION;
 
 public class NeuronTest {
@@ -81,9 +81,9 @@ public class NeuronTest {
 	
 	@Test
 	void testSetGetActivationFunctionType() {
-		sut.setActivationFunctionType(ANN_MLP.ACTIVATION_FUNCTION.SIGMOID);
+		sut.setActivationFunctionType(ANNMLP.ACTIVATION_FUNCTION.SIGMOID);
 		int actual = sut.getActivationFunctionType().ordinal();
-		int expected = ANN_MLP.ACTIVATION_FUNCTION.SIGMOID.ordinal();
+		int expected = ANNMLP.ACTIVATION_FUNCTION.SIGMOID.ordinal();
 		assertEquals(expected,actual);
 	}
 	

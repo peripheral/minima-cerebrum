@@ -8,10 +8,10 @@ import java.util.Random;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import mlp.ANN_MLP;
+import mlp.ANNMLP;
 import mlp.NeuronFunctionModels;
-import mlp.ANN_MLP.ACTIVATION_FUNCTION;
-import mlp.ANN_MLP.WEIGHT_INITIATION_METHOD;
+import mlp.ANNMLP.ACTIVATION_FUNCTION;
+import mlp.ANNMLP.WEIGHT_INITIATION_METHOD;
 import mlp.trainer.Backpropagation.COST_FUNCTION_TYPE;
 import mlp.trainer.TrainingData;
 import mlp.trainer.gradient_descent.StochasticGradientDescent;
@@ -62,7 +62,7 @@ public class StochasticGradientDescentTest {
 
 		TrainingData td = new TrainingData(data,outputLayerSize);
 		sut.setTrainingData(td);
-		ANN_MLP mlp = new ANN_MLP(WEIGHT_INITIATION_METHOD.RANDOM,layerSizes);
+		ANNMLP mlp = new ANNMLP(WEIGHT_INITIATION_METHOD.RANDOM,layerSizes);
 		mlp.initiate();
 		sut.setMLP(mlp);
 		sut.calculateError();

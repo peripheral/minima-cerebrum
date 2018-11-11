@@ -2,7 +2,7 @@ package mlp.trainer.gradient_descent;
 
 import java.util.Random;
 
-import mlp.ANN_MLP.ACTIVATION_FUNCTION;
+import mlp.ANNMLP.ACTIVATION_FUNCTION;
 import mlp.NeuronFunctionModels;
 import mlp.trainer.Backpropagation;
 import mlp.trainer.TrainingData;

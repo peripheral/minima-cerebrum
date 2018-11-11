@@ -1,9 +1,10 @@
 package mlp;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import math.utils.StatisticUtils;
-import mlp.ANN_MLP.LAYER_TYPE;
+import mlp.ANNMLP.LAYER_TYPE;
 
 public class NeuronLayer {
 	private ArrayList<Neuron> neurons = new ArrayList<>();
@@ -72,7 +73,7 @@ public class NeuronLayer {
 	 * Returns neuron list
 	 * @return
 	 */
-	public ArrayList<Neuron> getNeurons() {
+	public List<Neuron> getNeurons() {
 		return neurons;
 	}
 

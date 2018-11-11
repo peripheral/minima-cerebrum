@@ -58,7 +58,7 @@ public class TrainingData {
 
 	public float[] getMeans() {
 		if(inputs.length == 0) {
-			return null;
+			return new float[0];
 		}else {
 			return means;
 		}
