@@ -9,12 +9,10 @@ import mlp.ANNMLP.ACTIVATION_FUNCTION;
 import mlp.NeuronFunctionModels;
 
 public class ActivationFunctionModelTest {
-
-private NeuronFunctionModels sut;
 	
 	@BeforeEach
 	void init() {
-		sut = new NeuronFunctionModels();
+	
 	}
 	
 	@Test

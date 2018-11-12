@@ -1115,7 +1115,7 @@ public class GradientDescentTest{
 
 	/**
 	 * Test training with functional tolerance stopping criteria 
-	 * functional tolerance - 0.01
+	 * functional tolerance -  0.00001
 	 * Delta = epoch_i+1(x) - epoch_i(x)  
 	 * epoch_i = MSE(Cost(X))
 	 * X - cross validation test set, set from training data

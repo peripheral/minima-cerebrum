@@ -29,7 +29,7 @@ public class Neuron {
 	}
 	
 	public Neuron(ACTIVATION_FUNCTION f,int upperLayerSize) {
-		throw new RuntimeException("NOT IMPLEMENTED");
+		throw new NeuronException("NOT IMPLEMENTED");
 	}
 
 	
@@ -142,6 +142,11 @@ public class Neuron {
 			arrWeights[i] = weights.get(i);
 		}
 		return arrWeights;
+	}
+	class NeuronException extends RuntimeException{
+		public NeuronException(String msg) {
+			super(msg);
+		}
 	}
 	
 }

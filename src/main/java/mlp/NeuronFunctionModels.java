@@ -7,6 +7,8 @@ import mlp.Neuron.TRANSFER_FUNCTION;
 
 public class NeuronFunctionModels {
 
+	private NeuronFunctionModels() {}
+	
 	public static float activate(ACTIVATION_FUNCTION type,float a,float b,float x) {
 		switch(type) {
 		case SIGMOID:
