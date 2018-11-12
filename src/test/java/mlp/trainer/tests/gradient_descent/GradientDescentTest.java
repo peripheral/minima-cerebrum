@@ -1050,11 +1050,11 @@ public class GradientDescentTest{
 		gd.setMLP(mlp);
 		gd.setTrainingTerminationCriteria(tc);
 		gd.setLearningRateCorrector(learningRateCorrector);
-		
+
 		sut.setTrainingData(td);
 		sut.setMLP(mlpA);	
 		sut.setTrainingTerminationCriteria(tc);
-		
+
 		sut.setLearningRateCorrector(learningRateCorrector);
 		sut.trainADADELTA();
 
@@ -1070,7 +1070,7 @@ public class GradientDescentTest{
 			assertArrayEquals(expectedWeights[i],actualWeights[i]);
 		}	
 	}
-	
+
 	/**
 	 * Test function epochRSSDelta- change of RSS
 	 * RSS - residual sum of squares
@@ -1080,22 +1080,27 @@ public class GradientDescentTest{
 	 */
 	@Test
 	void testCalculateEpochRSSDelta() {
-		TERMINATION_CRITERIA[] criteria = {TERMINATION_CRITERIA.MAX_ITERATIONS};
+		/* Epoch Residual Square Sum is calculated only when FUNCTIONal tolerance is used
+		 * as stopping criteria  */
+		TERMINATION_CRITERIA[] criteria = {TERMINATION_CRITERIA.MAX_ITERATIONS,
+				TERMINATION_CRITERIA.FUNCTIONAL_TOLERANCE};
 		WEIGHT_INITIATION_METHOD weightInitiationMethod = WEIGHT_INITIATION_METHOD.RANDOM;
 		int inputTargetDemarcation = 3;
 		int[] layerSizes = new int[] {3,30,3};
-		int maxIterations = 30;
+		int maxIterations = 1;
 		float learningRateCorrector = 0.3f;
 		boolean useSoftmax = true;
-	
+
 		TrainingData td = new TrainingData(getTrainingDataGD(), inputTargetDemarcation);		
-		
+
 		TerminationCriteria tc = new TerminationCriteria(criteria,maxIterations);
+		/* Minimal value as functional tolerance to not hinder execution */
+		tc.setFunctTolConst(Float.MIN_VALUE);
 		/* Auxiliary GradientDescent  */ 
 		ANNMLP mlp = new ANNMLP(weightInitiationMethod, useSoftmax, layerSizes);
 		mlp.setTrainingTerminationCriteria(tc);
 		mlp.initiate();
-		
+
 		sut.setTrainingData(td);
 		sut.setMLP(mlp);	
 		sut.setTrainingTerminationCriteria(tc);		
@@ -1103,9 +1108,41 @@ public class GradientDescentTest{
 		sut.trainADADELTA();
 		float expected = sut.calculateTotalMSE();
 		sut.trainADADELTA();
-		expected = Math.abs(expected - sut.calculateTotalMSE());
+		expected = Math.abs(sut.calculateTotalMSE() - expected);
 		float actual = sut.calculateEpochRSSDelta();
 		assertEquals(expected,actual);		
+	}
+
+	/**
+	 * Test training with functional tolerance stopping criteria 
+	 * functional tolerance - 0.01
+	 * Delta = epoch_i+1(x) - epoch_i(x)  
+	 * epoch_i = MSE(Cost(X))
+	 * X - cross validation test set, set from training data
+	 */
+	@Test
+	void testFunctionalToleranceStoppingCriteria() {
+		TERMINATION_CRITERIA[] criteria = {TERMINATION_CRITERIA.MAX_ITERATIONS,TERMINATION_CRITERIA.FUNCTIONAL_TOLERANCE};
+		WEIGHT_INITIATION_METHOD weightInitiationMethod = WEIGHT_INITIATION_METHOD.RANDOM;
+		int inputTargetDemarcation = 3;
+		int[] layerSizes = new int[] {3,30,3};
+		int maxIterations = 400;
+		boolean useSoftmax = true;
+		float functionlaTolerance = 0.00001f;
+
+		TrainingData td = new TrainingData(getTrainingDataGD(), inputTargetDemarcation);		
+
+		TerminationCriteria tc = new TerminationCriteria(criteria,maxIterations);
+		tc.setFunctTolConst(functionlaTolerance);
+
+		ANNMLP mlp = new ANNMLP(weightInitiationMethod, useSoftmax, layerSizes);
+		mlp.initiate();
+
+		sut.setTrainingData(td);
+		sut.setMLP(mlp);	
+		sut.setTrainingTerminationCriteria(tc);		
+		sut.trainADADELTA();
+		assertTrue(sut.calculateEpochRSSDelta()<=functionlaTolerance);
 	}
 
 }

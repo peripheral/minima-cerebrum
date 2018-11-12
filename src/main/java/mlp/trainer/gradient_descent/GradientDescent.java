@@ -28,12 +28,15 @@ public class GradientDescent extends Backpropagation {
 	private boolean adaptiveLearningRate;
 	private float[][] meanSquaredWeightDeltas;
 	private float[][] meanSquaredGradients;
+	/**
+	 * Default learning rate corrector 0.3
+	 */
 	private float learningRateCorrector = 0.3f;
 	/**
 	 * stores cross validation results, currently uses MSE over training set
 	 */
 	private List<Float> crossValidation = new LinkedList<>();
-	
+
 
 	/**
 	 * Function calculates gradient from error and given input and activation of layer function parameters
@@ -85,7 +88,7 @@ public class GradientDescent extends Backpropagation {
 			System.err.println("Derivative of "+activationFType+" not implemented");
 			break;
 		}
-		
+
 		return 2 * error * partialDerivative;
 	}
 
@@ -309,17 +312,22 @@ public class GradientDescent extends Backpropagation {
 				for(int row = 0;row < trainingData.size(); row++) {
 					trainOnSampleWithADADELTA(trainingData.getInputRow(row),trainingData.getTargetRow(row));
 				}
+				if(set.contains(TERMINATION_CRITERIA.FUNCTIONAL_TOLERANCE)) {
+					if(calculateEpochRSSDelta()< terminationCriteria.getFunctTolConst()) {
+						return;
+					}
+					if(crossValidation.isEmpty()) {
+						crossValidation.add(calculateTotalMSE());
+					}else if(crossValidation.size() == 1) {
+						crossValidation.add(calculateTotalMSE());
+					}else if(crossValidation.size() > 1) {
+						crossValidation.remove(0);
+						crossValidation.add(calculateTotalMSE());
+					}
+				}
 			}
-		}
-		if(crossValidation.size() == 0) {
-			crossValidation.add(calculateTotalMSE());
-		}else if(crossValidation.size() == 1) {
-			crossValidation.add(calculateTotalMSE());
-		}else if(crossValidation.size() > 1) {
-			crossValidation.remove(0);
-			crossValidation.add(calculateTotalMSE());
-		}
-		
+		}	
+
 	}
 
 	public void setTrainingTerminationCriteria(TerminationCriteria tc) {
@@ -723,7 +731,7 @@ public class GradientDescent extends Backpropagation {
 		if(nodeGradients == null) {
 			initiateNodeGradients();
 		}
-		/* The outputlayer is one index lower since input layer ommited */
+		/* The output layer is one index lower since input layer omitted */
 		int outputGradienLayertId = nodeGradients.length-1;
 		int outputLayerId = mlp.getLayerSizes().length-1;
 		float[] inputs;
@@ -918,7 +926,7 @@ public class GradientDescent extends Backpropagation {
 		if(meanSquaredGradients == null) {
 			initiateMeanSquaredGradient();
 		}
-		
+
 		/* Calculate gradients per weight layer */
 		calculateNetworkNodeGradients(costFunctionType, inputRow, targetRow);
 		float nodeGradient = 0;
@@ -996,6 +1004,11 @@ public class GradientDescent extends Backpropagation {
 		this.learningRateCorrector = learningRateCorrector;		
 	}
 
+	/**
+	 * calculates difference between previous error of cross validation and current
+	 * current - previous
+	 * @return
+	 */
 	public float calculateEpochRSSDelta() {
 		if(crossValidation.size() >1) {
 			return  Math.abs(crossValidation.get(1) - crossValidation.get(0));
