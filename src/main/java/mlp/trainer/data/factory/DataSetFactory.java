@@ -16,6 +16,14 @@ public class DataSetFactory{
 	 * Portion of data to be used to train
 	 */
 	private double trainingDataPortion = 0.5;
+	/**
+	 * Portion of data to be used to validate
+	 */
+	private double validationDataPortion = 0.25;
+	/**
+	 * Portion of data to be used to test
+	 */
+	private double testDataPortion = 0.25;
 
 	public DataSetFactory() {
 		//TODO
@@ -63,8 +71,21 @@ public class DataSetFactory{
 	}
 
 	public ValidationData getValidationData() {
-		// TODO Auto-generated method stub
-		return null;
+		/* Size of examples in data set*/
+		int examplesPerClass = inputs.size()/classCount;
+		/* Size of set to be created */
+		int setSize = (int) (inputs.size()*validationDataPortion);
+		/* Size of examples per class in new set */
+		int portionPerClass = setSize/classCount;
+		float[][] validationInputs = new float[setSize][];
+		float[][] validationTargets = new float[setSize][];
+		for (int i = 0; i < classCount; i++) {
+			for (int offset = 0; offset < portionPerClass; offset++) {
+				validationInputs[i*portionPerClass+offset] = this.inputs.get(i*examplesPerClass+offset);
+				validationTargets[i*portionPerClass+offset] = this.targets.get(i*examplesPerClass+offset);
+			}
+		}
+		return new ValidationData(validationInputs, validationTargets);
 	}
 	
 	

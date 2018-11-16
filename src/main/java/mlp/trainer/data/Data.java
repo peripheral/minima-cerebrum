@@ -9,6 +9,17 @@ public class Data {
 	protected float[][] input;
 	protected float[][] target;
 	
+	public Data() {}
+	
+	/**
+	 * @param inputs - represents x vector
+	 * @param targets - represents y vector
+	 */
+	public Data(float[][] inputs,float[][] targets) {
+		this.input = inputs;
+		this.target= targets;
+	}
+	
 	public float[][] getInput() {
 		return input;
 	}

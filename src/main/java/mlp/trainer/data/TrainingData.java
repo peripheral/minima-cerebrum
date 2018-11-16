@@ -13,14 +13,7 @@ public class TrainingData extends Data{
 	private float averageVariance;
 	private boolean preparationExecuted = false;
 
-	/**
-	 * @param inputs - represents x vector
-	 * @param targets - represents y vector
-	 */
-	public TrainingData(float[][] inputs,float[][] targets) {
-		this.input = inputs;
-		this.target= targets;
-	}
+	
 
 	/**
 	 * data can be passed in one array. {x1,x2,x3,..,y1,y2,..}
@@ -40,7 +33,14 @@ public class TrainingData extends Data{
 		}
 	}
 
+
+	public TrainingData(float[][] inputs, float[][] targets) {
+		super(inputs, targets);
+	}
+
+
 	public TrainingData() {	}
+
 
 	public void setInputs(float[][] data) {
 		this.input = data;

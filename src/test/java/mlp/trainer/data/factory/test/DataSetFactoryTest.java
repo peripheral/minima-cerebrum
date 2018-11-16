@@ -56,6 +56,37 @@ public class DataSetFactoryTest extends Data{
 		assertEquals(expected,actual);		
 	}
 	
+	@Test
+	void testCreateValidationSet() {
+		Scanner inScanner = new Scanner("");
+		int outputLayerSize = 3;
+		double portion = 0.25;
+		List<float[]> inputs = new LinkedList<>();
+		List<float[]> targets = new LinkedList<>();
+	
+		TreeMap<String,Integer> labelIdxMap = new TreeMap<>();
+		try {
+			inScanner = new Scanner(new File("testData\\iris.data.txt"));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			inScanner.close();
+		}
+		String[] line;
+		while(inScanner.hasNext()) {
+			line = inScanner.nextLine().split(",");
+			inputs.add(convertToInputs(line));
+			targets.add(createOutputRow(line[line.length-1],labelIdxMap,outputLayerSize));	
+		}
+		int expected = (int) (inputs.size() *portion);
+		
+		sut.setInput(inputs);
+		sut.setTarget(targets);
+		sut.setClassCount(3);
+		ValidationData vd = sut.getValidationData();	
+		int actual = vd.size();
+		assertEquals(expected,actual);		
+	}
+	
 	
 	
 	private float[] createOutputRow(String value, TreeMap<String, Integer> lableToIndxMap,
