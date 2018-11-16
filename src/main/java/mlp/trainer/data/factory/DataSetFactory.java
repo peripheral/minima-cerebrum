@@ -74,6 +74,8 @@ public class DataSetFactory{
 	public ValidationData getValidationData() {
 		/* Size of examples in data set*/
 		int examplesPerClass = inputs.size()/classCount;
+		/* Offset for validation	 */
+		int offsetValidation = (int) (examplesPerClass*trainingDataPortion);		
 		/* Size of set to be created */
 		int setSize = (int) (inputs.size()*validationDataPortion);
 		/* Size of examples per class in new set */
@@ -82,16 +84,36 @@ public class DataSetFactory{
 		float[][] validationTargets = new float[setSize][];
 		for (int i = 0; i < classCount; i++) {
 			for (int offset = 0; offset < portionPerClass; offset++) {
-				validationInputs[i*portionPerClass+offset] = this.inputs.get(i*examplesPerClass+offset);
-				validationTargets[i*portionPerClass+offset] = this.targets.get(i*examplesPerClass+offset);
+				validationInputs[i*portionPerClass+offset] = this.inputs.get(i*examplesPerClass
+						+offsetValidation+offset);
+				validationTargets[i*portionPerClass+offset] = this.targets.get(i*examplesPerClass
+						+offsetValidation+offset);
 			}
 		}
 		return new ValidationData(validationInputs, validationTargets);
 	}
 
 	public TestData getTestData() {
-		// TODO Auto-generated method stub
-		return null;
+		/* Size of examples in data set*/
+		int examplesPerClass = inputs.size()/classCount;
+		/* Offset for validation	 */
+		int offsetTest = (int) (examplesPerClass*(trainingDataPortion+validationDataPortion));
+	
+		/* Size of set to be created */
+		int setSize = (int) (inputs.size()*testDataPortion);
+		/* Size of examples per class in new set */
+		int portionPerClass = setSize/classCount;
+		float[][] validationInputs = new float[setSize][];
+		float[][] validationTargets = new float[setSize][];
+		for (int i = 0; i < classCount; i++) {
+			for (int offset = 0; offset < portionPerClass; offset++) {
+				validationInputs[i*portionPerClass+offset] = this.inputs.get(i*examplesPerClass+
+						offsetTest+offset);
+				validationTargets[i*portionPerClass+offset] = this.targets.get(i*examplesPerClass+
+						offsetTest+offset);
+			}
+		}
+		return new TestData(validationInputs, validationTargets);
 	}
 	
 	
