@@ -1,5 +1,5 @@
 package mlp.trainer.data;
 
-public class TestData {
+public class TestData extends Data{
 
 }

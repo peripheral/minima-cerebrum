@@ -3,6 +3,7 @@ package mlp.trainer.data.factory;
 import java.util.List;
 
 import mlp.trainer.data.Data;
+import mlp.trainer.data.TestData;
 import mlp.trainer.data.TrainingData;
 import mlp.trainer.data.ValidationData;
 
@@ -86,6 +87,11 @@ public class DataSetFactory{
 			}
 		}
 		return new ValidationData(validationInputs, validationTargets);
+	}
+
+	public TestData getTestData() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	
