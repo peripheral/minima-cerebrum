@@ -4,25 +4,30 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.function.Consumer;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.stream.IntStream;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import junit.framework.Assert;
+import com.sun.java.accessibility.util.java.awt.LabelTranslator;
+
 import math.utils.StatisticUtils;
 import mlp.ANNMLP;
 import mlp.ANNMLP.ACTIVATION_FUNCTION;
 import mlp.ANNMLP.WEIGHT_INITIATION_METHOD;
-import mlp.NeuronFunctionModels;
 import mlp.trainer.Backpropagation.COST_FUNCTION_TYPE;
 import mlp.trainer.TerminationCriteria;
 import mlp.trainer.TerminationCriteria.TERMINATION_CRITERIA;
-import mlp.trainer.TrainingData;
+import mlp.trainer.data.TrainingData;
 import mlp.trainer.gradient_descent.GradientDescent;
 
 public class GradientDescentTest{

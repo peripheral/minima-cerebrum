@@ -8,8 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
-import mlp.trainer.TrainingData;
+import mlp.trainer.data.TrainingData;
 
 public class TrainingDataTest {
 	private TrainingData sut;
@@ -30,7 +29,7 @@ public class TrainingDataTest {
 		float[][] expected = {{1,2,-2},
 				{1,5,6},
 				{1,5,-4}};
-		sut.setData(data);
+		sut.setInputs(data);
 		float[][] actuals = sut.getInputs();
 		assertArrayEquals(expected,actuals);
 	}
@@ -65,7 +64,7 @@ public class TrainingDataTest {
 		float[][] data = {{1,4,7},
 				{2,5,100},
 				{3,6,-50}};
-		sut.setData(data);
+		sut.setInputs(data);
 		sut.calculateVariances();
 		float[] expected = {2/3f,2/3f, 3822f};
 		float[] isVarianceLargeActual = sut.getVariances();
@@ -82,7 +81,7 @@ public class TrainingDataTest {
 		float[][] data = {{1,4,7},
 				{2,5,100},
 				{3,6,-50}};
-		sut.setData(data);
+		sut.setInputs(data);
 		float[] expected = {2,5, 19f};
 		sut.calculateMeans();
 		float[] isVarianceLargeActual = sut.getMeans();
@@ -109,7 +108,7 @@ public class TrainingDataTest {
 		float[][] data = {{1,4,7},
 				{2,5,8},
 				{3,6,9}};
-		sut.setData(data);
+		sut.setInputs(data);
 		sut.calculateMeans();
 		float[] expected = {-1,-1,-1};
 		float[] expected1 = {0,0,0};
@@ -136,7 +135,7 @@ public class TrainingDataTest {
 		float[][] data = {{1,4,7},
 				{2,5,8},
 				{3,6,9}};
-		sut.setData(data);
+		sut.setInputs(data);
 		sut.calculateMeans();
 		sut.calculateAverageMean();
 		float expected = 5;
@@ -158,7 +157,7 @@ public class TrainingDataTest {
 		float[][] data = {{1,4,7},
 				{2,5,8},
 				{3,6,9}};
-		sut.setData(data);
+		sut.setInputs(data);
 		sut.calculateVariances();
 		sut.calculateAverageVariance();
 		float expected = 2/3f;
@@ -178,7 +177,7 @@ public class TrainingDataTest {
 		float[][] data = {{1,4,7},
 				{2,5,8},
 				{3,6,9}};
-		sut.setData(data);
+		sut.setInputs(data);
 		sut.setNormalizedMeanTransformInput(true);
 		/*
 		 * x1 = (x1 - meanA1 + mean)sqrt(Variance)/sqrt(VarianceA1)
@@ -208,7 +207,7 @@ public class TrainingDataTest {
 		float[][] data = {{1,4,7},
 				{2,5,8},
 				{3,6,9}};
-		sut.setData(data);
+		sut.setInputs(data);
 		sut.setNormalizedVarianceTransformInput(true);
 		/*
 		 * x1 = (x1 - meanA1 + mean)sqrt(Variance)/sqrt(VarianceA1)

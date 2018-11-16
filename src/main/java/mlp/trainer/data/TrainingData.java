@@ -1,10 +1,9 @@
-package mlp.trainer;
+package mlp.trainer.data;
 
 import java.util.Arrays;
 
-public class TrainingData {
+public class TrainingData extends Data{
 
-	private float[][] inputs = null;
 	private float[] means = null;
 	private float[] variances;
 	private boolean subtractMean = false;
@@ -13,14 +12,13 @@ public class TrainingData {
 	private float averageMean;
 	private float averageVariance;
 	private boolean preparationExecuted = false;
-	private float[][] target;
 
 	/**
 	 * @param inputs - represents x vector
 	 * @param targets - represents y vector
 	 */
 	public TrainingData(float[][] inputs,float[][] targets) {
-		this.inputs = inputs;
+		this.input = inputs;
 		this.target= targets;
 	}
 
@@ -30,11 +28,11 @@ public class TrainingData {
 	 * @param offset - index that defines start of Y values
 	 */
 	public TrainingData(float[][] data,int offset) {
-		inputs = new float[data.length][offset];
+		input = new float[data.length][offset];
 		target = new float[data.length][data[0].length - offset];
 		for(int row = 0; row < data.length;row++) {
 			for(int col = 0; col <offset;col++) {
-				this.inputs[row][col] = data[row][col];
+				this.input[row][col] = data[row][col];
 			}
 			for(int col = offset; col <data[0].length;col++) {
 				this.target[row][col-offset] = data[row][col];
@@ -44,12 +42,12 @@ public class TrainingData {
 
 	public TrainingData() {	}
 
-	public void setData(float[][] data) {
-		this.inputs = data;
+	public void setInputs(float[][] data) {
+		this.input = data;
 	}
 
 	public float[][] getInputs() {
-		return inputs;
+		return input;
 	}
 
 	public float[] getVariances() {
@@ -57,7 +55,7 @@ public class TrainingData {
 	}
 
 	public float[] getMeans() {
-		if(inputs.length == 0) {
+		if(input.length == 0) {
 			return new float[0];
 		}else {
 			return means;
@@ -65,31 +63,31 @@ public class TrainingData {
 	}
 
 	public void calculateMeans() {
-		if(means == null && inputs !=null) {
-			means = new float[inputs[0].length];
-		}else if(inputs == null) {
+		if(means == null && input !=null) {
+			means = new float[input[0].length];
+		}else if(input == null) {
 			System.out.println("Couldn't claculate means, no data");
 			return;
 		}
-		for(int col = 0 ; col < inputs[0].length;col++) {
+		for(int col = 0 ; col < input[0].length;col++) {
 			means[col] = 0;
-			for(int row = 0; row < inputs[0].length;row++) {
-				means[col] = means[col]+inputs[row][col]/inputs.length;
+			for(int row = 0; row < input[0].length;row++) {
+				means[col] = means[col]+input[row][col]/input.length;
 			}
 		}
 	}
 
 	public void calculateVariances() {
-		if(variances == null && inputs !=null) {
-			variances = new float[inputs[0].length];
+		if(variances == null && input !=null) {
+			variances = new float[input[0].length];
 		}
 		if(means == null) {
 			calculateMeans();
 		}
-		for(int col = 0 ; col < inputs[0].length;col++) {
+		for(int col = 0 ; col < input[0].length;col++) {
 			variances[col] = 0;
-			for(int row = 0; row < inputs.length;row++) {
-				variances[col] = (float) (variances[col]+Math.pow(inputs[row][col]-means[col],2)/inputs.length);
+			for(int row = 0; row < input.length;row++) {
+				variances[col] = (float) (variances[col]+Math.pow(input[row][col]-means[col],2)/input.length);
 			}
 		}
 	}
@@ -103,7 +101,7 @@ public class TrainingData {
 	}
 
 	public float[] getInputRow(int row) {
-		float[] dataRow = Arrays.copyOf(inputs[row], inputs[0].length);
+		float[] dataRow = Arrays.copyOf(input[row], input[0].length);
 		if(!preparationExecuted) {
 			prepareForVarianceNormalization();
 			prepareForMeanNoralization();
@@ -194,8 +192,12 @@ public class TrainingData {
 		return target[idx];
 	}
 
-	public int size() {
-		return inputs.length;
+	public void setTargets(float[][] out) {
+		target = out;		
 	}
 
+	public TrainingData produceTrainingSet() {
+		
+		return null;
+	}
 }

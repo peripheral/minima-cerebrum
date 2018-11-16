@@ -1,6 +1,7 @@
 package mlp.trainer;
 
 import mlp.ANNMLP;
+import mlp.trainer.data.TrainingData;
 
 public class Backpropagation {
 

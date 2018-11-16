@@ -5,7 +5,7 @@ import java.util.List;
 import math.utils.StatisticUtils;
 import mlp.trainer.Backpropagation;
 import mlp.trainer.TerminationCriteria;
-import mlp.trainer.TrainingData;
+import mlp.trainer.data.TrainingData;
 
 public class ANNMLP {
 

@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import mlp.trainer.data.Data;
 import mlp.trainer.data.TrainingData;
+import mlp.trainer.data.ValidationData;
 import mlp.trainer.data.factory.DataSetFactory;
 
 public class DataSetFactoryTest extends Data{
@@ -45,14 +46,17 @@ public class DataSetFactoryTest extends Data{
 			inputs.add(convertToInputs(line));
 			targets.add(createOutputRow(line[line.length-1],labelIdxMap,outputLayerSize));	
 		}
-		int expected = inputs.size() | targets.size();
+		int expected = (int) (inputs.size() *portion);
 		
 		sut.setInput(inputs);
 		sut.setTarget(targets);
-		TrainingData td = sut.getTrainingData(portion);	
+		sut.setClassCount(3);
+		TrainingData td = sut.getTrainingData();	
 		int actual = td.size();
 		assertEquals(expected,actual);		
 	}
+	
+	
 	
 	private float[] createOutputRow(String value, TreeMap<String, Integer> lableToIndxMap,
 			int outputLayerSize) {

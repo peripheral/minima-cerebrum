@@ -25,13 +25,12 @@ public class GradientDescent extends Backpropagation {
 	private float[][] weightDelta = null;
 	/** decays momentum, weight delta contains momentum */
 	private float decayFactor = 0.95f;
-	private boolean adaptiveLearningRate;
 	private float[][] meanSquaredWeightDeltas;
 	private float[][] meanSquaredGradients;
 	/**
 	 * Default learning rate corrector 0.3
 	 */
-	private float learningRateCorrector = 0.3f;
+	private float learningRateCorrector = 0.001f;
 	/**
 	 * stores cross validation results, currently uses MSE over training set
 	 */
@@ -324,7 +323,7 @@ public class GradientDescent extends Backpropagation {
 						crossValidation.remove(0);
 						crossValidation.add(calculateTotalMSE());
 					}
-				}
+				}				
 			}
 		}	
 
@@ -897,7 +896,6 @@ public class GradientDescent extends Backpropagation {
 	}
 
 	public void setUseAdaptiveLearningRate(boolean b) {
-		adaptiveLearningRate = b;
 	}
 
 	/**

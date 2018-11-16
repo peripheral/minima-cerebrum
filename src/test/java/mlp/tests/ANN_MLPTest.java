@@ -10,7 +10,7 @@ import mlp.ANNMLP;
 import mlp.ANNMLP.ACTIVATION_FUNCTION;
 import mlp.ANNMLP.WEIGHT_INITIATION_METHOD;
 import mlp.trainer.Backpropagation;
-import mlp.trainer.TrainingData;
+import mlp.trainer.data.TrainingData;
 
 public class ANN_MLPTest {
 	private ANNMLP sut;

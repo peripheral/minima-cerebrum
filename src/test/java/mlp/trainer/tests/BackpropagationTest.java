@@ -13,7 +13,7 @@ import mlp.ANNMLP.ACTIVATION_FUNCTION;
 import mlp.ANNMLP.WEIGHT_INITIATION_METHOD;
 import mlp.NeuronFunctionModels;
 import mlp.trainer.Backpropagation;
-import mlp.trainer.TrainingData;
+import mlp.trainer.data.TrainingData;
 
 public class BackpropagationTest {
 	private Backpropagation sut;
